@@ -1,0 +1,81 @@
+// Prisma schema for PRIM AI Institute — defines all DB models and enums
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Profile {
+  SCHOOL_STUDENT
+  COLLEGE_STUDENT
+  WORKING_PROFESSIONAL
+  BUSINESS_OWNER
+  OTHER
+}
+
+enum Course {
+  LEVEL_1_FOUNDATION
+  LEVEL_2A_GENERALIST
+  LEVEL_2B_DEVELOPER
+  NOT_SURE
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  LOST
+}
+
+model DemoBooking {
+  id             String     @id @default(cuid())
+  name           String
+  phone          String
+  profile        Profile
+  courseInterest Course
+  status         LeadStatus @default(NEW)
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@map("demo_bookings")
+}
+
+model Enquiry {
+  id             String     @id @default(cuid())
+  name           String
+  phone          String
+  email          String?
+  profile        Profile
+  courseInterest Course
+  message        String
+  status         LeadStatus @default(NEW)
+  notes          String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  @@map("enquiries")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+
+  @@map("admins")
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
