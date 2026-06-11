@@ -4,11 +4,15 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 const PUBLIC_KEYS = new Set([
-  'hero_students_count',
-  'hero_companies_count',
-  'hero_years_count',
-  'new_batch_banner',
-  'new_batch_text',
+  'nav_logo_text', 'nav_cta_text',
+  'nav_link_home', 'nav_link_about', 'nav_link_courses', 'nav_link_contact',
+  'hero_badge_text',
+  'hero_heading_line1', 'hero_heading_cyan', 'hero_heading_white', 'hero_heading_orange',
+  'hero_subtext', 'hero_cta1_text', 'hero_cta2_text',
+  'hero_students_count', 'hero_students_label',
+  'hero_companies_count', 'hero_companies_label',
+  'hero_years_count', 'hero_years_label', 'hero_iso_show',
+  'new_batch_banner', 'new_batch_text',
 ]);
 
 @Injectable()

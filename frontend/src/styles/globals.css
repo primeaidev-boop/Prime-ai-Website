@@ -162,3 +162,63 @@ select option {
   background: #0d1a2d;
   color: var(--white);
 }
+
+/* ─── Page animations ─────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .5; transform: scale(.8); }
+}
+@keyframes marquee-fwd {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes marquee-rev {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes orb-pulse {
+  0%, 100% { box-shadow: 0 0 25px rgba(0,212,255,.08); }
+  50%      { box-shadow: 0 0 55px rgba(0,212,255,.22); }
+}
+
+/* Staggered hero entrance */
+.anim-1 { opacity: 0; animation: fadeUp .8s .2s both; }
+.anim-2 { opacity: 0; animation: fadeUp .8s .4s both; }
+.anim-3 { opacity: 0; animation: fadeUp .8s .6s both; }
+.anim-4 { opacity: 0; animation: fadeUp .8s .8s both; }
+.anim-5 { opacity: 0; animation: fadeUp .8s 1.0s both; }
+
+/* Marquee */
+.marquee-fwd  { animation: marquee-fwd 30s linear infinite; }
+.marquee-rev  { animation: marquee-rev 35s linear infinite; }
+.marquee-med  { animation: marquee-fwd 22s linear infinite; }
+.marquee-fwd:hover,
+.marquee-rev:hover,
+.marquee-med:hover { animation-play-state: paused; }
+
+/* Float (floating cards in visual box) */
+.float-1 { animation: float-y 4s ease-in-out infinite; }
+.float-2 { animation: float-y 4s ease-in-out -1.5s infinite; }
+.float-3 { animation: float-y 4s ease-in-out -3s infinite; }
+
+/* Orb pulse */
+.orb-pulse { animation: orb-pulse 3s ease-in-out infinite; }
+
+/* Pulse dot (hero badge) */
+.pulse-dot { animation: pulse-dot 2s infinite; }
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }

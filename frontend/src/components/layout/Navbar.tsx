@@ -1,25 +1,26 @@
-// Public site navbar with mobile menu and demo booking CTA
-
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useModal } from '@/hooks/useModal';
 import { DemoModal } from '@/components/shared/DemoModal';
-
-const navLinks = [
-  { to: '/', label: 'Home' },
-  { to: '/about', label: 'About' },
-  { to: '/courses', label: 'Courses' },
-  { to: '/contact', label: 'Contact' },
-];
+import { useSettingsStore } from '@/store/settingsStore';
 
 export function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const modal = useModal();
+  const s = useSettingsStore((state) => state.s);
+
+  const links = [
+    { to: '/', label: s.navLinkHome },
+    { to: '/about', label: s.navLinkAbout },
+    { to: '/courses', label: s.navLinkCourses },
+    { to: '/contact', label: s.navLinkContact },
+  ];
 
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-12 h-16"
+        id="mainNav"
+        className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6 md:px-12 h-16 transition-all duration-300"
         style={{
           background: 'rgba(2,8,24,0.8)',
           backdropFilter: 'blur(16px)',
@@ -31,19 +32,17 @@ export function Navbar() {
           className="text-lg font-bold gradient-text"
           style={{ fontFamily: 'var(--font-head)' }}
         >
-          PRIM AI Institute
+          {s.navLogoText}
         </NavLink>
 
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               end={link.to === '/'}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors ${
-                  isActive ? '' : 'hover:text-white'
-                }`
+                `text-sm font-medium transition-colors ${isActive ? '' : 'hover:text-white'}`
               }
               style={({ isActive }) => ({
                 color: isActive ? 'var(--electric)' : 'var(--muted)',
@@ -56,7 +55,7 @@ export function Navbar() {
 
         <div className="hidden md:flex items-center gap-3">
           <button onClick={modal.open} className="btn-primary text-sm px-5 py-2">
-            Book Free Demo
+            {s.navCtaText}
           </button>
         </div>
 
@@ -75,7 +74,7 @@ export function Navbar() {
           className="fixed inset-0 z-30 pt-16 flex flex-col gap-2 p-6"
           style={{ background: 'rgba(2,8,24,0.98)' }}
         >
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -94,7 +93,7 @@ export function Navbar() {
             onClick={() => { setMenuOpen(false); modal.open(); }}
             className="btn-primary mt-4"
           >
-            Book Free Demo
+            {s.navCtaText}
           </button>
         </div>
       )}
