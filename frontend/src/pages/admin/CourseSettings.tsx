@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  getCourseData,
-  saveCourseData,
-  DEFAULT_COURSE_DATA,
-} from '@/data/coursePageData';
+import { DEFAULT_COURSE_DATA } from '@/data/coursePageData';
+import { updateSetting } from '@/api/admin';
+import { useSettingsStore } from '@/store/settingsStore';
 import type {
   CoursePageData,
   CourseModule,
@@ -28,7 +26,7 @@ function Card({ title, accent = '#00D4FF', children, onSave, saving, saved }: {
   title: string;
   accent?: string;
   children: React.ReactNode;
-  onSave: () => void;
+  onSave: () => void | Promise<void>;
   saving: boolean;
   saved: boolean;
 }) {
@@ -89,7 +87,17 @@ function Toggle({ label, checked, onChange }: { label: string; checked: boolean;
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function CourseSettings() {
-  const [data, setData] = useState<CoursePageData>(() => getCourseData());
+  const storeData = useSettingsStore((state) => state.s.coursePageData);
+  const [data, setData] = useState<CoursePageData>(storeData);
+  const prevStoreRef = useRef(storeData);
+
+  // Sync from store when it loads fresh data from API (first render after fetch)
+  useEffect(() => {
+    if (storeData !== prevStoreRef.current) {
+      prevStoreRef.current = storeData;
+      setData(storeData);
+    }
+  }, [storeData]);
 
   // Per-section save state
   const [heroSaving, setHeroSaving]     = useState(false); const [heroSaved, setHeroSaved]     = useState(false);
@@ -103,29 +111,30 @@ export default function CourseSettings() {
   const [faqSaving, setFaqSaving]       = useState(false); const [faqSaved, setFaqSaved]       = useState(false);
   const [ctaSaving, setCtaSaving]       = useState(false); const [ctaSaved, setCtaSaved]       = useState(false);
 
-  useEffect(() => {
-    setData(getCourseData());
-  }, []);
-
   // ── Generic field setter
   function set<K extends keyof CoursePageData>(key: K, value: CoursePageData[K]) {
     setData((prev) => ({ ...prev, [key]: value }));
   }
 
-  // ── Persist helper
-  function save(setter: (v: boolean) => void, saver: (v: boolean) => void) {
-    setter(true);
-    saveCourseData(data);
-    saver(true);
-    setter(false);
-    setTimeout(() => saver(false), 2500);
+  // ── Persist helper — saves to Neon via API then refreshes store
+  async function save(setSaving: (v: boolean) => void, setSaved: (v: boolean) => void) {
+    setSaving(true);
+    try {
+      await updateSetting('course_page_data', JSON.stringify(data));
+      await useSettingsStore.getState().fetch();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } finally {
+      setSaving(false);
+    }
   }
 
   // ── Reset to defaults
-  function resetAll() {
+  async function resetAll() {
     if (!window.confirm('Reset ALL course page data to defaults? This cannot be undone.')) return;
-    saveCourseData({ ...DEFAULT_COURSE_DATA });
     setData({ ...DEFAULT_COURSE_DATA });
+    await updateSetting('course_page_data', JSON.stringify(DEFAULT_COURSE_DATA));
+    await useSettingsStore.getState().fetch();
   }
 
   // ──────────────────────── Curriculum helpers ───────────────────────────

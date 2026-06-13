@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { getPublicSettings } from '@/api/settings';
 import type { ContactFAQ } from '@/data/contactPageData';
 import { DEFAULT_FAQS } from '@/data/contactPageData';
+import type { CoursePageData } from '@/data/coursePageData';
+import { DEFAULT_COURSE_DATA } from '@/data/coursePageData';
 
 export interface SiteSettings {
   // Navigation
@@ -99,6 +101,8 @@ export interface SiteSettings {
   contactShowFaq: boolean;
   contactFaqTitle: string;
   contactFaqs: ContactFAQ[];
+  // Courses page
+  coursePageData: CoursePageData;
 }
 
 const DEFAULTS: SiteSettings = {
@@ -205,6 +209,8 @@ const DEFAULTS: SiteSettings = {
   contactShowFaq: true,
   contactFaqTitle: 'Frequently Asked Questions',
   contactFaqs: DEFAULT_FAQS,
+  // Courses page
+  coursePageData: DEFAULT_COURSE_DATA,
 };
 
 interface SettingsState {
@@ -219,6 +225,15 @@ function parseFaqs(raw: string | undefined): ContactFAQ[] {
     return JSON.parse(raw) as ContactFAQ[];
   } catch {
     return DEFAULT_FAQS;
+  }
+}
+
+function parseCourseData(raw: string | undefined): CoursePageData {
+  if (!raw) return DEFAULT_COURSE_DATA;
+  try {
+    return { ...DEFAULT_COURSE_DATA, ...(JSON.parse(raw) as Partial<CoursePageData>) };
+  } catch {
+    return DEFAULT_COURSE_DATA;
   }
 }
 
@@ -319,6 +334,7 @@ export const useSettingsStore = create<SettingsState>()((set) => ({
           contactShowFaq: r.contact_show_faq !== 'false',
           contactFaqTitle: r.contact_faq_title ?? DEFAULTS.contactFaqTitle,
           contactFaqs: parseFaqs(r.contact_faqs),
+          coursePageData: parseCourseData(r.course_page_data),
         },
       });
     } catch {

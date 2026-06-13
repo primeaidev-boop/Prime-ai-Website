@@ -46,6 +46,8 @@ const PUBLIC_KEYS = new Set([
   'contact_show_map', 'contact_map_embed_url', 'contact_map_link_url',
   // Contact FAQ
   'contact_show_faq', 'contact_faq_title', 'contact_faqs',
+  // Courses page (single JSON blob)
+  'course_page_data',
 ]);
 
 @Injectable()
