@@ -199,7 +199,7 @@ IntersectionObserver watches the injected id="heading-N" elements
 Active heading highlights in the sidebar TOC as you scroll
 ```
 
-**Pass 1 — `buildToc(html)`: extract heading text for the sidebar**
+**Pass 1 - `buildToc(html)`: extract heading text for the sidebar**
 
 ```typescript
 interface TocItem { id: string; text: string; level: number; }
@@ -229,7 +229,7 @@ The result is an array like:
 ```
 This array is stored in React state (`tocItems`) and rendered in the `TableOfContents` sidebar component. Each item becomes an `<a href="#heading-N">` link.
 
-**Pass 2 — `injectIds(html)`: add anchor IDs to the rendered article HTML**
+**Pass 2 - `injectIds(html)`: add anchor IDs to the rendered article HTML**
 
 ```typescript
 function injectIds(html: string): string {
@@ -246,12 +246,12 @@ function injectIds(html: string): string {
 ```
 
 The regex `/<(h[23])([ >])/g` does two things at once:
-- `h[23]` — matches `h2` or `h3` only (not `h1`, `h4`, `h5`, `h6`)
-- `([ >])` — captures what comes immediately after the tag name: either a space (meaning attributes follow, e.g. `<h2 class="..."`) or `>` (meaning the tag closes immediately, e.g. `<h2>`)
+- `h[23]` - matches `h2` or `h3` only (not `h1`, `h4`, `h5`, `h6`)
+- `([ >])` - captures what comes immediately after the tag name: either a space (meaning attributes follow, e.g. `<h2 class="..."`) or `>` (meaning the tag closes immediately, e.g. `<h2>`)
 
 The captured `rest` is put back verbatim, so `<h2 class="foo">` becomes `<h2 id="heading-0" class="foo">` and `<h2>` becomes `<h2 id="heading-0">`. The original attributes are never lost.
 
-The `index++` counter starts at 0, just like the `map((h, i) => ...)` counter in `buildToc`. Both iterate H2 and H3 elements in document order. **This is why the IDs stay in sync** — both functions count headings in the same order from the same source HTML.
+The `index++` counter starts at 0, just like the `map((h, i) => ...)` counter in `buildToc`. Both iterate H2 and H3 elements in document order. **This is why the IDs stay in sync** - both functions count headings in the same order from the same source HTML.
 
 The returned string is assigned to `processedContent` and passed to `dangerouslySetInnerHTML`. After React renders it, the DOM has real elements like `<h2 id="heading-0">What is AI?</h2>` that the `IntersectionObserver` can query by ID.
 
