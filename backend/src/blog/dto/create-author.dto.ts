@@ -8,6 +8,11 @@ export class CreateAuthorDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(120)
+  designation?: string;
+
+  @IsOptional()
+  @IsString()
   @MaxLength(500)
   bio?: string;
 

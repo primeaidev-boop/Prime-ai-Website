@@ -15,7 +15,7 @@ import { ImageUploadDropzone } from '@/components/admin/ImageUploadDropzone';
 import {
   adminFetchPost, adminCreatePost, adminUpdatePost,
   adminFetchCategories, adminFetchTags, adminFetchAuthors,
-  adminCreateCategory, adminCreateTag, adminCreateAuthor,
+  adminCreateCategory, adminCreateTag, adminCreateAuthor, adminUpdateAuthor,
   type BlogCategory, type BlogTag, type BlogAuthor,
 } from '@/api/blog';
 
@@ -542,6 +542,40 @@ export default function BlogPostEditor() {
               </select>
             )}
             <QuickAddInput label="Author" placeholder="New author name" onAdd={addAuthor} loading={addingAuthor} />
+
+            {/* Author detail editor — shown when an author is selected */}
+            {authorId && (() => {
+              const sel = authors.find(a => a.id === authorId);
+              if (!sel) return null;
+              return (
+                <div className="mt-3 p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
+                  <p className="text-xs font-semibold mb-3" style={{ color: 'var(--muted)' }}>Author details</p>
+                  <ImageUploadDropzone
+                    value={sel.avatarUrl ?? undefined}
+                    onChange={async (url) => {
+                      if (url === undefined) return;
+                      await adminUpdateAuthor(authorId, { avatarUrl: url ?? undefined });
+                      setAuthors(prev => prev.map(a => a.id === authorId ? { ...a, avatarUrl: url ?? undefined } : a));
+                    }}
+                    variant="avatar"
+                    label="Author photo"
+                  />
+                  <input
+                    key={`desig-${authorId}`}
+                    type="text"
+                    placeholder="Designation (e.g. Lead Instructor, PRIM AI)"
+                    defaultValue={sel.designation ?? ''}
+                    className="mt-2"
+                    style={{ fontSize: '0.8rem' }}
+                    onBlur={async (e) => {
+                      const designation = e.target.value.trim();
+                      await adminUpdateAuthor(authorId, { designation });
+                      setAuthors(prev => prev.map(a => a.id === authorId ? { ...a, designation } : a));
+                    }}
+                  />
+                </div>
+              );
+            })()}
           </div>
 
           {/* Tags */}

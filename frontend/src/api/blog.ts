@@ -17,6 +17,7 @@ export interface BlogTag {
 export interface BlogAuthor {
   id: string;
   name: string;
+  designation?: string;
   bio?: string;
   avatarUrl?: string;
 }
@@ -143,11 +144,11 @@ export function adminFetchAuthors(): Promise<BlogAuthor[]> {
   return api.get('/admin/blog/authors').then((r) => r.data);
 }
 
-export function adminCreateAuthor(data: { name: string; bio?: string; avatarUrl?: string }): Promise<BlogAuthor> {
+export function adminCreateAuthor(data: { name: string; designation?: string; bio?: string; avatarUrl?: string }): Promise<BlogAuthor> {
   return api.post('/admin/blog/authors', data).then((r) => r.data);
 }
 
-export function adminUpdateAuthor(id: string, data: { name?: string; bio?: string; avatarUrl?: string }): Promise<BlogAuthor> {
+export function adminUpdateAuthor(id: string, data: { name?: string; designation?: string; bio?: string; avatarUrl?: string }): Promise<BlogAuthor> {
   return api.patch(`/admin/blog/authors/${id}`, data).then((r) => r.data);
 }
 

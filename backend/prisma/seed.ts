@@ -223,6 +223,19 @@ async function main() {
 
   console.log('✅ Seed complete - admin and settings created');
 
+  // ─── Patch PRIM AI Team author with designation + bio ──────────────────────
+  const primTeam = await prisma.blogAuthor.findFirst({ where: { name: 'PRIM AI Team' } });
+  if (primTeam && !primTeam.designation) {
+    await prisma.blogAuthor.update({
+      where: { id: primTeam.id },
+      data: {
+        designation: 'Editorial Team, PRIM AI Institute',
+        bio: 'Curated by our trainers and industry mentors to help you navigate AI - practically, not theoretically.',
+      },
+    });
+    console.log('✅ PRIM AI Team author updated with designation');
+  }
+
   // ─── Blog sample posts ──────────────────────────────────────────────────────
   // Idempotent: only creates if the slug doesn't already exist
   const seedPostExists = await prisma.blogPost.findUnique({
@@ -251,7 +264,8 @@ async function main() {
       author = await prisma.blogAuthor.create({
         data: {
           name: 'PRIM AI Team',
-          bio: 'Insights from the instructors and curriculum team at PRIM AI Institute, Ahmedabad.',
+          designation: 'Editorial Team, PRIM AI Institute',
+          bio: 'Curated by our trainers and industry mentors to help you navigate AI - practically, not theoretically.',
         },
       });
     }

@@ -103,35 +103,34 @@ function ShareButtons({ title }: { title: string }) {
   }
 
   return (
-    <div className="glass-card p-5 rounded-2xl">
-      <h4 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>Share</h4>
-      <div className="flex gap-2">
+    <div className="flex flex-col gap-4 w-full md:w-auto shrink-0">
+      <span className="text-xs font-semibold uppercase" style={{ color: 'var(--orange2)', letterSpacing: '2.5px' }}>
+        Share Research
+      </span>
+      <div className="flex gap-3">
         <a
           href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`}
           target="_blank" rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-colors"
-          style={{ background: 'rgba(29,161,242,0.1)', color: '#1DA1F2', border: '1px solid rgba(29,161,242,0.2)' }}
+          title="Share on Twitter"
+          className="share-btn w-10 h-10 rounded-full flex items-center justify-center"
         >
-          <Share2 size={14} /> Twitter
+          <Share2 size={18} />
         </a>
         <a
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
           target="_blank" rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-colors"
-          style={{ background: 'rgba(0,119,181,0.1)', color: '#0077B5', border: '1px solid rgba(0,119,181,0.2)' }}
+          title="Share on LinkedIn"
+          className="share-btn w-10 h-10 rounded-full flex items-center justify-center"
         >
-          <Share2 size={14} /> LinkedIn
+          <LinkIcon size={18} />
         </a>
         <button
           onClick={copyLink}
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium transition-all"
-          style={{
-            background: copied ? 'rgba(0,212,255,0.15)' : 'rgba(255,255,255,0.04)',
-            color: copied ? 'var(--electric)' : 'var(--muted)',
-            border: `1px solid ${copied ? 'rgba(0,212,255,0.3)' : 'var(--border)'}`,
-          }}
+          title="Copy link"
+          className="share-btn w-10 h-10 rounded-full flex items-center justify-center"
+          style={copied ? { background: 'rgba(0,212,255,0.2)', color: 'var(--electric)', borderColor: 'rgba(0,212,255,0.5)' } : undefined}
         >
-          <LinkIcon size={14} /> {copied ? 'Copied!' : 'Copy'}
+          <LinkIcon size={18} />
         </button>
       </div>
     </div>
@@ -142,27 +141,42 @@ function ShareButtons({ title }: { title: string }) {
 
 function AuthorBio({ author }: { author: BlogPostType['author'] }) {
   return (
-    <div className="glass-card p-5 rounded-2xl">
-      <h4 className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--muted)' }}>Author</h4>
-      <div className="flex items-start gap-3">
-        {author.avatarUrl ? (
-          <img src={author.avatarUrl} alt={author.name} className="w-12 h-12 rounded-full object-cover shrink-0" />
-        ) : (
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold shrink-0"
-            style={{ background: 'rgba(0,212,255,0.15)', color: 'var(--electric)' }}
-          >
-            {author.name[0]}
-          </div>
-        )}
-        <div>
-          <p className="font-semibold text-sm" style={{ fontFamily: 'var(--font-head)', color: 'var(--white)' }}>
-            {author.name}
-          </p>
-          {author.bio && (
-            <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--muted)' }}>{author.bio}</p>
-          )}
+    <div
+      className="flex gap-5 flex-1 p-6 rounded-2xl"
+      style={{
+        background: 'var(--card)',
+        border: '1px solid var(--border)',
+        boxShadow: 'inset 1px 1px 0 rgba(255,255,255,0.05)',
+        maxWidth: '28rem',
+      }}
+    >
+      {author.avatarUrl ? (
+        <img
+          src={author.avatarUrl}
+          alt={author.name}
+          className="w-16 h-16 rounded-full object-cover shrink-0"
+          style={{ border: '2px solid rgba(0,212,255,0.2)' }}
+        />
+      ) : (
+        <div
+          className="w-16 h-16 rounded-full flex items-center justify-center text-xl font-bold shrink-0"
+          style={{ background: 'rgba(0,212,255,0.15)', color: 'var(--electric)', border: '2px solid rgba(0,212,255,0.2)' }}
+        >
+          {author.name[0]}
         </div>
+      )}
+      <div className="flex flex-col gap-1.5 min-w-0">
+        <h4 className="text-lg font-bold leading-tight" style={{ fontFamily: 'var(--font-head)', color: 'var(--white)' }}>
+          {author.name}
+        </h4>
+        {author.designation && (
+          <span className="text-xs font-semibold uppercase" style={{ color: 'var(--electric)', letterSpacing: '1.5px' }}>
+            {author.designation}
+          </span>
+        )}
+        {author.bio && (
+          <p className="text-sm leading-relaxed line-clamp-3" style={{ color: 'var(--muted)' }}>{author.bio}</p>
+        )}
       </div>
     </div>
   );
@@ -387,7 +401,10 @@ export default function BlogPost() {
               className="prose-blog"
               dangerouslySetInnerHTML={{ __html: processedContent }}
             />
-            <div className="mt-10 flex flex-col gap-5">
+            <div
+              className="mt-8 pt-8 flex flex-col md:flex-row gap-8 items-start justify-between"
+              style={{ borderTop: '1px solid var(--border)' }}
+            >
               <ShareButtons title={post.title} />
               <AuthorBio author={post.author} />
             </div>
@@ -420,6 +437,10 @@ export default function BlogPost() {
         .prose-blog pre code { color: var(--white); }
         .prose-blog img { border-radius: 0.75rem; width: 100%; margin: 1.5rem 0; }
         .prose-blog hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+        /* Share buttons */
+        .share-btn { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--white); transition: all 0.3s ease; }
+        .share-btn:hover { background: rgba(0,212,255,0.2); color: var(--electric); border-color: rgba(0,212,255,0.5); transform: translateY(-4px); }
 
         /* TOC link — growing bar indicator */
         .toc-link { display: flex; align-items: flex-start; gap: 0.75rem; padding: 4px 0; text-decoration: none; }

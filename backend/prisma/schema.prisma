@@ -109,12 +109,13 @@ model BlogTag {
 }
 
 model BlogAuthor {
-  id        String     @id @default(cuid())
-  name      String
-  bio       String?
-  avatarUrl String?
-  posts     BlogPost[]
-  createdAt DateTime   @default(now())
+  id          String     @id @default(cuid())
+  name        String
+  designation String?
+  bio         String?
+  avatarUrl   String?
+  posts       BlogPost[]
+  createdAt   DateTime   @default(now())
 
   @@map("blog_authors")
 }
