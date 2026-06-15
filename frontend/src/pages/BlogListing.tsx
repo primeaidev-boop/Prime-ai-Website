@@ -195,7 +195,7 @@ export default function BlogListing() {
                 No articles found
               </h3>
               <p className="mt-2 text-sm" style={{ color: 'var(--muted)' }}>
-                {search ? `Nothing matched "${search}" — try a different term.` : 'No posts published yet — check back soon!'}
+                {search ? `Nothing matched "${search}" - try a different term.` : 'No posts published yet - check back soon!'}
               </p>
               {search && (
                 <button onClick={() => { setSearch(''); setInputValue(''); setPage(1); }} className="btn-outline mt-6 text-sm px-6 py-2">

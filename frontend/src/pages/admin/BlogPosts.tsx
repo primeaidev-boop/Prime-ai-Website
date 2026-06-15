@@ -87,7 +87,7 @@ export default function BlogPosts() {
           <div className="p-16 text-center">
             <p className="text-4xl mb-3 opacity-30">📝</p>
             <p className="text-sm" style={{ color: 'var(--muted)' }}>
-              {search ? `No posts matched "${search}"` : 'No posts yet — create your first one!'}
+              {search ? `No posts matched "${search}"` : 'No posts yet - create your first one!'}
             </p>
           </div>
         ) : (

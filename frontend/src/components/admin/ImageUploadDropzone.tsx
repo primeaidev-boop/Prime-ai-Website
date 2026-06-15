@@ -34,7 +34,7 @@ export function ImageUploadDropzone({ value, onChange, variant = 'cover', label 
         setToastVisible(true);
         setTimeout(() => setToastVisible(false), 3000);
       } catch {
-        setError('Upload failed — check DO Spaces config and try again');
+        setError('Upload failed - check DO Spaces config and try again');
       } finally {
         setUploading(false);
       }
@@ -133,7 +133,7 @@ export function ImageUploadDropzone({ value, onChange, variant = 'cover', label 
                   {isDragging ? 'Drop image here' : 'Click to upload or drag & drop'}
                 </p>
                 <p className="text-xs mt-1" style={{ color: 'var(--muted)' }}>
-                  JPG, PNG, WebP, GIF — max 8 MB — converted to WebP
+                  JPG, PNG, WebP, GIF - max 8 MB - converted to WebP
                 </p>
               </div>
             </>
