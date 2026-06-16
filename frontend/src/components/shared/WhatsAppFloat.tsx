@@ -1,4 +1,4 @@
-// WhatsApp floating button — appears after 300px scroll, reads number from settings
+// WhatsApp floating button -appears after 300px scroll, reads number from settings
 
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from '@/store/settingsStore';

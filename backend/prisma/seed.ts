@@ -205,13 +205,13 @@ async function main() {
     }) },
     { key: 'contact_show_faq', value: 'true' },
     { key: 'contact_faq_title', value: 'Frequently Asked Questions' },
-    // Footer — CTA strip
+    // Footer -CTA strip
     { key: 'footer_cta_show', value: 'true' },
     { key: 'footer_cta_heading', value: 'Ready to Start Your AI Journey?' },
-    { key: 'footer_cta_subtext', value: 'Book a free demo class — no fees, no obligation. Just come and experience it.' },
+    { key: 'footer_cta_subtext', value: 'Book a free demo class -no fees, no obligation. Just come and experience it.' },
     { key: 'footer_cta_demo_btn_text', value: '🚀 Book Free Demo Class' },
     { key: 'footer_cta_wa_btn_text', value: '💬 WhatsApp Us' },
-    // Footer — stats bar
+    // Footer -stats bar
     { key: 'footer_stats_show', value: 'true' },
     { key: 'footer_stat_1_num', value: '5000+' },
     { key: 'footer_stat_1_label', value: 'Students Trained' },
@@ -223,29 +223,29 @@ async function main() {
     { key: 'footer_stat_4_label', value: 'AI Programs' },
     { key: 'footer_stat_5_num', value: '50+' },
     { key: 'footer_stat_5_label', value: 'AI Tools Taught' },
-    // Footer — brand col
-    { key: 'footer_desc', value: "Gujarat's premier AI training institute — empowering students, professionals, and entrepreneurs with real-world AI skills that transform careers and businesses." },
+    // Footer -brand col
+    { key: 'footer_desc', value: "Gujarat's premier AI training institute -empowering students, professionals, and entrepreneurs with real-world AI skills that transform careers and businesses." },
     { key: 'footer_iso_show', value: 'true' },
-    // Footer — column visibility
+    // Footer -column visibility
     { key: 'footer_quicklinks_show', value: 'true' },
     { key: 'footer_courses_show', value: 'true' },
     { key: 'footer_explore_more_show', value: 'true' },
-    // Footer — contact col
+    // Footer -contact col
     { key: 'footer_contact_show', value: 'true' },
     { key: 'footer_address', value: 'Ahmedabad, Gujarat, India' },
     { key: 'footer_phone', value: '+91 88490 31797' },
     { key: 'footer_email', value: 'primeai.dev@gmail.com' },
     { key: 'footer_hours', value: 'Mon – Fri, 9 AM – 7 PM' },
-    // Footer — social icons
+    // Footer -social icons
     { key: 'footer_social_show', value: 'true' },
     { key: 'footer_social_whatsapp', value: '' },
     { key: 'footer_social_linkedin', value: '' },
     { key: 'footer_social_instagram', value: '' },
     { key: 'footer_social_youtube', value: '' },
-    // Footer — WhatsApp float
+    // Footer -WhatsApp float
     { key: 'footer_wa_float_show', value: 'true' },
     { key: 'footer_wa_float_number', value: '917573055191' },
-    // Footer — legal links
+    // Footer -legal links
     { key: 'footer_privacy_url', value: '#' },
     { key: 'footer_terms_url', value: '#' },
     { key: 'footer_sitemap_url', value: '#' },

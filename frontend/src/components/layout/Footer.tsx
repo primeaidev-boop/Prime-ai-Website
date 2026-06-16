@@ -1,4 +1,4 @@
-// Public site footer — 4-col grid with contact, social, legal links
+// Public site footer -4-col grid with contact, social, legal links
 
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
@@ -132,10 +132,10 @@ export function Footer() {
           style={{ background: 'linear-gradient(90deg, transparent, var(--electric), #a78bfa, transparent)', opacity: 0.5 }}
         />
 
-        {/* SECTION C — MAIN GRID */}
+        {/* SECTION C -MAIN GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.8fr_1fr_1fr_1.4fr] gap-10 px-6 md:px-20 py-16">
 
-          {/* COL 1 — Brand (always visible) */}
+          {/* COL 1 -Brand (always visible) */}
           <div className="flex flex-col gap-4">
             <Link
               to="/"
@@ -174,7 +174,7 @@ export function Footer() {
             </p>
           </div>
 
-          {/* COL 2 — Quick Links */}
+          {/* COL 2 -Quick Links */}
           {show('footer_quicklinks_show') && (
             <div>
               <h4
@@ -193,7 +193,7 @@ export function Footer() {
             </div>
           )}
 
-          {/* COL 3 — Courses */}
+          {/* COL 3 -Courses */}
           {show('footer_courses_show') && (
             <div>
               <h4
@@ -245,7 +245,7 @@ export function Footer() {
             </div>
           )}
 
-          {/* COL 4 — Contact + Social */}
+          {/* COL 4 -Contact + Social */}
           {show('footer_contact_show') && (
             <div>
               <h4
@@ -311,7 +311,7 @@ export function Footer() {
           )}
         </div>
 
-        {/* SECTION D — BOTTOM BAR */}
+        {/* SECTION D -BOTTOM BAR */}
         <div style={{ borderTop: '1px solid var(--border)' }}>
           <div className="px-6 md:px-20 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
             <p className="text-xs" style={{ color: 'var(--muted)' }}>

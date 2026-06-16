@@ -107,13 +107,13 @@ interface FormValues {
   footer_social_youtube: string;
   footer_social_instagram: string;
   footer_social_linkedin: string;
-  // Footer — CTA strip
+  // Footer -CTA strip
   footer_cta_show: string;
   footer_cta_heading: string;
   footer_cta_subtext: string;
   footer_cta_demo_btn_text: string;
   footer_cta_wa_btn_text: string;
-  // Footer — stats bar
+  // Footer -stats bar
   footer_stats_show: string;
   footer_stat_1_num: string;
   footer_stat_1_label: string;
@@ -125,26 +125,26 @@ interface FormValues {
   footer_stat_4_label: string;
   footer_stat_5_num: string;
   footer_stat_5_label: string;
-  // Footer — brand col
+  // Footer -brand col
   footer_desc: string;
   footer_iso_show: string;
-  // Footer — column visibility
+  // Footer -column visibility
   footer_quicklinks_show: string;
   footer_courses_show: string;
   footer_explore_more_show: string;
-  // Footer — contact col
+  // Footer -contact col
   footer_contact_show: string;
   footer_address: string;
   footer_phone: string;
   footer_email: string;
   footer_hours: string;
-  // Footer — social icons
+  // Footer -social icons
   footer_social_show: string;
   footer_social_whatsapp: string;
-  // Footer — WhatsApp float
+  // Footer -WhatsApp float
   footer_wa_float_show: string;
   footer_wa_float_number: string;
-  // Footer — legal links
+  // Footer -legal links
   footer_privacy_url: string;
   footer_terms_url: string;
   footer_sitemap_url: string;
@@ -247,7 +247,7 @@ const DEFAULTS: FormValues = {
   // Footer
   footer_cta_show: 'true',
   footer_cta_heading: 'Ready to Start Your AI Journey?',
-  footer_cta_subtext: 'Book a free demo class — no fees, no obligation. Just come and experience it.',
+  footer_cta_subtext: 'Book a free demo class -no fees, no obligation. Just come and experience it.',
   footer_cta_demo_btn_text: '🚀 Book Free Demo Class',
   footer_cta_wa_btn_text: '💬 WhatsApp Us',
   footer_stats_show: 'true',
@@ -261,7 +261,7 @@ const DEFAULTS: FormValues = {
   footer_stat_4_label: 'AI Programs',
   footer_stat_5_num: '50+',
   footer_stat_5_label: 'AI Tools Taught',
-  footer_desc: "Gujarat's premier AI training institute — empowering students, professionals, and entrepreneurs with real-world AI skills that transform careers and businesses.",
+  footer_desc: "Gujarat's premier AI training institute -empowering students, professionals, and entrepreneurs with real-world AI skills that transform careers and businesses.",
   footer_iso_show: 'true',
   footer_quicklinks_show: 'true',
   footer_courses_show: 'true',
@@ -521,7 +521,7 @@ const FOOTER_SECTIONS: SectionDef[] = [
     accentColor: 'var(--electric)',
     fields: [
       { key: 'footer_social_show', label: 'Show Social Icons', type: 'toggle' },
-      { key: 'footer_social_whatsapp', label: 'WhatsApp URL', hint: 'Full URL e.g. https://wa.me/917573055191 — leave blank to hide' },
+      { key: 'footer_social_whatsapp', label: 'WhatsApp URL', hint: 'Full URL e.g. https://wa.me/917573055191 -leave blank to hide' },
       { key: 'footer_social_linkedin', label: 'LinkedIn URL', hint: 'Full URL e.g. https://linkedin.com/company/yourcompany' },
       { key: 'footer_social_instagram', label: 'Instagram URL', hint: 'Full URL e.g. https://instagram.com/yourhandle' },
       { key: 'footer_social_youtube', label: 'YouTube URL', hint: 'Full URL e.g. https://youtube.com/@yourchannel' },
@@ -534,7 +534,7 @@ const FOOTER_SECTIONS: SectionDef[] = [
     accentColor: '#25d366',
     fields: [
       { key: 'footer_wa_float_show', label: 'Show WhatsApp Float Button', type: 'toggle' },
-      { key: 'footer_wa_float_number', label: 'WhatsApp Number', hint: 'Digits only with country code — no +, no spaces. e.g. 917573055191. Used by both this button and the Footer CTA WhatsApp button.' },
+      { key: 'footer_wa_float_number', label: 'WhatsApp Number', hint: 'Digits only with country code -no +, no spaces. e.g. 917573055191. Used by both this button and the Footer CTA WhatsApp button.' },
     ],
   },
   {

@@ -51,7 +51,7 @@ const PUBLIC_KEYS = new Set([
   // Footer social links (existing)
   'footer_social_facebook', 'footer_social_youtube',
   'footer_social_instagram', 'footer_social_linkedin',
-  // Footer — new full-footer keys
+  // Footer -new full-footer keys
   'footer_cta_show', 'footer_cta_heading', 'footer_cta_subtext',
   'footer_cta_demo_btn_text', 'footer_cta_wa_btn_text',
   'footer_stats_show',

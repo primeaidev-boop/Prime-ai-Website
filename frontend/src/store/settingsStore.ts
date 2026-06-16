@@ -101,12 +101,12 @@ export interface SiteSettings {
   contactShowFaq: boolean;
   contactFaqTitle: string;
   contactFaqs: ContactFAQ[];
-  // Footer social links (legacy typed fields — kept for compatibility)
+  // Footer social links (legacy typed fields -kept for compatibility)
   footerSocialFacebook: string;
   footerSocialYoutube: string;
   footerSocialInstagram: string;
   footerSocialLinkedin: string;
-  // Footer settings — all footer_* keys as a raw record for the full footer
+  // Footer settings -all footer_* keys as a raw record for the full footer
   footerSettings: Record<string, string>;
   // Courses page
   coursePageData: CoursePageData;
@@ -353,7 +353,7 @@ export const useSettingsStore = create<SettingsState>()((set) => ({
           footerSocialYoutube: r.footer_social_youtube ?? '',
           footerSocialInstagram: r.footer_social_instagram ?? '',
           footerSocialLinkedin: r.footer_social_linkedin ?? '',
-          // Footer settings — capture all footer_* keys as a raw record
+          // Footer settings -capture all footer_* keys as a raw record
           footerSettings: Object.fromEntries(
             Object.entries(r).filter(([k]) => k.startsWith('footer_'))
           ),
