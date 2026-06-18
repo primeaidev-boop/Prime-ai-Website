@@ -24,12 +24,11 @@ export function Sidebar() {
       }}
     >
       <div className="mb-6 px-2">
-        <div
-          className="text-lg font-bold gradient-text"
-          style={{ fontFamily: 'var(--font-head)' }}
-        >
-          PRIM AI
-        </div>
+        <img
+          src="/Asset%2016.svg"
+          alt="PRIM AI Institute"
+          className="h-7 w-auto mb-1"
+        />
         <div className="text-xs" style={{ color: 'var(--muted)' }}>
           Admin Panel
         </div>

@@ -38,11 +38,12 @@ export default function AdminLogin() {
     >
       <GlassCard className="w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <div
-            className="text-2xl font-bold gradient-text mb-1"
-            style={{ fontFamily: 'var(--font-head)' }}
-          >
-            PRIM AI Admin
+          <div className="flex justify-center mb-4">
+            <img
+              src="/Asset%2013.svg"
+              alt="PRIM AI Institute"
+              className="h-20 w-auto"
+            />
           </div>
           <p className="text-sm" style={{ color: 'var(--muted)' }}>
             Sign in to your dashboard
