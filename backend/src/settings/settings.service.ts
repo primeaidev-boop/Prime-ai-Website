@@ -66,7 +66,7 @@ const PUBLIC_KEYS = new Set([
   'footer_email', 'footer_hours',
   'footer_social_show', 'footer_social_whatsapp',
   'footer_wa_float_show', 'footer_wa_float_number',
-  'footer_privacy_url', 'footer_terms_url',
+  'footer_privacy_url', 'footer_terms_url', 'footer_refund_url',
   'footer_sitemap_url', 'footer_franchise_url',
 ]);
 
