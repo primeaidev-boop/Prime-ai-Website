@@ -1,7 +1,13 @@
-import { Injectable, BadRequestException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import sharp from 'sharp';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export type MediaVariant = 'cover' | 'content' | 'avatar';
 
@@ -32,7 +38,11 @@ export class MediaService {
   private readonly spacesEndpoint: string;
   private readonly bucket: string;
   private readonly cdnUrl: string;
-  private readonly configured: boolean;
+  private readonly spacesConfigured: boolean;
+
+  // Local disk fallback
+  private readonly uploadDir: string;
+  private readonly publicUrl: string;
 
   constructor(private config: ConfigService) {
     this.spacesKey      = config.get<string>('DO_SPACES_KEY', '');
@@ -41,19 +51,21 @@ export class MediaService {
     this.bucket         = config.get<string>('DO_SPACES_BUCKET', '');
     this.cdnUrl         = config.get<string>('DO_SPACES_CDN_URL', '');
 
-    this.configured =
+    this.spacesConfigured =
       Boolean(this.spacesKey) &&
       Boolean(this.spacesSecret) &&
       Boolean(this.spacesEndpoint) &&
       Boolean(this.bucket) &&
       Boolean(this.cdnUrl);
+
+    // Local disk storage — used when DO Spaces is not configured
+    this.uploadDir = config.get<string>('UPLOAD_DIR', '/var/www/primai/uploads');
+    this.publicUrl = config.get<string>('PUBLIC_URL', 'http://64.227.143.243');
   }
 
   private getS3(): S3Client {
-    if (!this.configured) {
-      throw new ServiceUnavailableException(
-        'Media uploads are not configured. Set DO_SPACES_KEY, DO_SPACES_SECRET, DO_SPACES_ENDPOINT, DO_SPACES_BUCKET and DO_SPACES_CDN_URL in .env',
-      );
+    if (!this.spacesConfigured) {
+      throw new ServiceUnavailableException('DO Spaces not configured');
     }
     return new S3Client({
       endpoint: this.spacesEndpoint,
@@ -71,7 +83,6 @@ export class MediaService {
     originalName: string,
     variant: MediaVariant = 'content',
   ): Promise<UploadResult> {
-    const s3 = this.getS3();
     const spec = VARIANT_SPECS[variant];
     const originalSizeKb = Math.round(buffer.length / 1024);
 
@@ -80,7 +91,10 @@ export class MediaService {
     if (spec.height) {
       pipeline = pipeline.resize(spec.width, spec.height, { fit: spec.fit });
     } else {
-      pipeline = pipeline.resize(spec.width, undefined, { fit: spec.fit, withoutEnlargement: true });
+      pipeline = pipeline.resize(spec.width, undefined, {
+        fit: spec.fit,
+        withoutEnlargement: true,
+      });
     }
 
     const { data: webpBuffer, info } = await pipeline
@@ -90,19 +104,32 @@ export class MediaService {
     const convertedSizeKb = Math.round(webpBuffer.length / 1024);
     const key = this.buildKey(originalName, variant);
 
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: key,
-        Body: webpBuffer,
-        ContentType: 'image/webp',
-        ACL: 'public-read' as never,
-        CacheControl: 'public, max-age=31536000, immutable',
-      }),
-    );
+    let url: string;
+
+    if (this.spacesConfigured) {
+      // Upload to DO Spaces / S3-compatible storage
+      const s3 = this.getS3();
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+          Body: webpBuffer,
+          ContentType: 'image/webp',
+          ACL: 'public-read' as never,
+          CacheControl: 'public, max-age=31536000, immutable',
+        }),
+      );
+      url = `${this.cdnUrl.replace(/\/$/, '')}/${key}`;
+    } else {
+      // Fallback: save to local disk, served by Nginx at /uploads/*
+      const destPath = path.join(this.uploadDir, key);
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+      fs.writeFileSync(destPath, webpBuffer);
+      url = `${this.publicUrl.replace(/\/$/, '')}/uploads/${key}`;
+    }
 
     return {
-      url: `${this.cdnUrl.replace(/\/$/, '')}/${key}`,
+      url,
       originalSizeKb,
       convertedSizeKb,
       width: info.width,
