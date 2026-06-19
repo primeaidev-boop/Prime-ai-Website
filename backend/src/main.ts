@@ -1,5 +1,9 @@
 // NestJS application entry point
 
+// Load .env before anything else so process.env is populated for CORS/Helmet setup
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+require('dotenv').config();
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -10,6 +14,8 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const isHttps = process.env.HTTPS_ENABLED === 'true';
 
   // ── Security headers ──────────────────────────────────────────────────────
   app.use(
@@ -24,13 +30,14 @@ async function bootstrap() {
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
           objectSrc: ["'none'"],
           frameSrc: ["'self'", 'https://www.google.com'],
+          // Only upgrade to HTTPS once SSL cert is active — on HTTP this breaks API calls
+          upgradeInsecureRequests: isHttps ? [] : null,
         },
       },
-      hsts: {
-        maxAge: 31536000,
-        includeSubDomains: true,
-        preload: true,
-      },
+      // Only send HSTS once SSL is active — on plain HTTP this forces HTTPS and breaks login
+      hsts: isHttps
+        ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+        : false,
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     }),
   );
@@ -39,10 +46,17 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // ── CORS — exact-match origins only ──────────────────────────────────────
+  // ADDITIONAL_ORIGINS: comma-separated list for non-domain access (e.g. bare server IP)
+  const extraOrigins = (process.env.ADDITIONAL_ORIGINS ?? '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
     process.env.FRONTEND_URL,
+    ...extraOrigins,
   ].filter(Boolean) as string[];
 
   app.enableCors({
