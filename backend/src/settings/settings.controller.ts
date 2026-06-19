@@ -1,6 +1,6 @@
 // Settings controller - public read for hero stats, guarded write/read-all
 
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, Param, Patch, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SettingsService } from './settings.service';
@@ -11,6 +11,7 @@ export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Get('public')
+  @Header('Cache-Control', 'no-store')
   findPublic() {
     return this.settingsService.findPublic();
   }
