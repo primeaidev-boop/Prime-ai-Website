@@ -29,12 +29,14 @@ class LoginDto {
 const COOKIE_NAME = 'admin_token';
 const COOKIE_MAX_AGE = 8 * 60 * 60 * 1000; // 8 hours
 
-function cookieOptions(req: ExpressRequest) {
-  const isProd = process.env.NODE_ENV === 'production';
+function cookieOptions(_req: ExpressRequest) {
+  // Use HTTPS_ENABLED, not NODE_ENV — on HTTP the Secure flag causes the browser
+  // to silently drop the cookie on every subsequent request, breaking all protected routes
+  const isHttps = process.env.HTTPS_ENABLED === 'true';
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: (isProd ? 'none' : 'lax') as 'none' | 'lax',
+    secure: isHttps,
+    sameSite: (isHttps ? 'none' : 'lax') as 'none' | 'lax',
     maxAge: COOKIE_MAX_AGE,
     path: '/',
   };
