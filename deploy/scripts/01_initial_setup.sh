@@ -32,7 +32,7 @@ ufw default allow outgoing
 ufw allow 22/tcp
 ufw allow 80/tcp
 ufw allow 443/tcp
-# NEVER open 3001 (NestJS) or 5432 (PostgreSQL) — Nginx + internal only
+# NEVER open 3001 (NestJS) or 5432 (PostgreSQL) - Nginx + internal only
 ufw --force enable
 ufw status verbose
 

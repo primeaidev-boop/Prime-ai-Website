@@ -36,11 +36,11 @@ npx prisma db seed || echo "[INFO] Seed skipped (data already exists)"
 echo ""
 echo "=== [4/6] Build frontend (Vite → dist/) ==="
 cd "$APP_DIR/frontend"
-# No VITE_API_URL needed — axios falls back to relative /api
+# No VITE_API_URL needed - axios falls back to relative /api
 # Nginx routes /api/* to NestJS on the same domain, so relative paths work
 npm ci
 npm run build
-# dist/ is served statically by Nginx — no Node.js process needed
+# dist/ is served statically by Nginx - no Node.js process needed
 
 echo ""
 echo "=== [5/6] Copy Nginx config and enable site ==="

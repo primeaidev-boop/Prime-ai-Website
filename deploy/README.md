@@ -1,4 +1,4 @@
-# Prim AI Institute — DigitalOcean Deployment Guide
+# Prim AI Institute - DigitalOcean Deployment Guide
 
 **Droplet:** 64.227.143.243 (BLR1, Ubuntu 22.04, $16/mo)  
 **Domain:** primaiinstitute.com  
@@ -18,10 +18,10 @@ ssh root@64.227.143.243
 
 ## Step-by-step deployment
 
-### Step 1 — Initial server setup (run once)
+### Step 1 - Initial server setup (run once)
 
 ```bash
-# On your local machine — copy scripts to droplet
+# On your local machine - copy scripts to droplet
 scp -r deploy/scripts root@64.227.143.243:/root/primai-scripts
 
 # SSH into droplet
@@ -31,14 +31,14 @@ ssh root@64.227.143.243
 bash /root/primai-scripts/01_initial_setup.sh
 ```
 
-### Step 2 — PostgreSQL setup (run once)
+### Step 2 - PostgreSQL setup (run once)
 
 ```bash
 bash /root/primai-scripts/02_postgres_setup.sh
-# It will prompt you for a DB password — save it securely
+# It will prompt you for a DB password - save it securely
 ```
 
-### Step 3 — Create the .env file on the server
+### Step 3 - Create the .env file on the server
 
 ```bash
 # Generate a JWT secret
@@ -52,20 +52,20 @@ Contents (copy from `deploy/backend.env.production` and fill in your values):
 - Replace `YOUR_STRONG_DB_PASSWORD` with what you set in Step 2
 - Replace `PASTE_64_CHAR_RANDOM_HEX_HERE` with the openssl output above
 
-### Step 4 — Deploy the app (run once)
+### Step 4 - Deploy the app (run once)
 
 ```bash
-# Edit 03_app_deploy.sh first — set your actual GitHub repo URL
+# Edit 03_app_deploy.sh first - set your actual GitHub repo URL
 nano /root/primai-scripts/03_app_deploy.sh
 
 bash /root/primai-scripts/03_app_deploy.sh
 ```
 
-### Step 5 — Issue SSL certificate (run once)
+### Step 5 - Issue SSL certificate (run once)
 
 ```bash
 certbot --nginx -d primaiinstitute.com -d www.primaiinstitute.com
-# Follow the prompts — enter your email, agree to ToS
+# Follow the prompts - enter your email, agree to ToS
 
 # Verify auto-renewal works
 certbot renew --dry-run
@@ -105,7 +105,7 @@ Nginx (ports 80, 443)
 
 ---
 
-## Security checklist — already implemented in code
+## Security checklist - already implemented in code
 
 | Item | Status |
 |---|---|

@@ -58,7 +58,7 @@ export class MediaService {
       Boolean(this.bucket) &&
       Boolean(this.cdnUrl);
 
-    // Local disk storage — used when DO Spaces is not configured
+    // Local disk storage - used when DO Spaces is not configured
     this.uploadDir = config.get<string>('UPLOAD_DIR', '/var/www/primai/uploads');
     this.publicUrl = config.get<string>('PUBLIC_URL', 'http://64.227.143.243');
   }

@@ -26,7 +26,7 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
-  // 5 booking submissions per hour per IP — spam protection
+  // 5 booking submissions per hour per IP - spam protection
   @Throttle({ default: { ttl: 60 * 60 * 1000, limit: 5 } })
   @Post('bookings')
   @HttpCode(201)

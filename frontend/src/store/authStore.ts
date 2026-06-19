@@ -1,4 +1,4 @@
-// Zustand auth store — persists admin display info only; actual auth is the httpOnly cookie
+// Zustand auth store - persists admin display info only; actual auth is the httpOnly cookie
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';

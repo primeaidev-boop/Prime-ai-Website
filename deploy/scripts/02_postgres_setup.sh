@@ -24,7 +24,7 @@ echo "  $PG_LISTEN"
 if echo "$PG_LISTEN" | grep -qE "'localhost'|'127\.0\.0\.1'"; then
   echo "  [OK] PostgreSQL is not exposed to the internet."
 else
-  echo "  [WARNING] Check listen_addresses — must be 'localhost', not '*'."
+  echo "  [WARNING] Check listen_addresses - must be 'localhost', not '*'."
 fi
 
 echo ""

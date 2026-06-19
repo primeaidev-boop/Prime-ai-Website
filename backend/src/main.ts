@@ -30,11 +30,11 @@ async function bootstrap() {
           fontSrc: ["'self'", 'https://fonts.gstatic.com'],
           objectSrc: ["'none'"],
           frameSrc: ["'self'", 'https://www.google.com'],
-          // Only upgrade to HTTPS once SSL cert is active — on HTTP this breaks API calls
+          // Only upgrade to HTTPS once SSL cert is active - on HTTP this breaks API calls
           upgradeInsecureRequests: isHttps ? [] : null,
         },
       },
-      // Only send HSTS once SSL is active — on plain HTTP this forces HTTPS and breaks login
+      // Only send HSTS once SSL is active - on plain HTTP this forces HTTPS and breaks login
       hsts: isHttps
         ? { maxAge: 31536000, includeSubDomains: true, preload: true }
         : false,
@@ -45,7 +45,7 @@ async function bootstrap() {
   // ── Cookie parser (required for httpOnly JWT) ─────────────────────────────
   app.use(cookieParser());
 
-  // ── CORS — exact-match origins only ──────────────────────────────────────
+  // ── CORS - exact-match origins only ──────────────────────────────────────
   // ADDITIONAL_ORIGINS: comma-separated list for non-domain access (e.g. bare server IP)
   const extraOrigins = (process.env.ADDITIONAL_ORIGINS ?? '')
     .split(',')

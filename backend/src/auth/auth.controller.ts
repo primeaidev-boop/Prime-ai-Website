@@ -30,7 +30,7 @@ const COOKIE_NAME = 'admin_token';
 const COOKIE_MAX_AGE = 8 * 60 * 60 * 1000; // 8 hours
 
 function cookieOptions(_req: ExpressRequest) {
-  // Use HTTPS_ENABLED, not NODE_ENV — on HTTP the Secure flag causes the browser
+  // Use HTTPS_ENABLED, not NODE_ENV - on HTTP the Secure flag causes the browser
   // to silently drop the cookie on every subsequent request, breaking all protected routes
   const isHttps = process.env.HTTPS_ENABLED === 'true';
   return {
@@ -47,7 +47,7 @@ function cookieOptions(_req: ExpressRequest) {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // 5 attempts per 15 minutes per IP — brute force protection
+  // 5 attempts per 15 minutes per IP - brute force protection
   @Throttle({ default: { ttl: 15 * 60 * 1000, limit: 5 } })
   @Post('login')
   @HttpCode(200)

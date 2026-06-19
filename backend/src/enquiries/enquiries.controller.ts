@@ -26,7 +26,7 @@ import { CreateEnquiryDto } from './dto/create-enquiry.dto';
 export class EnquiriesController {
   constructor(private readonly enquiriesService: EnquiriesService) {}
 
-  // 5 enquiry submissions per hour per IP — spam protection
+  // 5 enquiry submissions per hour per IP - spam protection
   @Throttle({ default: { ttl: 60 * 60 * 1000, limit: 5 } })
   @Post('enquiries')
   @HttpCode(201)

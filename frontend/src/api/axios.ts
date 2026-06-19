@@ -1,4 +1,4 @@
-// Axios instance — cookies sent automatically via withCredentials; 401 redirects to login
+// Axios instance - cookies sent automatically via withCredentials; 401 redirects to login
 
 import axios from 'axios';
 

@@ -1,4 +1,4 @@
-# PRIM AI Institute — Security & Testing Reference
+# PRIM AI Institute - Security & Testing Reference
 
 **Version:** 1.0  
 **Date:** 2026-06-19  
@@ -34,7 +34,7 @@
 │  │  • CSP via vercel.json headers                               │   │
 │  │  • X-Frame-Options: DENY                                     │   │
 │  │  • DOMPurify sanitizes blog HTML before render               │   │
-│  │  • Axios withCredentials:true — JWT never touches JS memory  │   │
+│  │  • Axios withCredentials:true - JWT never touches JS memory  │   │
 │  └─────────────────────────┬────────────────────────────────────┘   │
 └────────────────────────────│────────────────────────────────────────┘
                              │ HTTPS only · Cookie: admin_token (httpOnly)
@@ -48,7 +48,7 @@
 │  ├── enableCors()      → exact-match allowedOrigins whitelist       │
 │  └── ValidationPipe    → strips unknown fields, rejects bad input   │
 │                                                                     │
-│  ThrottlerGuard (APP_GUARD — global)                                │
+│  ThrottlerGuard (APP_GUARD - global)                                │
 │  ├── All routes        → 100 req / 15 min / IP                     │
 │  ├── POST /auth/login  → 5 req  / 15 min / IP                     │
 │  ├── POST /bookings    → 5 req  / 1 hour  / IP                    │
@@ -62,8 +62,8 @@
                              ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │  NeonDB (PostgreSQL 16)                                             │
-│  • Prisma ORM — zero raw SQL in codebase                           │
-│  • Parameterized queries only — SQL injection not possible          │
+│  • Prisma ORM - zero raw SQL in codebase                           │
+│  • Parameterized queries only - SQL injection not possible          │
 │  • TLS enforced on every connection                                 │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -72,9 +72,9 @@
 
 | Threat | Mitigation | Layer |
 |---|---|---|
-| XSS — steal admin token from localStorage | JWT in httpOnly cookie | Auth |
-| XSS — inject scripts via form input | class-validator + React JSX escaping | Input/Render |
-| XSS — inject scripts via blog content | DOMPurify on render | Render |
+| XSS - steal admin token from localStorage | JWT in httpOnly cookie | Auth |
+| XSS - inject scripts via form input | class-validator + React JSX escaping | Input/Render |
+| XSS - inject scripts via blog content | DOMPurify on render | Render |
 | Brute force login | 5 attempts / 15 min / IP | Rate limit |
 | Contact form spam | 5 submissions / hour / IP | Rate limit |
 | Clickjacking | X-Frame-Options: DENY (frontend) | Headers |
@@ -106,7 +106,7 @@ POST /api/auth/login
   2. Rate limit check: 5 attempts / 15 min / IP (ThrottlerGuard)
   3. Lookup admin by email in DB (Prisma)
   4. bcrypt.compare(password, admin.passwordHash)
-  5. Sign JWT: { sub: admin.id, email } — expires in 8h
+  5. Sign JWT: { sub: admin.id, email } - expires in 8h
   6. Set cookie:
        Set-Cookie: admin_token=<jwt>; HttpOnly; Secure; SameSite=None; Path=/; Max-Age=28800
   7. Return: { admin: { id, email, name } }  ← NO TOKEN in body
@@ -116,14 +116,14 @@ POST /api/auth/login
 
 | Attribute | Value | Why |
 |---|---|---|
-| `HttpOnly` | true | JavaScript cannot read it — blocks XSS token theft |
-| `Secure` | true (prod) | Only sent over HTTPS — blocks plaintext sniffing |
+| `HttpOnly` | true | JavaScript cannot read it - blocks XSS token theft |
+| `Secure` | true (prod) | Only sent over HTTPS - blocks plaintext sniffing |
 | `SameSite` | `None` (prod) / `Lax` (dev) | `None` required for cross-origin Vercel→Railway requests; `Lax` is safe in dev |
 | `Max-Age` | 28800 (8h) | Short-lived session; admin must re-login daily |
 | `Path` | `/` | Cookie sent on all API requests |
 
 > **Why not `SameSite=Strict`?**  
-> The frontend is on `*.vercel.app` and the API is on `*.railway.app` — different origins. `Strict` and `Lax` both block cross-origin cookie sending. `None` is the only option for cross-origin cookies, and it **requires** `Secure=true`, which we enforce in production.
+> The frontend is on `*.vercel.app` and the API is on `*.railway.app` - different origins. `Strict` and `Lax` both block cross-origin cookie sending. `None` is the only option for cross-origin cookies, and it **requires** `Secure=true`, which we enforce in production.
 
 ### Token Extraction (JwtStrategy)
 
@@ -149,7 +149,7 @@ The cookie is cleared server-side. Even if the frontend fails (JS error, network
 
 ### Zustand Auth Store
 
-The store persists **only** `{ admin: { id, email, name }, isAuthenticated }` to localStorage — display-only information. The JWT itself is never written to `localStorage` or anywhere readable by JavaScript.
+The store persists **only** `{ admin: { id, email, name }, isAuthenticated }` to localStorage - display-only information. The JWT itself is never written to `localStorage` or anywhere readable by JavaScript.
 
 If `isAuthenticated=true` is manually set in DevTools but no valid cookie exists, every protected API call returns 401, and the Axios interceptor redirects to `/admin/login`. The frontend UI is a hint; the cookie is the gate.
 
@@ -189,9 +189,9 @@ X-RateLimit-Reset: <epoch>
 
 ### Architecture Notes
 
-- `ThrottlerGuard` is registered as `APP_GUARD` — it fires **before** any controller code
+- `ThrottlerGuard` is registered as `APP_GUARD` - it fires **before** any controller code
 - Route-level `@Throttle({ default: { ttl, limit } })` overrides the global config for that specific endpoint
-- The throttler `name: 'default'` must match the key used in `@Throttle({ default: {...} })` — mismatched names silently fall through to global limits
+- The throttler `name: 'default'` must match the key used in `@Throttle({ default: {...} })` - mismatched names silently fall through to global limits
 - Storage is **in-memory** (per Railway instance). If you scale to multiple instances in future, switch to `ThrottlerStorageRedisService` with a shared Redis store
 
 ### Why These Numbers
@@ -214,7 +214,7 @@ X-RateLimit-Reset: <epoch>
 | `X-Content-Type-Options` | `nosniff` | MIME sniffing attacks |
 | `X-Frame-Options` | `SAMEORIGIN` | Clickjacking (API responses) |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Referrer leakage |
-| `X-XSS-Protection` | `0` | Disables legacy XSS auditor (correct — modern browsers don't use it and it can cause issues) |
+| `X-XSS-Protection` | `0` | Disables legacy XSS auditor (correct - modern browsers don't use it and it can cause issues) |
 | `Content-Security-Policy` | See below | Script injection |
 
 **Backend CSP:**
@@ -229,13 +229,13 @@ object-src 'none'
 frame-src 'self' https://www.google.com
 ```
 
-### Frontend (Vercel CDN — all page responses)
+### Frontend (Vercel CDN - all page responses)
 
 **File:** [frontend/vercel.json](frontend/vercel.json)
 
 | Header | Value | Protects Against |
 |---|---|---|
-| `X-Frame-Options` | `DENY` | Clickjacking (stricter than API — pages must never be framed) |
+| `X-Frame-Options` | `DENY` | Clickjacking (stricter than API - pages must never be framed) |
 | `X-Content-Type-Options` | `nosniff` | MIME sniffing |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Referrer leakage |
 | `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` | Browser feature abuse |
@@ -265,16 +265,16 @@ object-src 'none'
 **Package:** `class-validator@0.14` + NestJS `ValidationPipe`
 
 `ValidationPipe` is configured globally in `main.ts` with:
-- `whitelist: true` — strips any fields not declared in the DTO
-- `forbidNonWhitelisted: true` — returns 400 if unknown fields are sent
-- `transform: true` — coerces types automatically
+- `whitelist: true` - strips any fields not declared in the DTO
+- `forbidNonWhitelisted: true` - returns 400 if unknown fields are sent
+- `transform: true` - coerces types automatically
 
 **Booking DTO rules:**
 
 | Field | Validation |
 |---|---|
 | `name` | `@IsString` `@MinLength(2)` `@MaxLength(50)` |
-| `phone` | `@Matches(/^[6-9]\d{9}$/)` — Indian mobile only |
+| `phone` | `@Matches(/^[6-9]\d{9}$/)` - Indian mobile only |
 | `profile` | `@IsEnum(Profile)` |
 | `courseInterest` | `@IsEnum(Course)` |
 
@@ -308,7 +308,7 @@ Allowed attrs: href target rel src alt style id
 Style attr: only text-align: left|right|center|justify
 ```
 
-Everything else is stripped. `<script>`, `<iframe>`, `onclick`, `javascript:` URIs — all removed before the string reaches the DOM.
+Everything else is stripped. `<script>`, `<iframe>`, `onclick`, `javascript:` URIs - all removed before the string reaches the DOM.
 
 All other admin-editable fields (site settings, course content, etc.) are **plain text** stored and rendered via React JSX, which escapes HTML automatically. No `dangerouslySetInnerHTML` is used outside of blog content and hardcoded legal page tables (static compile-time strings).
 
@@ -353,7 +353,7 @@ app.enableCors({
 The old code used `origin.startsWith(o)`, which would allow `https://yourdomain.evil.com` to pass if `https://yourdomain` was in the allowlist. Exact string comparison closes this gap.
 
 **`credentials: true` requirement:**  
-This header is mandatory for cross-origin cookie sending. Without it, the browser discards `Set-Cookie` on cross-origin responses. It also means the origin cannot be `*` — both the request and the allowed origin must be explicit.
+This header is mandatory for cross-origin cookie sending. Without it, the browser discards `Set-Cookie` on cross-origin responses. It also means the origin cannot be `*` - both the request and the allowed origin must be explicit.
 
 **`!origin` allowance:**  
 Requests with no `Origin` header (server-to-server, curl, Postman) are allowed. This is intentional for the public API and Swagger. The admin routes are still protected by JWT regardless of origin.
@@ -367,7 +367,7 @@ Requests with no `Origin` header (server-to-server, curl, Postman) are allowed. 
 ```bash
 # Confirmed: no .env files in git history
 git log --all --oneline --full-history -- "backend/.env"
-# Output: (empty — never committed)
+# Output: (empty - never committed)
 
 # Confirmed: only public value ever committed to .env.production
 git show f89307d:frontend/.env.production
@@ -379,19 +379,19 @@ git show f89307d:frontend/.env.production
 | Secret | Location | Committed? | Status |
 |---|---|---|---|
 | `DATABASE_URL` | Railway env var | No | Safe |
-| `JWT_SECRET` | Railway env var | No | Safe — rotate to new value |
+| `JWT_SECRET` | Railway env var | No | Safe - rotate to new value |
 | `DO_SPACES_KEY` | `.env` only (local disk) | No | **Rotate immediately** |
 | `DO_SPACES_SECRET` | `.env` only (local disk) | No | **Rotate immediately** |
 | `MSG91_AUTH_KEY` | Railway env var | No | Safe |
 | `SMTP_PASS` | Railway env var | No | Safe |
 
-> **ACTION REQUIRED — DigitalOcean Spaces:**  
+> **ACTION REQUIRED - DigitalOcean Spaces:**  
 > The local `backend/.env` contains active DO Spaces credentials. While these were never committed to git, they exist in plaintext on disk. Log into the DigitalOcean dashboard → API → Spaces Keys and rotate `DO8014C98F4WWJBHNWEP` immediately. Update the new key in Railway.
 
 ### `.gitignore` Coverage
 
 ```gitignore
-# Confirmed in root .gitignore — all patterns present:
+# Confirmed in root .gitignore - all patterns present:
 .env
 .env.local
 .env.*.local
@@ -458,7 +458,7 @@ where: {
 }
 ```
 
-…are compiled to `WHERE name ILIKE $1 OR phone LIKE $2` with bound parameters — never string concatenation.
+…are compiled to `WHERE name ILIKE $1 OR phone LIKE $2` with bound parameters - never string concatenation.
 
 ### SSL / TLS
 
@@ -468,7 +468,7 @@ NeonDB requires TLS on all connections. The connection string format for product
 postgresql://USER:PASS@HOST.neon.tech/primai_db?sslmode=require
 ```
 
-SSL is never disabled in the codebase — confirmed by scanning for `ssl.*false` and `rejectUnauthorized.*false` in application code (only found in type definition files from `node_modules`).
+SSL is never disabled in the codebase - confirmed by scanning for `ssl.*false` and `rejectUnauthorized.*false` in application code (only found in type definition files from `node_modules`).
 
 ### Database Roles & Permissions
 
@@ -504,20 +504,20 @@ APP=https://your-app.vercel.app
 ### 9.1 Authentication Tests
 
 ```bash
-# T01 — Admin route without token → must return 401
+# T01 - Admin route without token → must return 401
 curl -s -o /dev/null -w "T01 (expect 401): %{http_code}\n" $API/api/admin/stats
 
-# T02 — Admin route with invalid token → must return 401
+# T02 - Admin route with invalid token → must return 401
 curl -s -o /dev/null -w "T02 (expect 401): %{http_code}\n" \
   -H "Authorization: Bearer fake.jwt.token" $API/api/admin/stats
 
-# T03 — Login with wrong credentials → 401, no hint about which field
+# T03 - Login with wrong credentials → 401, no hint about which field
 curl -s -w "\nT03 (expect 401): %{http_code}\n" \
   -X POST $API/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"fake@test.com","password":"wrongpass"}'
 
-# T04 — Login with correct credentials → 200, cookie set, NO token in body
+# T04 - Login with correct credentials → 200, cookie set, NO token in body
 curl -sv -X POST $API/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@primaiinstitute.com","password":"Admin@123"}' 2>&1 \
@@ -525,7 +525,7 @@ curl -sv -X POST $API/api/auth/login \
 # Expected: Set-Cookie: admin_token=...; HttpOnly; Secure; SameSite=None
 # Expected: NO "access_token" in response body
 
-# T05 — Logout clears cookie
+# T05 - Logout clears cookie
 curl -sv -X POST $API/api/auth/logout 2>&1 | grep "Set-Cookie"
 # Expected: Set-Cookie: admin_token=; Max-Age=0  (cleared)
 ```
@@ -533,7 +533,7 @@ curl -sv -X POST $API/api/auth/logout 2>&1 | grep "Set-Cookie"
 ### 9.2 Rate Limiting Tests
 
 ```bash
-# T06 — Brute force: 6th login attempt must return 429
+# T06 - Brute force: 6th login attempt must return 429
 for i in {1..6}; do
   CODE=$(curl -s -o /dev/null -w "%{http_code}" \
     -X POST $API/api/auth/login \
@@ -542,7 +542,7 @@ for i in {1..6}; do
   echo "T06 attempt $i: $CODE (expect 401×5, then 429)"
 done
 
-# T07 — Form spam: 6th booking in same hour must return 429
+# T07 - Form spam: 6th booking in same hour must return 429
 for i in {1..6}; do
   CODE=$(curl -s -o /dev/null -w "%{http_code}" \
     -X POST $API/api/bookings \
@@ -555,35 +555,35 @@ done
 ### 9.3 Input Validation Tests
 
 ```bash
-# T08 — Empty body → 400
+# T08 - Empty body → 400
 curl -s -o /dev/null -w "T08 (expect 400): %{http_code}\n" \
   -X POST $API/api/enquiries \
   -H "Content-Type: application/json" \
   -d '{}'
 
-# T09 — Invalid phone number → 400
+# T09 - Invalid phone number → 400
 curl -s -w "\nT09 (expect 400): %{http_code}\n" \
   -X POST $API/api/bookings \
   -H "Content-Type: application/json" \
   -d '{"name":"Test","phone":"1234567890","profile":"OTHER","courseInterest":"NOT_SURE"}'
 # Expected error: "Enter valid 10-digit Indian mobile number"
 
-# T10 — XSS attempt in name field (stored but escaped by React on render)
-curl -s -w "\nT10 (expect 201 — stored as plain text): %{http_code}\n" \
+# T10 - XSS attempt in name field (stored but escaped by React on render)
+curl -s -w "\nT10 (expect 201 - stored as plain text): %{http_code}\n" \
   -X POST $API/api/bookings \
   -H "Content-Type: application/json" \
   -d '{"name":"<script>alert(1)<\/script>","phone":"9876543210","profile":"OTHER","courseInterest":"NOT_SURE"}'
-# Note: React escapes this on render — <script> never executes
+# Note: React escapes this on render - <script> never executes
 
-# T11 — Message too long (>500 chars) → 400
+# T11 - Message too long (>500 chars) → 400
 LONG=$(python3 -c "print('A'*501)")
 curl -s -o /dev/null -w "T11 (expect 400): %{http_code}\n" \
   -X POST $API/api/enquiries \
   -H "Content-Type: application/json" \
   -d "{\"name\":\"Test\",\"phone\":\"9876543210\",\"profile\":\"OTHER\",\"courseInterest\":\"NOT_SURE\",\"message\":\"$LONG\"}"
 
-# T12 — Unknown field in body is stripped (not 400 — just ignored)
-curl -s -w "\nT12 (expect 201 — extra field stripped): %{http_code}\n" \
+# T12 - Unknown field in body is stripped (not 400 - just ignored)
+curl -s -w "\nT12 (expect 201 - extra field stripped): %{http_code}\n" \
   -X POST $API/api/bookings \
   -H "Content-Type: application/json" \
   -d '{"name":"Test","phone":"9876543210","profile":"OTHER","courseInterest":"NOT_SURE","isAdmin":true}'
@@ -592,17 +592,17 @@ curl -s -w "\nT12 (expect 201 — extra field stripped): %{http_code}\n" \
 ### 9.4 CORS Tests
 
 ```bash
-# T13 — Request from evil origin → no ACAO header (blocked)
+# T13 - Request from evil origin → no ACAO header (blocked)
 ACAO=$(curl -s -I -H "Origin: https://evil.com" $API/api/settings/public \
   | grep -i "access-control-allow-origin")
-echo "T13 — evil.com ACAO header (expect empty): '$ACAO'"
+echo "T13 - evil.com ACAO header (expect empty): '$ACAO'"
 
-# T14 — Request from allowed origin → ACAO header present
+# T14 - Request from allowed origin → ACAO header present
 ACAO=$(curl -s -I -H "Origin: $APP" $API/api/settings/public \
   | grep -i "access-control-allow-origin")
-echo "T14 — Vercel origin ACAO header (expect $APP): '$ACAO'"
+echo "T14 - Vercel origin ACAO header (expect $APP): '$ACAO'"
 
-# T15 — Preflight from evil origin → must return non-200 or no ACAO
+# T15 - Preflight from evil origin → must return non-200 or no ACAO
 curl -s -o /dev/null -w "T15 OPTIONS evil.com (expect 500 or no ACAO): %{http_code}\n" \
   -X OPTIONS \
   -H "Origin: https://evil.com" \
@@ -613,12 +613,12 @@ curl -s -o /dev/null -w "T15 OPTIONS evil.com (expect 500 or no ACAO): %{http_co
 ### 9.5 Security Headers Tests
 
 ```bash
-# T16 — All required headers present on API
+# T16 - All required headers present on API
 echo "=== T16 API Security Headers ==="
 curl -s -I $API/api/settings/public | grep -iE \
   "strict-transport-security|x-content-type-options|x-frame-options|referrer-policy|content-security-policy"
 
-# T17 — Frontend headers via Vercel
+# T17 - Frontend headers via Vercel
 echo "=== T17 Frontend Security Headers ==="
 curl -s -I $APP | grep -iE \
   "x-frame-options|x-content-type-options|referrer-policy|permissions-policy|content-security-policy"
@@ -690,7 +690,7 @@ Run this before every production deployment.
 
 If you believe the admin session cookie or JWT secret has been compromised:
 
-1. **Immediately** — change `JWT_SECRET` in Railway to a new value (`openssl rand -hex 32`). This invalidates **all** existing tokens instantly since they were signed with the old secret.
+1. **Immediately** - change `JWT_SECRET` in Railway to a new value (`openssl rand -hex 32`). This invalidates **all** existing tokens instantly since they were signed with the old secret.
 2. Redeploy the Railway service to pick up the new secret.
 3. Change the admin password via Prisma Studio or a seed script.
 4. Review Railway access logs for suspicious `POST /api/auth/login` patterns.
@@ -707,7 +707,7 @@ If you believe the admin session cookie or JWT secret has been compromised:
 1. In the admin panel, navigate to Blog Posts and identify any suspicious post.
 2. The content was sanitized by DOMPurify on render, so execution was already blocked.
 3. Edit or delete the post to remove the malicious content from the database.
-4. If the post was published, it was sanitized before display — no user data is at risk.
+4. If the post was published, it was sanitized before display - no user data is at risk.
 
 ### Rate Limit Bypass / DDoS
 
@@ -736,22 +736,22 @@ The in-memory throttler resets on Railway instance restart. For sustained attack
 | Limitation | Risk | Fix When |
 |---|---|---|
 | Rate limit state is in-memory (per Railway instance) | On multi-instance scale-out, limits reset per instance | Before scaling beyond 1 Railway instance |
-| `SameSite=None` cookie requires HTTPS; local `http://` dev uses `Lax` | Dev-only behavior; no production impact | — |
+| `SameSite=None` cookie requires HTTPS; local `http://` dev uses `Lax` | Dev-only behavior; no production impact | - |
 | No CSRF token | Mitigated by `SameSite` cookie + exact-origin CORS; acceptable for current threat model | If state-mutating forms are ever embedded in third-party sites |
-| Swagger UI enabled in development | Developer convenience; disabled in production | — |
+| Swagger UI enabled in development | Developer convenience; disabled in production | - |
 | Admin accounts managed via DB seed only | No self-service password reset | Phase 2: add password reset via SMTP |
 | Blog content HTML stored as raw HTML in DB | Sanitized on render, but raw in DB | Phase 2: sanitize on write, not only on read |
 | DO_SPACES credentials in plaintext `.env` on disk | `.env` excluded from git; rotate keys | Immediately (see Section 7) |
 
 ### Planned Security Improvements (Phase 2)
 
-- **Email-based password reset** — token stored in DB, expires in 1 hour, single use
-- **Redis-backed rate limiting** — persistent across Railway instances and restarts
-- **Audit log** — write a log entry to the DB for every admin action (login, delete, status change)
-- **Two-factor authentication** — TOTP (Google Authenticator compatible) for admin login
-- **Sanitize blog content on write** — run DOMPurify server-side (via `isomorphic-dompurify`) before storing in DB
-- **Database row-level security** — NeonDB supports PostgreSQL RLS for defense-in-depth
-- **Automated secret rotation** — Railway + GitHub Actions workflow to rotate `JWT_SECRET` monthly
+- **Email-based password reset** - token stored in DB, expires in 1 hour, single use
+- **Redis-backed rate limiting** - persistent across Railway instances and restarts
+- **Audit log** - write a log entry to the DB for every admin action (login, delete, status change)
+- **Two-factor authentication** - TOTP (Google Authenticator compatible) for admin login
+- **Sanitize blog content on write** - run DOMPurify server-side (via `isomorphic-dompurify`) before storing in DB
+- **Database row-level security** - NeonDB supports PostgreSQL RLS for defense-in-depth
+- **Automated secret rotation** - Railway + GitHub Actions workflow to rotate `JWT_SECRET` monthly
 
 ---
 
