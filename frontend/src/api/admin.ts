@@ -4,6 +4,8 @@ import api from './axios';
 import type { LoginDto, LeadStatus } from '@/types';
 
 export const adminLogin = (data: LoginDto) => api.post('/auth/login', data);
+export const adminLogout = () => api.post('/auth/logout');
+export const authMe = () => api.get('/auth/me');
 
 export const getStats = () => api.get('/admin/stats');
 

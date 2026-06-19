@@ -16,6 +16,9 @@ frontend/.env.local
 backend/.env
 backend/.env.local
 
+# Deployment secrets — contains real credentials when filled in on server
+deploy/backend.env.production
+
 # Prisma generated migrations (keep schema, ignore local migration state)
 # backend/prisma/migrations/   # ← commented out: keep migrations in git
 

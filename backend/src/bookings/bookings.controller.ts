@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { LeadStatus } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BookingsService } from './bookings.service';
@@ -25,6 +26,8 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 export class BookingsController {
   constructor(private readonly bookingsService: BookingsService) {}
 
+  // 5 booking submissions per hour per IP — spam protection
+  @Throttle({ default: { ttl: 60 * 60 * 1000, limit: 5 } })
   @Post('bookings')
   @HttpCode(201)
   create(@Body() dto: CreateBookingDto) {

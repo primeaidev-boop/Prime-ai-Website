@@ -23,8 +23,8 @@ export default function AdminLogin() {
     setError('');
     try {
       const res = await adminLogin(data);
-      const { access_token, admin } = res.data as AuthResponse;
-      login(access_token, admin);
+      const { admin } = res.data as AuthResponse;
+      login(admin);
       navigate('/admin/dashboard');
     } catch {
       setError('Invalid email or password.');

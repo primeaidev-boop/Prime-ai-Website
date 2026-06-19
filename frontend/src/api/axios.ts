@@ -1,25 +1,10 @@
-// Axios instance - adds auth header and handles 401 redirect
+// Axios instance — cookies sent automatically via withCredentials; 401 redirects to login
 
 import axios from 'axios';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || '/api',
-});
-
-api.interceptors.request.use((config) => {
-  const raw = localStorage.getItem('primai_admin_auth');
-  if (raw) {
-    try {
-      const stored = JSON.parse(raw) as { state?: { token?: string } };
-      const token = stored?.state?.token;
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    } catch {
-      // corrupted storage - ignore
-    }
-  }
-  return config;
+  withCredentials: true, // sends httpOnly admin_token cookie on every request
 });
 
 api.interceptors.response.use(

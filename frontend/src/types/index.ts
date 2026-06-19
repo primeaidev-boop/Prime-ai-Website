@@ -83,7 +83,6 @@ export interface LoginDto {
 }
 
 export interface AuthResponse {
-  access_token: string;
   admin: Admin;
 }
 

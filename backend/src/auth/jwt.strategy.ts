@@ -1,8 +1,9 @@
-// JWT strategy - extracts and validates bearer token on protected routes
+// JWT strategy - extracts token from httpOnly cookie on protected routes
 
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
 
 interface JwtPayload {
@@ -10,13 +11,21 @@ interface JwtPayload {
   email: string;
 }
 
+function extractFromCookie(req: Request): string | null {
+  return (req.cookies as Record<string, string>)?.admin_token ?? null;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        extractFromCookie,
+        ExtractJwt.fromAuthHeaderAsBearerToken(), // fallback for Swagger/testing
+      ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'fallback-secret',
+      secretOrKey: process.env.JWT_SECRET ?? (() => { throw new Error('JWT_SECRET env var is required'); })(),
+      passReqToCallback: false,
     });
   }
 

@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { LeadStatus } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { EnquiriesService } from './enquiries.service';
@@ -25,6 +26,8 @@ import { CreateEnquiryDto } from './dto/create-enquiry.dto';
 export class EnquiriesController {
   constructor(private readonly enquiriesService: EnquiriesService) {}
 
+  // 5 enquiry submissions per hour per IP — spam protection
+  @Throttle({ default: { ttl: 60 * 60 * 1000, limit: 5 } })
   @Post('enquiries')
   @HttpCode(201)
   create(@Body() dto: CreateEnquiryDto) {

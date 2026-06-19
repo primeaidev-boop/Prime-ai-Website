@@ -2,6 +2,8 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { EnquiriesModule } from './enquiries/enquiries.module';
@@ -16,6 +18,15 @@ import { CoursesModule } from './courses/courses.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Global rate limit: 100 requests per 15 minutes per IP
+    // name 'default' is used so @Throttle({ default: {...} }) overrides work
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: 15 * 60 * 1000,
+        limit: 100,
+      },
+    ]),
     PrismaModule,
     BookingsModule,
     EnquiriesModule,
@@ -26,6 +37,12 @@ import { CoursesModule } from './courses/courses.module';
     MediaModule,
     BlogModule,
     CoursesModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
