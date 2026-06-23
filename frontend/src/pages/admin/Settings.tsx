@@ -148,6 +148,9 @@ interface FormValues {
   footer_privacy_url: string;
   footer_terms_url: string;
   footer_refund_url: string;
+  // Tutorial certificate signatory
+  cert_signatory_name: string;
+  cert_signatory_title: string;
 }
 
 type FormKey = keyof FormValues;
@@ -277,6 +280,8 @@ const DEFAULTS: FormValues = {
   footer_privacy_url: '/privacy',
   footer_terms_url: '/terms',
   footer_refund_url: '/refund-policy',
+  cert_signatory_name: '',
+  cert_signatory_title: 'Director, PRIM AI Institute',
 };
 
 // ─── Section definitions ──────────────────────────────────────────
@@ -548,6 +553,19 @@ const FOOTER_SECTIONS: SectionDef[] = [
   },
 ];
 
+const CERTIFICATE_SECTIONS: SectionDef[] = [
+  {
+    id: 'certificate_signatory',
+    icon: '🏆',
+    title: 'Certificate Settings',
+    accentColor: '#FBBF24',
+    fields: [
+      { key: 'cert_signatory_name', label: 'Signatory Name', hint: 'Printed on every tutorial completion certificate' },
+      { key: 'cert_signatory_title', label: 'Signatory Title' },
+    ],
+  },
+];
+
 // ─── Component ────────────────────────────────────────────────────
 
 export default function Settings() {
@@ -812,6 +830,18 @@ export default function Settings() {
       </div>
       <div className="flex flex-col gap-8 mb-0">
         {FOOTER_SECTIONS.map(renderSection)}
+      </div>
+
+      {/* ── Tutorial Certificate sections ───────────────────── */}
+      <div className="flex items-center gap-4 mt-12 mb-6">
+        <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+        <span className="text-xs font-bold tracking-widest uppercase px-3" style={{ color: '#FBBF24' }}>
+          Tutorial Certificates
+        </span>
+        <div className="flex-1 h-px" style={{ background: 'var(--border)' }} />
+      </div>
+      <div className="flex flex-col gap-8 mb-0">
+        {CERTIFICATE_SECTIONS.map(renderSection)}
       </div>
 
       {/* ── Contact Page sections ──────────────────────────── */}

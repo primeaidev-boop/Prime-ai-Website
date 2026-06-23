@@ -110,6 +110,9 @@ export interface SiteSettings {
   footerSettings: Record<string, string>;
   // Courses page
   coursePageData: CoursePageData;
+  // Tutorial certificate signatory (global, set once in admin)
+  signatoryName: string;
+  signatoryTitle: string;
 }
 
 const DEFAULTS: SiteSettings = {
@@ -225,6 +228,9 @@ const DEFAULTS: SiteSettings = {
   footerSettings: {},
   // Courses page
   coursePageData: DEFAULT_COURSE_DATA,
+  // Tutorial certificate signatory
+  signatoryName: '',
+  signatoryTitle: 'Director, PRIM AI Institute',
 };
 
 interface SettingsState {
@@ -358,6 +364,8 @@ export const useSettingsStore = create<SettingsState>()((set) => ({
             Object.entries(r).filter(([k]) => k.startsWith('footer_'))
           ),
           coursePageData: parseCourseData(r.course_page_data),
+          signatoryName: r.cert_signatory_name ?? DEFAULTS.signatoryName,
+          signatoryTitle: r.cert_signatory_title ?? DEFAULTS.signatoryTitle,
         },
       });
     } catch {

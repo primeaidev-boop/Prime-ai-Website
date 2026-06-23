@@ -379,7 +379,7 @@ function CompletionModal({
               Certificate Earned!
             </div>
             <button onClick={onViewCertificate} className="btn-electric text-sm px-5 py-2">
-              View Certificate →
+              Get Certificate →
             </button>
           </div>
         )}

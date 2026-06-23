@@ -1,96 +1,145 @@
-import { useState } from 'react';
-import type { Certificate } from '@/types';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import type { Certificate as CertificateRecord } from '@/types';
+import { Certificate } from './Certificate';
 import { setLearnerName } from '@/data/userProgress';
+import {
+  getStoredTutorialUser, setStoredTutorialUser,
+  getOrCreateCertificateId, formatCertDate,
+} from '@/data/certificates';
+import { useSettingsStore } from '@/store/settingsStore';
 
 interface Props {
-  certificate: Certificate;
+  certificate: CertificateRecord;
   onClose: () => void;
   onNameSaved?: (name: string) => void;
 }
 
-function fmt(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-IN', {
-    day: 'numeric', month: 'long', year: 'numeric',
-  });
-}
-
-/** Opens a print-ready window with a white-background certificate. */
-function printCertificate(cert: Certificate, name: string): void {
-  const win = window.open('', '_blank', 'width=900,height=650');
-  if (!win) return;
-  win.document.write(`<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Certificate - ${cert.tutorialName}</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #fff; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; }
-    .cert {
-      width: 820px; border: 3px solid #00D4FF; border-radius: 16px;
-      padding: 56px 64px; text-align: center; position: relative;
-      background: linear-gradient(135deg, #f0f8ff 0%, #fff 60%);
-    }
-    .cert::before {
-      content: ''; position: absolute; inset: 8px; border-radius: 10px;
-      border: 1px dashed rgba(0,212,255,0.4); pointer-events: none;
-    }
-    .logo { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 800; color: #020818; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-    .logo span { color: #00D4FF; }
-    .tagline { font-size: 11px; color: #8a9bc0; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 40px; }
-    .cert-title { font-family: 'Montserrat', sans-serif; font-size: 32px; font-weight: 700; color: #020818; margin-bottom: 32px; }
-    .certify { font-size: 15px; color: #6b7a9a; margin-bottom: 12px; }
-    .learner { font-family: 'Montserrat', sans-serif; font-size: 40px; font-weight: 800; color: #020818; border-bottom: 3px solid #00D4FF; display: inline-block; padding-bottom: 4px; margin: 4px 0 32px; }
-    .completed { font-size: 15px; color: #6b7a9a; margin-bottom: 12px; }
-    .tut-name { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 700; color: #FF6B2B; margin-bottom: 8px; }
-    .date { font-size: 13px; color: #8a9bc0; margin-top: 8px; letter-spacing: 1px; }
-    .divider { width: 80px; height: 3px; background: linear-gradient(90deg, #00D4FF, #FF6B2B); margin: 36px auto 24px; border-radius: 99px; }
-    .footer { font-size: 12px; color: #8a9bc0; letter-spacing: 2px; text-transform: uppercase; }
-    @media print { body { margin: 0; } .cert { box-shadow: none; } }
-  </style>
-</head>
-<body>
-  <div class="cert">
-    <div class="logo">PRIM <span>AI</span> Institute</div>
-    <div class="tagline">Ahmedabad · Gujarat · India</div>
-    <div class="cert-title">Certificate of Completion</div>
-    <div class="certify">This is to certify that</div>
-    <div class="learner">${name || 'Learner'}</div>
-    <div class="completed">has successfully completed the</div>
-    <div class="tut-name">${cert.tutorialName} Tutorial</div>
-    <div class="date">Completed on ${fmt(cert.earnedAt)}</div>
-    <div class="divider"></div>
-    <div class="footer">STAD Solution &nbsp;·&nbsp; stadsolution.com</div>
-  </div>
-  <script>setTimeout(() => { window.print(); }, 500);<\/script>
-</body>
-</html>`);
-  win.document.close();
-}
+const CERT_WIDTH = 1123;
+const CERT_HEIGHT = 794;
 
 export function CertificateModal({ certificate, onClose, onNameSaved }: Props) {
-  const initialName = certificate.learnerName ?? '';
+  const signatoryName = useSettingsStore((s) => s.s.signatoryName);
+  const signatoryTitle = useSettingsStore((s) => s.s.signatoryTitle);
+
+  // ── Name source fallback chain ───────────────────────────────────────────────
+  // 1) name captured by the tutorial lead-gate (primAI_tutorialUser)
+  // 2) learnerName already attached to this progress's certificate record
+  // 3) manual "Enter your full name" gate below, persisted for next time
+  const stored = getStoredTutorialUser();
+  const initialName = stored?.name || certificate.learnerName || '';
   const [nameInput, setNameInput] = useState(initialName);
   const [confirmed, setConfirmed] = useState(!!initialName);
+  const [downloading, setDownloading] = useState<'png' | 'pdf' | null>(null);
+
+  const certRef = useRef<HTMLDivElement>(null);
+  const previewWrapRef = useRef<HTMLDivElement>(null);
+  const clipRef = useRef<HTMLDivElement>(null);
+  const scalerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  // Responsive on-screen preview only - capture always happens at the fixed 1123x794 size.
+  useEffect(() => {
+    const update = () => {
+      if (!previewWrapRef.current) return;
+      const w = previewWrapRef.current.offsetWidth;
+      setScale(Math.min(1, w / CERT_WIDTH));
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   const handleConfirmName = () => {
     const trimmed = nameInput.trim();
     if (!trimmed) return;
     setLearnerName(trimmed);
+    setStoredTutorialUser(trimmed);
     onNameSaved?.(trimmed);
     setConfirmed(true);
   };
 
   const displayName = confirmed ? (nameInput.trim() || 'Learner') : '';
+  const certificateId = getOrCreateCertificateId(certificate.tutorialId, certificate.tutorialName);
+  const completionDate = formatCertDate(certificate.earnedAt);
+
+  const capture = useCallback(async () => {
+    const node = certRef.current;
+    const clip = clipRef.current;
+    const scaler = scalerRef.current;
+    if (!node || !clip || !scaler) return null;
+
+    // Capture the single visible certificate node directly - no second off-screen
+    // duplicate. A hidden node positioned at extreme negative coordinates is what
+    // produced the earlier *blank* export: foreignObjectRendering serializes the
+    // element via SVG and silently rasterizes to nothing once it sits far outside
+    // the viewport. Instead, briefly neutralize the preview's scale-down transform
+    // and its clipping wrapper so the on-screen node is captured at full size, then
+    // restore both right after.
+    const prevClip = { height: clip.style.height, overflow: clip.style.overflow };
+    const prevScaler = { transform: scaler.style.transform };
+    clip.style.height = `${CERT_HEIGHT}px`;
+    clip.style.overflow = 'visible';
+    scaler.style.transform = 'none';
+
+    try {
+      await document.fonts.ready;
+      // Two animation frames let the browser fully settle the webfont swap/reflow
+      // before html2canvas clones the DOM - avoids a transient double-paint.
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve())));
+      return await html2canvas(node, {
+        scale: 2,
+        backgroundColor: null,
+        useCORS: true,
+        // foreignObjectRendering produces a fully blank canvas for this markup
+        // (confirmed - removed). The earlier text-ghosting bug was actually caused
+        // by capturing the node while it still had its CSS scale-down transform
+        // applied (compounding with html2canvas's own `scale` option); resetting
+        // that transform above, before capture, is what fixes the ghosting - this
+        // option is unrelated to that fix and was a red herring.
+      });
+    } finally {
+      clip.style.height = prevClip.height;
+      clip.style.overflow = prevClip.overflow;
+      scaler.style.transform = prevScaler.transform;
+    }
+  }, []);
+
+  const downloadPNG = async () => {
+    setDownloading('png');
+    try {
+      const canvas = await capture();
+      if (!canvas) return;
+      const a = document.createElement('a');
+      a.download = `${certificateId}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    } finally {
+      setDownloading(null);
+    }
+  };
+
+  const downloadPDF = async () => {
+    setDownloading('pdf');
+    try {
+      const canvas = await capture();
+      if (!canvas) return;
+      const img = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [CERT_WIDTH, CERT_HEIGHT] });
+      pdf.addImage(img, 'PNG', 0, 0, CERT_WIDTH, CERT_HEIGHT);
+      pdf.save(`${certificateId}.pdf`);
+    } finally {
+      setDownloading(null);
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
 
       <div
-        className="relative z-10 w-full max-w-xl glass-card rounded-2xl overflow-hidden"
+        className="relative z-10 w-full max-w-2xl glass-card rounded-2xl overflow-hidden"
         style={{ border: '1px solid rgba(0,212,255,0.3)' }}
       >
         {/* Header */}
@@ -104,7 +153,7 @@ export function CertificateModal({ certificate, onClose, onNameSaved }: Props) {
           <button onClick={onClose} className="text-xl" style={{ color: 'var(--muted)' }}>✕</button>
         </div>
 
-        {/* Name gate - shown once if learner name is empty */}
+        {/* Name gate - shown once if no name is known yet */}
         {!confirmed ? (
           <div className="p-8 text-center">
             <div className="text-3xl mb-4">🏆</div>
@@ -133,76 +182,40 @@ export function CertificateModal({ certificate, onClose, onNameSaved }: Props) {
           </div>
         ) : (
           <>
-            {/* Certificate preview */}
-            <div
-              className="mx-6 my-6 rounded-xl p-8 text-center relative overflow-hidden"
-              style={{
-                background: 'linear-gradient(135deg, rgba(0,212,255,0.06) 0%, rgba(255,107,43,0.04) 100%)',
-                border: '2px solid rgba(0,212,255,0.25)',
-              }}
-            >
-              {/* Corner accents */}
-              <div className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2" style={{ borderColor: 'var(--electric)' }} />
-              <div className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2" style={{ borderColor: 'var(--electric)' }} />
-              <div className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2" style={{ borderColor: 'var(--electric)' }} />
-              <div className="absolute bottom-3 right-3 w-5 h-5 border-b-2 border-r-2" style={{ borderColor: 'var(--electric)' }} />
-
-              <div
-                className="text-base font-black uppercase tracking-[0.2em] mb-1"
-                style={{ color: 'var(--white)', fontFamily: 'Montserrat, sans-serif' }}
-              >
-                PRIM <span style={{ color: 'var(--electric)' }}>AI</span> Institute
-              </div>
-              <div className="text-[9px] uppercase tracking-[0.3em] mb-6" style={{ color: 'var(--muted)' }}>
-                Ahmedabad · Gujarat · India
-              </div>
-
-              <div className="text-lg font-bold mb-5" style={{ color: 'var(--white)', fontFamily: 'Montserrat, sans-serif' }}>
-                Certificate of Completion
-              </div>
-
-              <div className="text-xs mb-2" style={{ color: 'var(--muted)' }}>This is to certify that</div>
-
-              <div
-                className="text-2xl font-black mb-4 pb-1 inline-block"
-                style={{
-                  color: 'var(--white)',
-                  fontFamily: 'Montserrat, sans-serif',
-                  borderBottom: '2px solid var(--electric)',
-                }}
-              >
-                {displayName}
-              </div>
-
-              <div className="text-xs mb-2" style={{ color: 'var(--muted)' }}>has successfully completed the</div>
-
-              <div
-                className="text-base font-bold mb-3"
-                style={{ color: 'var(--orange)', fontFamily: 'Montserrat, sans-serif' }}
-              >
-                {certificate.tutorialName} Tutorial
-              </div>
-
-              <div className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--muted)' }}>
-                {fmt(certificate.earnedAt)}
-              </div>
-
-              <div
-                className="w-16 h-0.5 mx-auto my-4"
-                style={{ background: 'linear-gradient(90deg, var(--electric), var(--orange))' }}
-              />
-              <div className="text-[9px] uppercase tracking-[0.25em]" style={{ color: 'var(--muted)' }}>
-                STAD Solution · stadsolution.com
+            {/* Certificate preview - this exact node is captured for PNG/PDF export.
+                Its scale-down transform and clipping wrapper are temporarily reset to
+                full size by capture() right before html2canvas runs, then restored. */}
+            <div ref={previewWrapRef} className="px-6 pt-6">
+              <div ref={clipRef} style={{ width: '100%', height: CERT_HEIGHT * scale, overflow: 'hidden', borderRadius: 12 }}>
+                <div ref={scalerRef} style={{ width: CERT_WIDTH, height: CERT_HEIGHT, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
+                  <Certificate
+                    ref={certRef}
+                    recipientName={displayName}
+                    tutorialTitle={certificate.tutorialName}
+                    completionDate={completionDate}
+                    certificateId={certificateId}
+                    signatoryName={signatoryName}
+                    signatoryTitle={signatoryTitle}
+                  />
+                </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex gap-3 px-6 pb-6">
+            <div className="flex gap-3 px-6 py-6 flex-wrap">
               <button
-                onClick={() => printCertificate(certificate, displayName)}
-                className="btn-primary flex-1 text-sm py-2.5"
+                onClick={downloadPNG}
+                disabled={downloading !== null}
+                className="btn-primary flex-1 text-sm py-2.5 disabled:opacity-60"
               >
-                🖨 Print / Save PDF
+                {downloading === 'png' ? 'Preparing…' : '⬇ Download PNG'}
+              </button>
+              <button
+                onClick={downloadPDF}
+                disabled={downloading !== null}
+                className="btn-electric flex-1 text-sm py-2.5 disabled:opacity-60"
+              >
+                {downloading === 'pdf' ? 'Preparing…' : '⬇ Download PDF'}
               </button>
               <button onClick={onClose} className="btn-outline text-sm px-5 py-2.5">
                 Close

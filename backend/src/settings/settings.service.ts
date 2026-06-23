@@ -68,6 +68,8 @@ const PUBLIC_KEYS = new Set([
   'footer_wa_float_show', 'footer_wa_float_number',
   'footer_privacy_url', 'footer_terms_url', 'footer_refund_url',
   'footer_sitemap_url', 'footer_franchise_url',
+  // Tutorial certificate signatory (institute-wide, same on every certificate)
+  'cert_signatory_name', 'cert_signatory_title',
 ]);
 
 @Injectable()

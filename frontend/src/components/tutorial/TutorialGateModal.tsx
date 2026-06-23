@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { submitTutorialLead } from '@/api/tutorialLeads';
+import { setStoredTutorialUser } from '@/data/certificates';
 
 const USER_TYPES = [
   'School Student',
@@ -85,6 +86,8 @@ export function TutorialGateModal({ tutorialSlug, tutorialName, onClose }: Props
         'primAI_tutorialLeadCaptured',
         JSON.stringify({ mobile: form.mobile.trim() }),
       );
+      // Persist the name too so the certificate flow can auto-fill it later.
+      setStoredTutorialUser(form.fullName.trim(), form.mobile.trim());
       onClose();
       navigate(`/tutorials/${tutorialSlug}`);
     } catch {
