@@ -27,6 +27,8 @@ export function Navbar() {
   const baseLinks = [
     { to: '/', label: s.navLinkHome },
     { to: '/about', label: s.navLinkAbout },
+    { to: '/tutorials', label: 'Tutorials' },
+    { to: '/dashboard', label: 'My Progress' },
     { to: '/blog', label: 'Blog' },
     { to: '/contact', label: s.navLinkContact },
   ];
@@ -172,6 +174,16 @@ export function Navbar() {
               </div>
             )}
           </div>
+
+          <NavLink
+            to="/tutorials"
+            className={({ isActive }) =>
+              `text-sm font-medium transition-colors ${isActive ? '' : 'hover:text-white'}`
+            }
+            style={({ isActive }) => ({ color: isActive ? 'var(--electric)' : 'var(--muted)' })}
+          >
+            Tutorials
+          </NavLink>
 
           <NavLink
             to="/blog"

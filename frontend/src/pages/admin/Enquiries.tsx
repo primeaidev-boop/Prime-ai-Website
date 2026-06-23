@@ -27,7 +27,7 @@ export default function Enquiries() {
       limit: 20,
     })
       .then((res) => setData(res.data as PaginatedResponse<Enquiry>))
-      .catch(console.error)
+      .catch(() => { /* backend offline */ })
       .finally(() => setLoading(false));
   };
 

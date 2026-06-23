@@ -195,6 +195,216 @@ export interface CoursesListingPage {
   updatedAt: string;
 }
 
+// ─── Tutorial Module ───────────────────────────────────────────────────────────
+
+export type TutorialDifficulty = 'Beginner' | 'Intermediate' | 'Advanced';
+
+export interface TutorialHeroStat {
+  value: string;
+  label: string;
+}
+
+export interface TutorialHero {
+  badge: string;
+  heading1: string;
+  heading2: string;
+  stats: TutorialHeroStat[];
+  showGraphic: boolean;
+}
+
+export interface TutorialCategory {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+  order: number;
+  isVisible: boolean;
+}
+
+export interface Tutorial {
+  id: string;
+  categorySlug: string;
+  name: string;
+  slug: string;
+  thumbnailUrl?: string;
+  logoColor: string;
+  logoInitials: string;
+  description: string;
+  tags: string[];
+  difficulty: TutorialDifficulty;
+  isPremium: boolean;
+  lessonCount: number;
+  isFeatured: boolean;
+  isVisible: boolean;
+  order: number;
+  ctaEnrollLink: string;
+  ctaDownloadLink: string;
+  chapters?: Chapter[];
+  toolsAndStats?: ToolsAndStats;
+  hasCertificate?: boolean;
+}
+
+export interface TutorialNewsletter {
+  show: boolean;
+  heading: string;
+  placeholder: string;
+  btnLabel: string;
+}
+
+export interface TutorialUpsell {
+  show: boolean;
+  heading: string;
+  subtitle: string;
+  btnEnroll: string;
+  btnDownload: string;
+  btnDemo: string;
+}
+
+export interface TutorialPageData {
+  hero: TutorialHero;
+  categories: TutorialCategory[];
+  tutorials: Tutorial[];
+  newsletter: TutorialNewsletter;
+  upsell: TutorialUpsell;
+}
+
+// ─── Tutorial Content Blocks ──────────────────────────────────────────────────
+
+export interface HeadingBlock { id: string; type: 'heading'; level: 1 | 2 | 3; text: string; }
+export interface ParagraphBlock { id: string; type: 'paragraph'; html: string; }
+export interface ImageBlock { id: string; type: 'image'; src: string; alt: string; caption?: string; }
+export interface VideoBlock { id: string; type: 'video'; url: string; caption?: string; }
+export interface HighlightBoxBlock { id: string; type: 'highlightBox'; icon: string; title: string; content: string; }
+export type PromptTool = 'chatgpt' | 'gemini' | 'claude' | 'none';
+export interface PromptBlock { id: string; type: 'prompt'; label: string; promptText: string; tryInTool: PromptTool; }
+export interface TableBlock { id: string; type: 'table'; headers: string[]; rows: string[][]; }
+export interface CodeBlock { id: string; type: 'code'; language: string; code: string; caption?: string; }
+export type CalloutVariant = 'info' | 'success' | 'warning' | 'error';
+export interface CalloutBlock { id: string; type: 'callout'; variant: CalloutVariant; title?: string; content: string; }
+export interface ComparisonBlock { id: string; type: 'comparison'; leftTitle: string; rightTitle: string; leftItems: string[]; rightItems: string[]; }
+export interface ChecklistBlock { id: string; type: 'checklist'; items: { id: string; text: string; checked: boolean }[]; }
+export interface DownloadBlock { id: string; type: 'download'; label: string; href: string; fileType?: string; size?: string; }
+export interface QuizOption { id: string; text: string; }
+export type QuizBlockType = 'mcq' | 'truefalse' | 'multiselect';
+export interface QuizBlock {
+  id: string; type: 'quiz';
+  question: string;
+  options: QuizOption[];
+  correctIndex: number;          // single-answer (mcq / truefalse)
+  explanation?: string;
+  // Phase 3 additions - all optional for backward compatibility
+  quizType?: QuizBlockType;      // default 'mcq'
+  passThreshold?: number;        // 0–100 %, default 100
+  correctIndices?: number[];     // multi-select correct answers
+}
+export interface FaqItem { id: string; question: string; answer: string; }
+export interface FaqBlock { id: string; type: 'faq'; items: FaqItem[]; }
+export interface AiToolCardBlock { id: string; type: 'aiToolCard'; toolName: string; logoColor: string; logoInitials: string; description: string; tryLink?: string; }
+export interface DividerBlock { id: string; type: 'divider'; }
+
+export type ContentBlock =
+  | HeadingBlock | ParagraphBlock | ImageBlock | VideoBlock
+  | HighlightBoxBlock | PromptBlock | TableBlock | CodeBlock
+  | CalloutBlock | ComparisonBlock | ChecklistBlock | DownloadBlock
+  | QuizBlock | FaqBlock | AiToolCardBlock | DividerBlock;
+
+// ─── Lesson & Chapter ─────────────────────────────────────────────────────────
+
+export type UnlockRule =
+  | 'sequential'    // previous lesson must be marked complete
+  | 'free'          // always accessible
+  | 'quiz'          // Phase 2 alias → treated as pass-quiz
+  | 'manual'        // admin-only; locked client-side always
+  | 'pass-quiz'     // previous lesson quiz must be passed
+  | 'mark-complete' // explicit Mark Complete click on previous lesson
+  | 'read-fully'    // previous lesson article scrolled to bottom
+  | 'watch-video'   // previous lesson video watched (falls back to mark-complete)
+  | 'custom';       // custom rule, falls back to mark-complete
+
+export interface Lesson {
+  id: string;
+  title: string;
+  slug: string;
+  lessonNumber: number;
+  isFree: boolean;
+  readTime: number;
+  difficulty: TutorialDifficulty;
+  toolName: string;
+  intro: string;
+  blocks: ContentBlock[];
+  visible: boolean;
+  locked: boolean;
+  unlockRule: UnlockRule;
+}
+
+export interface Chapter {
+  id: string;
+  title: string;
+  order: number;
+  lessons: Lesson[];
+}
+
+export interface ToolsAndStatsTool { id: string; name: string; icon: string; }
+
+export interface ToolsAndStats {
+  sessionLabel: string;
+  liveTools: ToolsAndStatsTool[];
+  promptTemplatesLink: string;
+}
+
+// ─── User Progress (Phase 3) ──────────────────────────────────────────────────
+
+export type LessonStatus = 'not-started' | 'in-progress' | 'completed';
+
+export interface LessonProgress {
+  status: LessonStatus;
+  startedAt?: string;          // ISO timestamp
+  completedAt?: string;        // ISO timestamp
+  quizPassed?: boolean;        // set when any quiz block in the lesson is passed
+  scrolledToBottom?: boolean;  // set when scroll sentinel enters viewport
+  videoWatched?: boolean;      // set when video reaches watch threshold
+}
+
+export interface TutorialProgressRecord {
+  tutorialId: string;
+  lessonsProgress: Record<string, LessonProgress>;  // lessonId → progress
+  completedAt?: string;        // ISO timestamp when all visible lessons done
+  learningMinutes: number;
+  certificateEarned?: boolean;
+}
+
+export interface Certificate {
+  tutorialId: string;
+  tutorialName: string;
+  earnedAt: string;            // ISO timestamp
+  learnerName?: string;
+}
+
+export interface UserProgress {
+  learnerName: string;
+  savedTutorials: string[];    // tutorialIds
+  completedTutorials: string[];
+  totalLearningMinutes: number;
+  tutorials: Record<string, TutorialProgressRecord>;
+  certificates: Certificate[];
+  lastUpdated: string;
+}
+
+// ─── Analytics (Phase 3) ─────────────────────────────────────────────────────
+
+export interface TutorialAnalytics {
+  views: number;
+  lastViewed: string;
+}
+
+export interface AnalyticsData {
+  tutorials: Record<string, TutorialAnalytics>;
+  totalViews: number;
+  lastUpdated: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export interface AiCourse {
   id: string;
   level: CourseLevel;

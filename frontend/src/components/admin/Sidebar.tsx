@@ -8,6 +8,7 @@ const links = [
   { to: '/admin/bookings', icon: '📅', label: 'Demo Bookings' },
   { to: '/admin/enquiries', icon: '📩', label: 'Enquiries' },
   { to: '/admin/courses', icon: '📚', label: 'Courses Page' },
+  { to: '/admin/tutorials', icon: '🎓', label: 'Tutorials' },
   { to: '/admin/blog', icon: '✍️', label: 'Blog Posts' },
   { to: '/admin/settings', icon: '⚙️', label: 'Settings' },
 ];

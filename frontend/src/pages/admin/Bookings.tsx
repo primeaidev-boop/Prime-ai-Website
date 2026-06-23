@@ -27,7 +27,7 @@ export default function Bookings() {
       limit: 20,
     })
       .then((res) => setData(res.data as PaginatedResponse<DemoBooking>))
-      .catch(console.error)
+      .catch(() => { /* backend offline */ })
       .finally(() => setLoading(false));
   };
 

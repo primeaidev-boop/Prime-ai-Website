@@ -19,7 +19,7 @@ export default function Dashboard() {
         setStats(statsRes.data as DashboardStats);
         setRecentLeads(leadsRes.data as RecentLead[]);
       })
-      .catch(console.error)
+      .catch(() => { /* backend offline */ })
       .finally(() => setLoading(false));
   }, []);
 

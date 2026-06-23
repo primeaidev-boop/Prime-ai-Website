@@ -7,11 +7,11 @@ import '@/styles/globals.css';
 import App from './App';
 import { useSettingsStore } from './store/settingsStore';
 
-useSettingsStore.getState().fetch();
+void useSettingsStore.getState().fetch();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <App />
     </BrowserRouter>
   </StrictMode>,

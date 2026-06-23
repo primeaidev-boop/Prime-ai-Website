@@ -31,7 +31,7 @@ export default function Courses() {
   useEffect(() => {
     getListingPage()
       .then((res) => setPage(res.data))
-      .catch(console.error);
+      .catch(() => { /* backend offline - page uses local defaults */ });
   }, []);
 
   return (

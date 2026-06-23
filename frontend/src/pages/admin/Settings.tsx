@@ -612,7 +612,7 @@ export default function Settings() {
           try { setFaqs(JSON.parse(raw.contact_faqs) as ContactFAQ[]); } catch {}
         }
       })
-      .catch(console.error)
+      .catch(() => { /* backend offline */ })
       .finally(() => setLoading(false));
   }, []);
 

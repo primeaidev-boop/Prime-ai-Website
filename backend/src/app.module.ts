@@ -14,6 +14,7 @@ import { SettingsModule } from './settings/settings.module';
 import { MediaModule } from './media/media.module';
 import { BlogModule } from './blog/blog.module';
 import { CoursesModule } from './courses/courses.module';
+import { TutorialsModule } from './tutorials/tutorials.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CoursesModule } from './courses/courses.module';
     MediaModule,
     BlogModule,
     CoursesModule,
+    TutorialsModule,
   ],
   providers: [
     {

@@ -27,6 +27,10 @@ const TermsConditions = lazy(() => import('@/pages/TermsConditions'));
 const RefundPolicy = lazy(() => import('@/pages/RefundPolicy'));
 const BlogPosts = lazy(() => import('@/pages/admin/BlogPosts'));
 const BlogPostEditor = lazy(() => import('@/pages/admin/BlogPostEditor'));
+const TutorialListing = lazy(() => import('@/pages/TutorialListing'));
+const TutorialPage = lazy(() => import('@/pages/TutorialPage'));
+const TutorialsAdmin = lazy(() => import('@/pages/admin/TutorialsAdmin'));
+const UserDashboard = lazy(() => import('@/pages/Dashboard'));
 
 function PublicLayout() {
   return (
@@ -83,8 +87,12 @@ export default function App() {
         <Route path="/courses/l2a" element={<CoursePage />} />
         <Route path="/courses/l2b" element={<CoursePage />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/tutorials" element={<TutorialListing />} />
+        <Route path="/tutorials/:slug" element={<TutorialPage />} />
+        <Route path="/tutorials/:slug/:lesson" element={<TutorialPage />} />
         <Route path="/blog" element={<BlogListing />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/dashboard" element={<UserDashboard />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsConditions />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
@@ -107,6 +115,7 @@ export default function App() {
         <Route path="enquiries" element={<Enquiries />} />
         <Route path="settings" element={<Settings />} />
         <Route path="courses" element={<CoursesAdmin />} />
+        <Route path="tutorials" element={<TutorialsAdmin />} />
         <Route path="blog" element={<BlogPosts />} />
         <Route path="blog/new" element={<BlogPostEditor />} />
         <Route path="blog/:id/edit" element={<BlogPostEditor />} />

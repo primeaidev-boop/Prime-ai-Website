@@ -190,7 +190,7 @@ export function LearningPathway() {
   useEffect(() => {
     getAllCourses()
       .then((res) => setCourses(res.data))
-      .catch(console.error)
+      .catch(() => { /* backend offline - component stays empty */ })
       .finally(() => setLoading(false));
   }, []);
 
