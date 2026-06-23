@@ -9,16 +9,28 @@ import ElectricBorder from '@/components/effects/ElectricBorder';
 
 const GridScanEffect = lazy(() => import('@/components/effects/GridScan'));
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 // ── Electric border hover wrapper ─────────────────────────────────────────────
 
 function HoverElectricCard({
   children,
   always = false,
   borderRadius = 16,
+  color = '#22d3ee',
 }: {
   children: ReactNode;
   always?: boolean;
   borderRadius?: number;
+  color?: string;
 }) {
   const [hovered, setHovered] = useState(false);
   const reducedMotion =
@@ -39,9 +51,9 @@ function HoverElectricCard({
       onBlur={() => { if (!always) setHovered(false); }}
     >
       {children}
-      {showEffect ? (
+      {showEffect && (
         <ElectricBorder
-          color="#22d3ee"
+          color={color}
           speed={1}
           chaos={0.1}
           borderRadius={borderRadius}
@@ -49,11 +61,6 @@ function HoverElectricCard({
         >
           <div />
         </ElectricBorder>
-      ) : (
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ border: '1px solid rgba(34,211,238,0.18)', borderRadius }}
-        />
       )}
     </div>
   );
@@ -197,11 +204,27 @@ function HeroGraphic({ tutorials, reducedMotion }: { tutorials: Tutorial[]; redu
 }
 
 function FeaturedCard({ tutorial }: { tutorial: Tutorial }) {
+  const [hovered, setHovered] = useState(false);
+  const c = tutorial.logoColor;
   return (
     <Link
       to={`/tutorials/${tutorial.slug}`}
-      className="block glass-card p-6 md:p-8 tut-card-hover"
-      style={{ borderTop: '3px solid var(--electric)' }}
+      className="block p-6 md:p-8"
+      style={{
+        borderRadius: '1rem',
+        background: `linear-gradient(135deg, ${hexToRgba(c, 0.13)} 0%, rgba(2,8,24,0.92) 55%)`,
+        border: `1px solid ${hexToRgba(c, hovered ? 0.42 : 0.26)}`,
+        borderTop: `3px solid ${c}`,
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        boxShadow: hovered
+          ? `0 0 44px ${hexToRgba(c, 0.24)}, 0 16px 40px rgba(0,0,0,0.4), inset 1px 1px 0 rgba(255,255,255,0.08)`
+          : `0 0 20px ${hexToRgba(c, 0.10)}, inset 1px 1px 0 rgba(255,255,255,0.06)`,
+        transform: hovered ? 'translateY(-4px)' : 'none',
+        transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div className="flex flex-col sm:flex-row sm:items-center gap-5">
         <ToolLogo color={tutorial.logoColor} initials={tutorial.logoInitials} imgUrl={tutorial.thumbnailUrl} size="lg" />
@@ -246,10 +269,25 @@ function FeaturedCard({ tutorial }: { tutorial: Tutorial }) {
 }
 
 function TutorialCard({ tutorial }: { tutorial: Tutorial }) {
+  const [hovered, setHovered] = useState(false);
+  const c = tutorial.logoColor;
   return (
     <Link
       to={`/tutorials/${tutorial.slug}`}
-      className="glass-card tut-card-hover p-4 flex flex-col gap-3 group rounded-xl"
+      className="p-4 flex flex-col gap-3 group rounded-xl"
+      style={{
+        background: `linear-gradient(135deg, ${hexToRgba(c, 0.11)} 0%, rgba(2,8,24,0.88) 60%)`,
+        border: `1px solid ${hexToRgba(c, hovered ? 0.40 : 0.22)}`,
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        boxShadow: hovered
+          ? `0 0 28px ${hexToRgba(c, 0.24)}, 0 8px 24px rgba(0,0,0,0.38), inset 1px 1px 0 rgba(255,255,255,0.08)`
+          : `0 0 12px ${hexToRgba(c, 0.07)}, inset 1px 1px 0 rgba(255,255,255,0.05)`,
+        transform: hovered ? 'translateY(-3px)' : 'none',
+        transition: 'transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease',
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div className="flex items-start justify-between gap-2">
         <ToolLogo color={tutorial.logoColor} initials={tutorial.logoInitials} imgUrl={tutorial.thumbnailUrl} size="sm" />
@@ -288,7 +326,7 @@ function CategorySection({
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {tutorials.map((tut) => (
-          <HoverElectricCard key={tut.id}>
+          <HoverElectricCard key={tut.id} borderRadius={12} color={tut.logoColor}>
             <TutorialCard tutorial={tut} />
           </HoverElectricCard>
         ))}
@@ -481,7 +519,7 @@ export default function TutorialListing() {
       {featured && (
         <section className="pb-10 px-4 md:px-12">
           <div className="max-w-6xl mx-auto">
-            <HoverElectricCard always borderRadius={16}>
+            <HoverElectricCard always borderRadius={16} color={featured.logoColor}>
               <FeaturedCard tutorial={featured} />
             </HoverElectricCard>
           </div>

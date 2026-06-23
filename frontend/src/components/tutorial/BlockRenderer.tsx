@@ -105,8 +105,12 @@ function RVideo({ block }: { block: VideoBlock }) {
   const getEmbed = (url: string) => {
     const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/);
     if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+    const ytShorts = url.match(/youtube\.com\/shorts\/([^&?/]+)/);
+    if (ytShorts) return `https://www.youtube.com/embed/${ytShorts[1]}`;
     const vm = url.match(/vimeo\.com\/(\d+)/);
     if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+    const gd = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+    if (gd) return `https://drive.google.com/file/d/${gd[1]}/preview`;
     return url;
   };
   return (
