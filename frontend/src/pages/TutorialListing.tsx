@@ -1,8 +1,10 @@
-import { useState, useMemo, lazy, Suspense, useEffect, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useMemo, lazy, Suspense, useEffect, useCallback, type ReactNode } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { loadTutorialData, saveTutorialData } from '@/data/tutorialData';
 import { getTutorialData } from '@/api/tutorials';
+import { trackTutorialView } from '@/api/tutorialLeads';
 import { DemoModal } from '@/components/shared/DemoModal';
+import { TutorialGateModal } from '@/components/tutorial/TutorialGateModal';
 import { useModal } from '@/hooks/useModal';
 import type { Tutorial, TutorialCategory, TutorialPageData } from '@/types';
 import ElectricBorder from '@/components/effects/ElectricBorder';
@@ -203,13 +205,16 @@ function HeroGraphic({ tutorials, reducedMotion }: { tutorials: Tutorial[]; redu
   );
 }
 
-function FeaturedCard({ tutorial }: { tutorial: Tutorial }) {
+function FeaturedCard({ tutorial, onCardClick }: { tutorial: Tutorial; onCardClick: (slug: string, name: string) => void }) {
   const [hovered, setHovered] = useState(false);
   const c = tutorial.logoColor;
   return (
-    <Link
-      to={`/tutorials/${tutorial.slug}`}
-      className="block p-6 md:p-8"
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={() => onCardClick(tutorial.slug, tutorial.name)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onCardClick(tutorial.slug, tutorial.name); }}
+      className="block p-6 md:p-8 cursor-pointer"
       style={{
         borderRadius: '1rem',
         background: `linear-gradient(135deg, ${hexToRgba(c, 0.13)} 0%, rgba(2,8,24,0.92) 55%)`,
@@ -264,17 +269,20 @@ function FeaturedCard({ tutorial }: { tutorial: Tutorial }) {
           </span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
-function TutorialCard({ tutorial }: { tutorial: Tutorial }) {
+function TutorialCard({ tutorial, onCardClick }: { tutorial: Tutorial; onCardClick: (slug: string, name: string) => void }) {
   const [hovered, setHovered] = useState(false);
   const c = tutorial.logoColor;
   return (
-    <Link
-      to={`/tutorials/${tutorial.slug}`}
-      className="p-4 flex flex-col gap-3 group rounded-xl"
+    <div
+      role="link"
+      tabIndex={0}
+      onClick={() => onCardClick(tutorial.slug, tutorial.name)}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onCardClick(tutorial.slug, tutorial.name); }}
+      className="p-4 flex flex-col gap-3 group rounded-xl cursor-pointer"
       style={{
         background: `linear-gradient(135deg, ${hexToRgba(c, 0.11)} 0%, rgba(2,8,24,0.88) 60%)`,
         border: `1px solid ${hexToRgba(c, hovered ? 0.40 : 0.22)}`,
@@ -304,16 +312,18 @@ function TutorialCard({ tutorial }: { tutorial: Tutorial }) {
           Level: <span style={{ color: 'var(--white)' }}>{tutorial.difficulty}</span>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
 
 function CategorySection({
   category,
   tutorials,
+  onCardClick,
 }: {
   category: TutorialCategory;
   tutorials: Tutorial[];
+  onCardClick: (slug: string, name: string) => void;
 }) {
   if (!tutorials.length) return null;
   return (
@@ -327,7 +337,7 @@ function CategorySection({
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
         {tutorials.map((tut) => (
           <HoverElectricCard key={tut.id} borderRadius={12} color={tut.logoColor}>
-            <TutorialCard tutorial={tut} />
+            <TutorialCard tutorial={tut} onCardClick={onCardClick} />
           </HoverElectricCard>
         ))}
       </div>
@@ -338,12 +348,31 @@ function CategorySection({
 // ── Page ─────────────────────────────────────────────────────────────────────
 
 export default function TutorialListing() {
+  const navigate = useNavigate();
   const [data, setData] = useState<TutorialPageData>(loadTutorialData);
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
   const [email, setEmail] = useState('');
   const [newsletterDone, setNewsletterDone] = useState(false);
+  const [showGate, setShowGate] = useState(false);
+  const [pendingSlug, setPendingSlug] = useState('');
+  const [pendingName, setPendingName] = useState('');
   const modal = useModal();
+
+  const handleTutorialClick = useCallback((slug: string, name: string) => {
+    const stored = localStorage.getItem('primAI_tutorialLeadCaptured');
+    if (stored) {
+      try {
+        const { mobile } = JSON.parse(stored) as { mobile: string };
+        trackTutorialView({ mobile, tutorialAccessed: slug });
+      } catch { /* ignore parse errors */ }
+      navigate(`/tutorials/${slug}`);
+    } else {
+      setPendingSlug(slug);
+      setPendingName(name);
+      setShowGate(true);
+    }
+  }, [navigate]);
 
   useEffect(() => {
     getTutorialData().then((serverData) => {
@@ -520,7 +549,7 @@ export default function TutorialListing() {
         <section className="pb-10 px-4 md:px-12">
           <div className="max-w-6xl mx-auto">
             <HoverElectricCard always borderRadius={16} color={featured.logoColor}>
-              <FeaturedCard tutorial={featured} />
+              <FeaturedCard tutorial={featured} onCardClick={handleTutorialClick} />
             </HoverElectricCard>
           </div>
         </section>
@@ -531,7 +560,7 @@ export default function TutorialListing() {
         <div className="max-w-6xl mx-auto">
           {visibleCategories.map((cat) => {
             const catTuts = filteredTutorials.filter((t) => t.categorySlug === cat.slug);
-            return <CategorySection key={cat.id} category={cat} tutorials={catTuts} />;
+            return <CategorySection key={cat.id} category={cat} tutorials={catTuts} onCardClick={handleTutorialClick} />;
           })}
 
           {filteredTutorials.length === 0 && (
@@ -625,6 +654,14 @@ export default function TutorialListing() {
       )}
 
       <DemoModal isOpen={modal.isOpen} onClose={modal.close} />
+
+      {showGate && (
+        <TutorialGateModal
+          tutorialSlug={pendingSlug}
+          tutorialName={pendingName}
+          onClose={() => { setShowGate(false); setPendingSlug(''); setPendingName(''); }}
+        />
+      )}
     </div>
   );
 }

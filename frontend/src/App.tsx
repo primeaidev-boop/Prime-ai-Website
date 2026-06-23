@@ -30,6 +30,7 @@ const BlogPostEditor = lazy(() => import('@/pages/admin/BlogPostEditor'));
 const TutorialListing = lazy(() => import('@/pages/TutorialListing'));
 const TutorialPage = lazy(() => import('@/pages/TutorialPage'));
 const TutorialsAdmin = lazy(() => import('@/pages/admin/TutorialsAdmin'));
+const TutorialLeads = lazy(() => import('@/pages/admin/TutorialLeads'));
 const UserDashboard = lazy(() => import('@/pages/Dashboard'));
 
 function PublicLayout() {
@@ -116,6 +117,7 @@ export default function App() {
         <Route path="settings" element={<Settings />} />
         <Route path="courses" element={<CoursesAdmin />} />
         <Route path="tutorials" element={<TutorialsAdmin />} />
+        <Route path="tutorial-leads" element={<TutorialLeads />} />
         <Route path="blog" element={<BlogPosts />} />
         <Route path="blog/new" element={<BlogPostEditor />} />
         <Route path="blog/:id/edit" element={<BlogPostEditor />} />
