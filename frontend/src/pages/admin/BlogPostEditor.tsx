@@ -1,18 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TiptapLink from '@tiptap/extension-link';
-import Placeholder from '@tiptap/extension-placeholder';
-import CharacterCount from '@tiptap/extension-character-count';
-import TextAlign from '@tiptap/extension-text-align';
-import {
-  Bold, Italic, Underline as UnderlineIcon, Strikethrough,
-  Heading2, Heading3, List, ListOrdered, Quote, Code2,
-  Minus, Link as LinkIcon, ArrowLeft, Clock, Eye, Save,
-  AlignLeft, AlignCenter, AlignRight, AlignJustify,
-} from 'lucide-react';
+import { ArrowLeft, Clock, Eye, Save } from 'lucide-react';
+import { RichTextEditor } from '@/components/shared/RichTextEditor';
 import { ImageUploadDropzone } from '@/components/admin/ImageUploadDropzone';
 import ToggleSwitch from '@/components/admin/ToggleSwitch';
 import {
@@ -21,114 +10,6 @@ import {
   adminCreateCategory, adminCreateTag, adminCreateAuthor, adminUpdateAuthor,
   type BlogCategory, type BlogTag, type BlogAuthor,
 } from '@/api/blog';
-
-// ─── TipTap toolbar ───────────────────────────────────────────────────────
-
-function ToolbarBtn({
-  onClick,
-  active = false,
-  title,
-  children,
-}: {
-  onClick: () => void;
-  active?: boolean;
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      title={title}
-      className="p-2 rounded-lg transition-colors"
-      style={{
-        background: active ? 'rgba(0,212,255,0.15)' : 'transparent',
-        color: active ? 'var(--electric)' : 'var(--muted)',
-        minWidth: '36px',
-        minHeight: '36px',
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
-function Toolbar({ editor }: { editor: ReturnType<typeof useEditor> }) {
-  if (!editor) return null;
-
-  function setLink() {
-    const prev = editor.getAttributes('link').href as string | undefined;
-    const url = window.prompt('Enter URL:', prev ?? 'https://');
-    if (url === null) return;
-    if (!url) { editor.chain().focus().unsetLink().run(); return; }
-    editor.chain().focus().setLink({ href: url, target: '_blank' }).run();
-  }
-
-  return (
-    <div
-      className="flex flex-wrap gap-1 p-2 rounded-t-xl"
-      style={{ borderBottom: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}
-    >
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive('bold')} title="Bold">
-        <Bold size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive('italic')} title="Italic">
-        <Italic size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive('underline')} title="Underline">
-        <UnderlineIcon size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleStrike().run()} active={editor.isActive('strike')} title="Strikethrough">
-        <Strikethrough size={16} />
-      </ToolbarBtn>
-
-      <div className="w-px mx-1" style={{ background: 'var(--border)' }} />
-
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} active={editor.isActive('heading', { level: 2 })} title="Heading 2">
-        <Heading2 size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} active={editor.isActive('heading', { level: 3 })} title="Heading 3">
-        <Heading3 size={16} />
-      </ToolbarBtn>
-
-      <div className="w-px mx-1" style={{ background: 'var(--border)' }} />
-
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive('bulletList')} title="Bullet list">
-        <List size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive('orderedList')} title="Ordered list">
-        <ListOrdered size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive('blockquote')} title="Blockquote">
-        <Quote size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().toggleCodeBlock().run()} active={editor.isActive('codeBlock')} title="Code block">
-        <Code2 size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().setHorizontalRule().run()} active={false} title="Divider">
-        <Minus size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={setLink} active={editor.isActive('link')} title="Link">
-        <LinkIcon size={16} />
-      </ToolbarBtn>
-
-      <div className="w-px mx-1" style={{ background: 'var(--border)' }} />
-
-      <ToolbarBtn onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })} title="Align left">
-        <AlignLeft size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().setTextAlign('center').run()} active={editor.isActive({ textAlign: 'center' })} title="Align center">
-        <AlignCenter size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })} title="Align right">
-        <AlignRight size={16} />
-      </ToolbarBtn>
-      <ToolbarBtn onClick={() => editor.chain().focus().setTextAlign('justify').run()} active={editor.isActive({ textAlign: 'justify' })} title="Justify">
-        <AlignJustify size={16} />
-      </ToolbarBtn>
-    </div>
-  );
-}
 
 // ─── Slug generator ────────────────────────────────────────────────────────
 
@@ -214,25 +95,11 @@ export default function BlogPostEditor() {
   const [addingTag, setAddingTag] = useState(false);
   const [addingAuthor, setAddingAuthor] = useState(false);
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      TiptapLink.configure({ openOnClick: false }),
-      Placeholder.configure({ placeholder: 'Write your article here…' }),
-      CharacterCount,
-      TextAlign.configure({
-        types: ['paragraph'],
-        alignments: ['left', 'center', 'right', 'justify'],
-        defaultAlignment: 'justify',
-      }),
-    ],
-    editorProps: {
-      attributes: {
-        class: 'tiptap-editor',
-      },
-    },
-  });
+  // Controlled body state — bodyContent feeds into RichTextEditor as initial/async
+  // loaded value; bodyHtml is what onChange keeps current for saving.
+  const [bodyContent, setBodyContent] = useState<string | undefined>(undefined);
+  const [bodyHtml, setBodyHtml] = useState('');
+  const [wordCount, setWordCount] = useState(0);
 
   const loadRefs = useCallback(async () => {
     setLoadingRef(true);
@@ -265,10 +132,10 @@ export default function BlogPostEditor() {
         setAuthorId(post.author.id);
         setSelectedTagIds(post.tags.map((t) => t.id));
         setShowAuthor(post.showAuthor);
-        editor?.commands.setContent(post.content ?? '');
+        setBodyContent(post.content ?? '');
       }).catch(() => navigate('/admin/blog'));
     });
-  }, [id, isNew, navigate, loadRefs, editor]);
+  }, [id, isNew, navigate, loadRefs]);
 
   function onTitleChange(val: string) {
     setTitle(val);
@@ -316,7 +183,7 @@ export default function BlogPostEditor() {
 
   async function handleSave(publishNow = false) {
     if (!title.trim() || !slug.trim() || !categoryId || !authorId) return;
-    const content = editor?.getHTML() ?? '';
+    const content = bodyHtml;
     const effectiveStatus = publishNow ? 'PUBLISHED' : status;
 
     setSaving(true);
@@ -347,7 +214,6 @@ export default function BlogPostEditor() {
     }
   }
 
-  const wordCount = editor?.storage.characterCount?.words() ?? 0;
   const readTimeEst = Math.max(1, Math.ceil(wordCount / 200));
   const isValid = title.trim().length >= 5 && slug.trim().length >= 3 && categoryId && authorId;
 
@@ -419,24 +285,19 @@ export default function BlogPostEditor() {
             />
           </div>
 
-          {/* TipTap editor */}
+          {/* TipTap editor — shared RichTextEditor component */}
           <div className="mb-6">
             <label className="text-xs font-semibold uppercase tracking-wider mb-2 block" style={{ color: 'var(--muted)' }}>
               Content
             </label>
-            <div
-              className="glass-card overflow-hidden"
-              style={{ borderRadius: '0.75rem' }}
-            >
-              <Toolbar editor={editor} />
-              <EditorContent
-                editor={editor}
-                className="min-h-[400px]"
-              />
-            </div>
-            <p className="text-xs mt-2" style={{ color: 'var(--muted)' }}>
-              ~{wordCount} words · {readTimeEst} min read
-            </p>
+            <RichTextEditor
+              content={bodyContent}
+              onChange={setBodyHtml}
+              onWordCountChange={setWordCount}
+              placeholder="Write your article here…"
+              minHeight={400}
+              showWordCount
+            />
           </div>
 
           {/* Cover image */}
@@ -642,30 +503,6 @@ export default function BlogPostEditor() {
         </div>
       </aside>
 
-      <style>{`
-        .tiptap-editor {
-          padding: 1.25rem 1.5rem;
-          min-height: 400px;
-          color: var(--white);
-          font-family: var(--font-body);
-          font-size: 1rem;
-          line-height: 1.75;
-          outline: none;
-        }
-        .tiptap-editor h2 { font-family: var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--white); margin: 1.5rem 0 0.75rem; }
-        .tiptap-editor h3 { font-family: var(--font-head); font-size: 1.15rem; font-weight: 600; color: var(--white); margin: 1.25rem 0 0.5rem; }
-        .tiptap-editor p { color: var(--muted); margin: 0.75rem 0; }
-        .tiptap-editor a { color: var(--electric); text-decoration: underline; }
-        .tiptap-editor strong { color: var(--white); }
-        .tiptap-editor ul, .tiptap-editor ol { padding-left: 1.25rem; color: var(--muted); margin: 0.75rem 0; }
-        .tiptap-editor li { margin: 0.3rem 0; }
-        .tiptap-editor blockquote { border-left: 3px solid var(--electric); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(0,212,255,0.05); border-radius: 0 0.5rem 0.5rem 0; color: var(--white); font-style: italic; }
-        .tiptap-editor pre { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; margin: 1rem 0; overflow-x: auto; }
-        .tiptap-editor code { color: var(--electric); font-family: 'Fira Code', monospace; font-size: 0.875rem; }
-        .tiptap-editor pre code { color: var(--white); }
-        .tiptap-editor hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
-        .tiptap-editor p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--muted); opacity: 0.5; pointer-events: none; float: left; height: 0; }
-      `}</style>
     </div>
   );
 }

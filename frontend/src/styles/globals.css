@@ -314,3 +314,45 @@ select option {
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.18), 0 8px 24px rgba(0, 0, 0, 0.35);
   border-color: rgba(0, 212, 255, 0.22) !important;
 }
+
+/* ─── TipTap admin editor (shared: blog + tutorial lesson builder) ───────── */
+.tiptap-editor {
+  padding: 1.25rem 1.5rem;
+  color: var(--white);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.75;
+  outline: none;
+}
+.tiptap-editor h2 { font-family: Montserrat, var(--font-head); font-size: 1.4rem; font-weight: 700; color: var(--white); margin: 1.5rem 0 0.75rem; }
+.tiptap-editor h3 { font-family: Montserrat, var(--font-head); font-size: 1.15rem; font-weight: 600; color: var(--white); margin: 1.25rem 0 0.5rem; }
+.tiptap-editor p { color: var(--muted); margin: 0.75rem 0; }
+.tiptap-editor a { color: var(--electric); text-decoration: underline; }
+.tiptap-editor strong { color: var(--white); }
+.tiptap-editor ul, .tiptap-editor ol { padding-left: 1.25rem; color: var(--muted); margin: 0.75rem 0; }
+.tiptap-editor li { margin: 0.3rem 0; }
+.tiptap-editor blockquote { border-left: 3px solid var(--electric); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(0,212,255,0.05); border-radius: 0 0.5rem 0.5rem 0; color: var(--white); font-style: italic; }
+.tiptap-editor pre { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; margin: 1rem 0; overflow-x: auto; }
+.tiptap-editor code { color: var(--electric); font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+.tiptap-editor pre code { color: var(--white); }
+.tiptap-editor hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+.tiptap-editor p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--muted); opacity: 0.5; pointer-events: none; float: left; height: 0; }
+
+/* ─── Rich-text block rendered view (TutorialPage lesson reader) ─────────── */
+/* Mirrors blog-post typography using the tutorial design token palette.      */
+.rt-block { color: var(--muted); line-height: 1.75; font-family: var(--font-body); font-size: 1rem; }
+.rt-block p { margin: 0.75rem 0; }
+.rt-block h2 { font-family: Montserrat, var(--font-head); font-size: 1.25rem; font-weight: 700; color: var(--white); margin: 1.75rem 0 0.75rem; scroll-margin-top: 80px; }
+.rt-block h3 { font-family: Montserrat, var(--font-head); font-size: 1.05rem; font-weight: 600; color: var(--white); margin: 1.25rem 0 0.5rem; scroll-margin-top: 80px; }
+.rt-block a { color: var(--electric); text-decoration: underline; }
+.rt-block strong { color: var(--white); }
+.rt-block em { font-style: italic; }
+.rt-block u { text-decoration: underline; }
+.rt-block s { text-decoration: line-through; }
+.rt-block ul, .rt-block ol { padding-left: 1.25rem; margin: 0.75rem 0; }
+.rt-block li { margin: 0.3rem 0; }
+.rt-block blockquote { border-left: 3px solid var(--electric); padding: 0.5rem 1rem; margin: 1rem 0; background: rgba(0,212,255,0.05); border-radius: 0 0.5rem 0.5rem 0; color: var(--white); font-style: italic; }
+.rt-block pre { background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 0.5rem; padding: 1rem; margin: 1rem 0; overflow-x: auto; }
+.rt-block code { color: var(--electric); font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+.rt-block pre code { color: var(--white); }
+.rt-block hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import DOMPurify from 'dompurify';
 import type {
   ContentBlock,
   HeadingBlock,
   ParagraphBlock,
+  RichTextBlock,
   ImageBlock,
   VideoBlock,
   HighlightBoxBlock,
@@ -19,6 +21,46 @@ import type {
   AiToolCardBlock,
 } from '@/types';
 
+// ── Rich-text heading helpers ─────────────────────────────────────────────────
+// Both functions use the same traversal order so injected IDs always match the
+// IDs the TOC reads. Format: rt-<blockId>-<0-based-index>.
+
+/** Returns every h2/h3 heading found inside a richText block's HTML. */
+export function extractRichTextHeadings(
+  blockId: string,
+  html: string,
+): { id: string; level: 2 | 3; text: string }[] {
+  if (!html) return [];
+  const doc = new DOMParser().parseFromString(`<div>${html}</div>`, 'text/html');
+  const result: { id: string; level: 2 | 3; text: string }[] = [];
+  let idx = 0;
+  doc.querySelectorAll('h2, h3').forEach((el) => {
+    result.push({
+      id: `rt-${blockId}-${idx++}`,
+      level: el.tagName === 'H2' ? 2 : 3,
+      text: el.textContent?.trim() ?? '',
+    });
+  });
+  return result;
+}
+
+/** Sanitizes and injects scroll-anchor ids into h2/h3 elements so scroll-spy works. */
+function processRichTextHtml(blockId: string, raw: string): string {
+  const clean = DOMPurify.sanitize(raw, {
+    ALLOWED_TAGS: [
+      'p', 'h2', 'h3', 'strong', 'em', 'u', 's', 'a',
+      'ul', 'ol', 'li', 'blockquote', 'pre', 'code', 'hr', 'br', 'span',
+    ],
+    ALLOWED_ATTR: ['href', 'target', 'rel', 'id', 'class', 'style'],
+  });
+  const doc = new DOMParser().parseFromString(`<div>${clean}</div>`, 'text/html');
+  let idx = 0;
+  doc.querySelectorAll('h2, h3').forEach((el) => {
+    el.id = `rt-${blockId}-${idx++}`;
+  });
+  return doc.querySelector('div')!.innerHTML;
+}
+
 export function BlockRenderer({
   block,
   onQuizPass,
@@ -29,6 +71,7 @@ export function BlockRenderer({
   switch (block.type) {
     case 'heading':     return <RHeading block={block} />;
     case 'paragraph':   return <RParagraph block={block} />;
+    case 'richText':    return <RRichText block={block} />;
     case 'image':       return <RImage block={block} />;
     case 'video':       return <RVideo block={block} />;
     case 'highlightBox': return <RHighlightBox block={block} />;
@@ -75,6 +118,23 @@ function RParagraph({ block }: { block: ParagraphBlock }) {
       style={{ color: 'var(--muted)', lineHeight: 1.75 }}
       // Content authored in admin (not from public user input)
       dangerouslySetInnerHTML={{ __html: block.html }}
+    />
+  );
+}
+
+// ── Rich Text ─────────────────────────────────────────────────────────────────
+
+function RRichText({ block }: { block: RichTextBlock }) {
+  const processed = useMemo(
+    () => processRichTextHtml(block.id, block.html),
+    [block.id, block.html],
+  );
+  return (
+    <div
+      className="rt-block"
+      // Sanitized by DOMPurify inside processRichTextHtml; headings have stable
+      // scroll-anchor ids injected for TOC scroll-spy.
+      dangerouslySetInnerHTML={{ __html: processed }}
     />
   );
 }

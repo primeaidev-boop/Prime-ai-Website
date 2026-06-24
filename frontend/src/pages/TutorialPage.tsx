@@ -9,10 +9,10 @@ import {
   markTutorialComplete, findFirstIncomplete,
 } from '@/data/userProgress';
 import { recordTutorialView } from '@/data/analyticsData';
-import { BlockRenderer } from '@/components/tutorial/BlockRenderer';
+import { BlockRenderer, extractRichTextHeadings } from '@/components/tutorial/BlockRenderer';
 import { CertificateModal } from '@/components/tutorial/CertificateModal';
 import type {
-  Tutorial, Chapter, Lesson, ContentBlock, UserProgress,
+  Tutorial, Chapter, Lesson, UserProgress,
   TutorialUpsell, Certificate,
 } from '@/types';
 
@@ -236,10 +236,21 @@ function RightSidebar({
   lesson: Lesson; tutorial: Tutorial; sessionTime: string;
   isSaved: boolean; onToggleSave: () => void;
 }) {
-  const headingBlocks = lesson.blocks.filter(
-    (b): b is Extract<ContentBlock, { type: 'heading' }> => b.type === 'heading',
-  );
-  const tocIds = headingBlocks.map((b) => `heading-${b.id}`);
+  // Build unified TOC from `heading` blocks AND h2/h3 headings inside richText blocks.
+  const tocItems = useMemo(() => {
+    const items: { id: string; level: 1 | 2 | 3; text: string }[] = [];
+    for (const b of lesson.blocks) {
+      if (b.type === 'heading') {
+        items.push({ id: `heading-${b.id}`, level: b.level, text: b.text });
+      } else if (b.type === 'richText') {
+        for (const h of extractRichTextHeadings(b.id, b.html)) {
+          items.push(h);
+        }
+      }
+    }
+    return items;
+  }, [lesson.blocks]);
+  const tocIds = tocItems.map((item) => item.id);
   const activeId = useScrollSpy(tocIds);
 
   const scrollTo = (id: string) => {
@@ -303,30 +314,29 @@ function RightSidebar({
         </div>
       </div>
 
-      {/* Auto-generated TOC */}
-      {headingBlocks.length > 0 && (
+      {/* Auto-generated TOC — heading blocks + h2/h3 inside richText blocks */}
+      {tocItems.length > 0 && (
         <div>
           <div className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--muted)' }}>
             On This Page
           </div>
           <nav className="flex flex-col gap-0.5">
-            {headingBlocks.map((b) => {
-              const id = `heading-${b.id}`;
-              const isActive = activeId === id;
+            {tocItems.map((item) => {
+              const isActive = activeId === item.id;
               return (
                 <button
-                  key={b.id}
-                  onClick={() => scrollTo(id)}
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
                   className="text-left text-xs py-1.5 rounded transition-all hover:text-white"
                   style={{
-                    paddingLeft: b.level === 3 ? 20 : 8,
+                    paddingLeft: item.level === 3 ? 20 : 8,
                     color: isActive ? 'var(--electric)' : 'var(--muted)',
                     fontWeight: isActive ? 600 : 400,
                     borderLeft: isActive ? '2px solid var(--electric)' : '2px solid transparent',
                     transition: 'color 0.2s, border-color 0.2s',
                   }}
                 >
-                  {b.text}
+                  {item.text}
                 </button>
               );
             })}

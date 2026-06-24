@@ -9,6 +9,7 @@ import {
 } from '@/data/tutorialData';
 import { loadAnalytics } from '@/data/analyticsData';
 import { loadUserProgress } from '@/data/userProgress';
+import { RichTextEditor } from '@/components/shared/RichTextEditor';
 import type {
   TutorialPageData,
   TutorialCategory,
@@ -47,6 +48,7 @@ const EMPTY_LESSON: Lesson = {
 };
 
 const BLOCK_TYPES: { value: ContentBlock['type']; label: string }[] = [
+  { value: 'richText',   label: '✍️ Rich Text' },   // first = default; inline TipTap editing
   { value: 'heading',     label: '📝 Heading' },
   { value: 'paragraph',  label: '📄 Paragraph' },
   { value: 'image',      label: '🖼 Image' },
@@ -68,6 +70,7 @@ const BLOCK_TYPES: { value: ContentBlock['type']; label: string }[] = [
 function createDefaultBlock(type: ContentBlock['type']): ContentBlock {
   const id = generateId();
   switch (type) {
+    case 'richText':    return { id, type, html: '' };
     case 'heading':     return { id, type, level: 2, text: '' };
     case 'paragraph':   return { id, type, html: '' };
     case 'image':       return { id, type, src: '', alt: '' };
@@ -543,6 +546,7 @@ function ContentTab({ data, onUpdate }: { data: TutorialPageData; onUpdate: (d: 
 
 function BlockPreview(block: ContentBlock): string {
   switch (block.type) {
+    case 'richText':    return block.html.replace(/<[^>]+>/g, '').slice(0, 80) || '(empty — click to write)';
     case 'heading':     return `H${block.level}: ${block.text}`;
     case 'paragraph':   return block.html.replace(/<[^>]+>/g, '').slice(0, 60) || '(empty)';
     case 'highlightBox': return block.title;
@@ -564,6 +568,17 @@ function BlockPreview(block: ContentBlock): string {
 
 function BlockFieldEditor({ block, onChange }: { block: ContentBlock; onChange: (b: ContentBlock) => void }) {
   switch (block.type) {
+    case 'richText':
+      return (
+        <RichTextEditor
+          content={block.html}
+          onChange={(html) => onChange({ ...block, html })}
+          placeholder="Write lesson content here…"
+          minHeight={240}
+          showWordCount
+        />
+      );
+
     case 'heading':
       return (
         <div className="flex flex-col gap-3">
@@ -908,8 +923,15 @@ function BlockEditorModal({ block, onChange, onSave, onClose }: {
 }) {
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto glass-card rounded-2xl p-6" style={{ border: '1px solid var(--border)' }}>
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="relative z-10 w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl p-6"
+        style={{
+          background: 'rgba(4, 11, 28, 0.97)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset',
+        }}
+      >
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-base font-bold" style={{ color: 'var(--white)' }}>
             Edit Block - {BLOCK_TYPES.find((bt) => bt.value === block.type)?.label}
@@ -951,8 +973,11 @@ function LessonEditorModal({ form, onChange, onSave, onClose }: {
   const addBlock = (type: ContentBlock['type']) => {
     const b = createDefaultBlock(type);
     onChange({ ...form, blocks: [...form.blocks, b] });
-    setBlockForm(b);
-    setShowBlockModal(true);
+    // richText blocks edit inline — no separate modal needed.
+    if (type !== 'richText') {
+      setBlockForm(b);
+      setShowBlockModal(true);
+    }
   };
 
   const openEditBlock = (block: ContentBlock) => { setBlockForm({ ...block }); setShowBlockModal(true); };
@@ -975,11 +1000,37 @@ function LessonEditorModal({ form, onChange, onSave, onClose }: {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-3xl max-h-[92vh] overflow-y-auto glass-card rounded-2xl p-6" style={{ border: '1px solid var(--border)' }}>
-        <h3 className="text-lg font-bold mb-5" style={{ color: 'var(--white)', fontFamily: 'var(--font-head)' }}>
-          {form.id ? 'Edit Lesson' : 'New Lesson'}
-        </h3>
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+      {/* Modal card: flex-col so header/footer stay sticky while body scrolls */}
+      <div
+        className="relative z-10 w-full max-w-3xl max-h-[92vh] flex flex-col rounded-2xl"
+        style={{
+          background: 'rgba(4, 11, 28, 0.97)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04) inset',
+        }}
+      >
+
+        {/* ── Sticky header ── */}
+        <div
+          className="flex items-center justify-between px-6 py-4 shrink-0 rounded-t-2xl"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.025)' }}
+        >
+          <h3 className="text-lg font-bold" style={{ color: 'var(--white)', fontFamily: 'var(--font-head)' }}>
+            {form.id ? 'Edit Lesson' : 'New Lesson'}
+          </h3>
+          <button
+            onClick={onClose}
+            className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors text-sm"
+            style={{ color: 'var(--muted)' }}
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* ── Scrollable body ── */}
+        <div className="flex-1 overflow-y-auto px-6 py-5 min-h-0">
 
         {/* Basic fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
@@ -1037,40 +1088,97 @@ function LessonEditorModal({ form, onChange, onSave, onClose }: {
           ))}
         </div>
 
-        {/* Block builder */}
+        {/* Block builder ── richText blocks show inline TipTap; others show compact rows */}
         <div className="pt-4" style={{ borderTop: '1px solid var(--border)' }}>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-semibold" style={{ color: 'var(--electric)' }}>
               Content Blocks ({form.blocks.length})
             </span>
-            <AddBlockSelect onAdd={addBlock} />
+            <div className="flex gap-2">
+              {/* One-click Rich Text button — most common block, no modal needed */}
+              <button
+                type="button"
+                onClick={() => addBlock('richText')}
+                className="text-xs px-3 py-1.5 rounded-lg font-medium"
+                style={{ background: 'rgba(0,212,255,0.1)', color: 'var(--electric)', border: '1px solid rgba(0,212,255,0.2)' }}
+              >
+                ✍️ Rich Text
+              </button>
+              <AddBlockSelect onAdd={addBlock} />
+            </div>
           </div>
-          <div className="flex flex-col gap-2 mb-2">
-            {form.blocks.map((block, i) => (
-              <div key={block.id} className="flex items-center gap-2 px-3 py-2.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
-                <span className="text-xs shrink-0 w-28 truncate" style={{ color: 'var(--electric)' }}>
-                  {BLOCK_TYPES.find((bt) => bt.value === block.type)?.label ?? block.type}
-                </span>
-                <span className="flex-1 text-xs truncate" style={{ color: 'var(--muted)' }}>{BlockPreview(block)}</span>
-                <button onClick={() => moveBlock(i, -1)} disabled={i === 0} className="text-xs px-1.5 py-1 disabled:opacity-30" style={{ color: 'var(--muted)' }}>↑</button>
-                <button onClick={() => moveBlock(i, 1)} disabled={i === form.blocks.length - 1} className="text-xs px-1.5 py-1 disabled:opacity-30" style={{ color: 'var(--muted)' }}>↓</button>
-                <button onClick={() => openEditBlock(block)} className="text-xs px-2 py-1" style={{ color: 'var(--electric)' }}>Edit</button>
-                <button onClick={() => deleteBlock(block.id)} className="text-xs px-2 py-1" style={{ color: '#ef4444' }}>✕</button>
-              </div>
-            ))}
+
+          <div className="flex flex-col gap-3 mb-2">
+            {form.blocks.map((block, i) => {
+              const isFirst = i === 0;
+              const isLast = i === form.blocks.length - 1;
+
+              if (block.type === 'richText') {
+                return (
+                  <div key={block.id} className="rounded-xl overflow-hidden" style={{ border: '1px solid var(--border)' }}>
+                    <div
+                      className="flex items-center justify-between px-3 py-1.5"
+                      style={{ background: 'rgba(255,255,255,0.025)', borderBottom: '1px solid var(--border)' }}
+                    >
+                      <span className="text-xs font-medium" style={{ color: 'var(--electric)' }}>✍️ Rich Text</span>
+                      <div className="flex gap-1">
+                        <button onClick={() => moveBlock(i, -1)} disabled={isFirst} className="text-xs px-1.5 py-1 disabled:opacity-30" style={{ color: 'var(--muted)' }}>↑</button>
+                        <button onClick={() => moveBlock(i, 1)} disabled={isLast} className="text-xs px-1.5 py-1 disabled:opacity-30" style={{ color: 'var(--muted)' }}>↓</button>
+                        <button onClick={() => deleteBlock(block.id)} className="text-xs px-1.5 py-1" style={{ color: '#ef4444' }}>✕</button>
+                      </div>
+                    </div>
+                    <RichTextEditor
+                      content={block.html}
+                      onChange={(html) => {
+                        onChange({
+                          ...form,
+                          blocks: form.blocks.map((b) => {
+                            if (b.id === block.id && b.type === 'richText') return { ...b, html };
+                            return b;
+                          }),
+                        });
+                      }}
+                      placeholder="Write lesson content here…"
+                      minHeight={120}
+                    />
+                  </div>
+                );
+              }
+
+              return (
+                <div key={block.id} className="flex items-center gap-2 px-3 py-2.5 rounded-lg" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
+                  <span className="text-xs shrink-0 w-28 truncate" style={{ color: 'var(--electric)' }}>
+                    {BLOCK_TYPES.find((bt) => bt.value === block.type)?.label ?? block.type}
+                  </span>
+                  <span className="flex-1 text-xs truncate" style={{ color: 'var(--muted)' }}>{BlockPreview(block)}</span>
+                  <button onClick={() => moveBlock(i, -1)} disabled={isFirst} className="text-xs px-1.5 py-1 disabled:opacity-30" style={{ color: 'var(--muted)' }}>↑</button>
+                  <button onClick={() => moveBlock(i, 1)} disabled={isLast} className="text-xs px-1.5 py-1 disabled:opacity-30" style={{ color: 'var(--muted)' }}>↓</button>
+                  <button onClick={() => openEditBlock(block)} className="text-xs px-2 py-1" style={{ color: 'var(--electric)' }}>Edit</button>
+                  <button onClick={() => deleteBlock(block.id)} className="text-xs px-2 py-1" style={{ color: '#ef4444' }}>✕</button>
+                </div>
+              );
+            })}
+
             {form.blocks.length === 0 && (
-              <div className="text-center py-5 text-xs" style={{ color: 'var(--muted)' }}>
-                No blocks yet. Use "Add Block" above to add content.
+              <div className="text-center py-6 text-xs rounded-xl" style={{ color: 'var(--muted)', border: '1px dashed var(--border)' }}>
+                No blocks yet. Click <strong>✍️ Rich Text</strong> to start writing, or choose a block type from the dropdown.
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end mt-5">
+        </div>{/* end scrollable body */}
+
+        {/* ── Sticky footer ── */}
+        <div
+          className="flex gap-3 justify-end px-6 py-4 shrink-0 rounded-b-2xl"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.025)' }}
+        >
           <button onClick={onClose} className="btn-outline px-5 py-2 text-sm">Cancel</button>
           <button onClick={onSave} disabled={!form.title} className="btn-primary px-5 py-2 text-sm">Save Lesson</button>
         </div>
-      </div>
+
+      </div>{/* end modal card */}
 
       {showBlockModal && blockForm && (
         <BlockEditorModal block={blockForm} onChange={setBlockForm} onSave={saveBlock} onClose={() => setShowBlockModal(false)} />

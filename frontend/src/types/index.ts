@@ -301,12 +301,14 @@ export interface FaqItem { id: string; question: string; answer: string; }
 export interface FaqBlock { id: string; type: 'faq'; items: FaqItem[]; }
 export interface AiToolCardBlock { id: string; type: 'aiToolCard'; toolName: string; logoColor: string; logoInitials: string; description: string; tryLink?: string; }
 export interface DividerBlock { id: string; type: 'divider'; }
+/** Rich prose authored in the TipTap WYSIWYG editor; stored as an HTML string. */
+export interface RichTextBlock { id: string; type: 'richText'; html: string; }
 
 export type ContentBlock =
   | HeadingBlock | ParagraphBlock | ImageBlock | VideoBlock
   | HighlightBoxBlock | PromptBlock | TableBlock | CodeBlock
   | CalloutBlock | ComparisonBlock | ChecklistBlock | DownloadBlock
-  | QuizBlock | FaqBlock | AiToolCardBlock | DividerBlock;
+  | QuizBlock | FaqBlock | AiToolCardBlock | DividerBlock | RichTextBlock;
 
 // ─── Lesson & Chapter ─────────────────────────────────────────────────────────
 
