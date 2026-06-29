@@ -95,7 +95,7 @@ export default function BlogPostEditor() {
   const [addingTag, setAddingTag] = useState(false);
   const [addingAuthor, setAddingAuthor] = useState(false);
 
-  // Controlled body state — bodyContent feeds into RichTextEditor as initial/async
+  // Controlled body state - bodyContent feeds into RichTextEditor as initial/async
   // loaded value; bodyHtml is what onChange keeps current for saving.
   const [bodyContent, setBodyContent] = useState<string | undefined>(undefined);
   const [bodyHtml, setBodyHtml] = useState('');
@@ -285,7 +285,7 @@ export default function BlogPostEditor() {
             />
           </div>
 
-          {/* TipTap editor — shared RichTextEditor component */}
+          {/* TipTap editor - shared RichTextEditor component */}
           <div className="mb-6">
             <label className="text-xs font-semibold uppercase tracking-wider mb-2 block" style={{ color: 'var(--muted)' }}>
               Content

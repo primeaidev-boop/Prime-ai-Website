@@ -88,7 +88,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(function
         <div className={styles.forLine}>for successfully completing the guided tutorial</div>
         <div className={styles.tutorialTitle}>{tutorialTitle}</div>
         <div className={styles.blurb}>
-          A self-paced AI tool tutorial from the PRIM AI Institute Free Tutorials library —
+          A self-paced AI tool tutorial from the PRIM AI Institute Free Tutorials library -
           demonstrating hands-on familiarity with the tool and its core workflows.
         </div>
 
@@ -120,7 +120,7 @@ export const Certificate = forwardRef<HTMLDivElement, CertificateProps>(function
 
           <div className={`${styles.footCol} ${styles.right}`}>
             <div className={styles.sigLine} />
-            <span className={styles.footValue}>{signatoryName || '—'}</span>
+            <span className={styles.footValue}>{signatoryName || '-'}</span>
             <span className={styles.footLabel}>{signatoryTitle}</span>
           </div>
         </div>

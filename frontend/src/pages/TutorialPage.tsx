@@ -314,7 +314,7 @@ function RightSidebar({
         </div>
       </div>
 
-      {/* Auto-generated TOC — heading blocks + h2/h3 inside richText blocks */}
+      {/* Auto-generated TOC - heading blocks + h2/h3 inside richText blocks */}
       {tocItems.length > 0 && (
         <div>
           <div className="text-[10px] font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--muted)' }}>

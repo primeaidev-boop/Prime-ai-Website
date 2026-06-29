@@ -8,7 +8,7 @@
   --orange2:  #FF9500;
   --gold:     #FBBF24;
   --white:    #F0F4FF;
-  --muted:    #8A9BC0;
+  --muted:    #A8B8D0;
   --card:     rgba(255, 255, 255, 0.045);
   --border:   rgba(255, 255, 255, 0.09);
   --font-head: 'Space Grotesk', sans-serif;
@@ -24,6 +24,7 @@ body {
   background: var(--navy);
   color: var(--white);
   font-family: var(--font-body);
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   position: relative;
 }

@@ -546,7 +546,7 @@ function ContentTab({ data, onUpdate }: { data: TutorialPageData; onUpdate: (d: 
 
 function BlockPreview(block: ContentBlock): string {
   switch (block.type) {
-    case 'richText':    return block.html.replace(/<[^>]+>/g, '').slice(0, 80) || '(empty — click to write)';
+    case 'richText':    return block.html.replace(/<[^>]+>/g, '').slice(0, 80) || '(empty - click to write)';
     case 'heading':     return `H${block.level}: ${block.text}`;
     case 'paragraph':   return block.html.replace(/<[^>]+>/g, '').slice(0, 60) || '(empty)';
     case 'highlightBox': return block.title;
@@ -973,7 +973,7 @@ function LessonEditorModal({ form, onChange, onSave, onClose }: {
   const addBlock = (type: ContentBlock['type']) => {
     const b = createDefaultBlock(type);
     onChange({ ...form, blocks: [...form.blocks, b] });
-    // richText blocks edit inline — no separate modal needed.
+    // richText blocks edit inline - no separate modal needed.
     if (type !== 'richText') {
       setBlockForm(b);
       setShowBlockModal(true);
@@ -1095,7 +1095,7 @@ function LessonEditorModal({ form, onChange, onSave, onClose }: {
               Content Blocks ({form.blocks.length})
             </span>
             <div className="flex gap-2">
-              {/* One-click Rich Text button — most common block, no modal needed */}
+              {/* One-click Rich Text button - most common block, no modal needed */}
               <button
                 type="button"
                 onClick={() => addBlock('richText')}

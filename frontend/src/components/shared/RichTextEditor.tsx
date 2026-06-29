@@ -139,7 +139,7 @@ export function RichTextEditor({
     },
   });
 
-  // Sync external content prop into editor (handles async loads — e.g. fetching
+  // Sync external content prop into editor (handles async loads - e.g. fetching
   // an existing post/lesson from the API after the editor already mounted).
   useEffect(() => {
     if (!editor || content === undefined) return;
