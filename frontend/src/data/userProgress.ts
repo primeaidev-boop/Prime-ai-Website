@@ -193,11 +193,15 @@ export function isLessonAccessible(
   tutorialId: string,
   progressOverride?: UserProgress,
 ): boolean {
-  // Admin force-lock always wins — overrides isFree and unlockRule
-  if (lesson.locked) return false;
-
-  // Free lessons (not force-locked) are always accessible
+  // Free lessons are always accessible — the whole point of isFree is public access
   if (lesson.isFree) return true;
+
+  // Admin force-lock on non-free lessons: locked:true + unlockRule:manual = permanent gate.
+  // locked:true + any progress-based rule = old "gate marker" from the legacy data format;
+  // migrateLockedSemantics() resets these to locked:false on every data load, so by the time
+  // this function is called with live data the flag should already be false. This check is a
+  // last-resort safety net for any edge case where stale data still reaches this function.
+  if (lesson.locked && lesson.unlockRule === 'manual') return false;
 
   const idx = allLessons.findIndex((l) => l.id === lesson.id);
   if (idx <= 0) return true; // first lesson always accessible

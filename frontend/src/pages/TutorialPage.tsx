@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { loadTutorialData, saveTutorialData } from '@/data/tutorialData';
+import { loadTutorialData, saveTutorialData, migrateLockedSemantics } from '@/data/tutorialData';
 import { getTutorialData } from '@/api/tutorials';
 import type { TutorialPageData } from '@/types';
 import {
@@ -575,7 +575,13 @@ export default function TutorialPage() {
 
   useEffect(() => {
     getTutorialData().then((serverData) => {
-      if (serverData) { setData(serverData); saveTutorialData(serverData); }
+      if (serverData) {
+        // Server data may still have locked:true on sequential lessons (old design).
+        // Always migrate before using so lock semantics stay consistent.
+        const migrated = migrateLockedSemantics(serverData);
+        setData(migrated);
+        saveTutorialData(migrated);
+      }
     }).catch(() => {});
   }, []);
 
