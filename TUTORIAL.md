@@ -41,7 +41,7 @@ TutorialPage.tsx
       Tutorial { chapters[ Chapter { lessons[ Lesson { blocks[ ContentBlock ] } ] } ] }
 ```
 
-**Key principle:** The admin saves changes via `saveTutorialData()` → JSON is written to localStorage → the public page reads it back on next load. The default data in `tutorialData.ts` is what new users (or after a clear) will see.
+**Key principle:** The admin saves changes via `saveTutorialData()` ➞ JSON is written to localStorage ➞ the public page reads it back on next load. The default data in `tutorialData.ts` is what new users (or after a clear) will see.
 
 ### File map
 
@@ -72,7 +72,7 @@ Example output: `"1719043200000-xk7q2"`
 
 #### `slugify(text: string): string`
 Lowercases, trims, replaces non-alphanumeric runs with `-`, strips leading/trailing dashes.  
-`"How ChatGPT Works"` → `"how-chatgpt-works"`
+`"How ChatGPT Works"` ➞ `"how-chatgpt-works"`
 
 #### `DEFAULT_TUTORIAL_DATA`
 Exported constant of type `TutorialPageData`. This is the fallback when localStorage is empty and is also used in the ContentTab as placeholder text. **This is the source of truth for default content.**
@@ -125,7 +125,7 @@ interface Tutorial {
   id:              string
   categorySlug:    string               // matches TutorialCategory.slug
   name:            string               // "ChatGPT"
-  slug:            string               // "chatgpt" → URL: /tutorials/chatgpt
+  slug:            string               // "chatgpt" ➞ URL: /tutorials/chatgpt
   logoColor:       string               // hex "#10a37f"
   logoInitials:    string               // "GPT" (max 4 chars)
   description:     string
@@ -162,7 +162,7 @@ type UnlockRule = 'sequential' | 'free' | 'quiz' | 'manual'
 interface Lesson {
   id:           string
   title:        string              // "How ChatGPT Works"
-  slug:         string              // "how-chatgpt-works" → URL segment
+  slug:         string              // "how-chatgpt-works" ➞ URL segment
   lessonNumber: number              // display number (01, 02…)
   isFree:       boolean             // shows FREE badge in sidebar + header
   readTime:     number              // minutes, shown in meta row
@@ -404,9 +404,9 @@ After 450ms the user is automatically navigated to the next lesson. The 450ms de
 
 Three distinct cases handled cleanly:
 
-1. **Tutorial slug not found** → Full-page 404 with "Browse All Tutorials" CTA
-2. **Tutorial found but no chapters** → Full-page "coming soon" with tutorial logo
-3. **Chapter exists but lesson slug not found** → Minimal "Lesson not found" with back link
+1. **Tutorial slug not found** ➞ Full-page 404 with "Browse All Tutorials" CTA
+2. **Tutorial found but no chapters** ➞ Full-page "coming soon" with tutorial logo
+3. **Chapter exists but lesson slug not found** ➞ Minimal "Lesson not found" with back link
 
 ### `LeftSidebar` - chapter accordion
 
@@ -468,10 +468,10 @@ When `tryInTool === 'none'`, the Try button is hidden. Otherwise a cyan button o
 
 ```typescript
 const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&?]+)/)
-// → https://www.youtube.com/embed/{id}
+// ➞ https://www.youtube.com/embed/{id}
 
 const vm = url.match(/vimeo\.com\/(\d+)/)
-// → https://player.vimeo.com/video/{id}
+// ➞ https://player.vimeo.com/video/{id}
 ```
 
 Any URL that doesn't match YouTube or Vimeo is used as-is in the `src` attribute.
@@ -516,12 +516,12 @@ type AdminTab = 'tutorials' | 'categories' | 'content' | 'lessons'
 ### Tab: Tutorials
 
 - Filter dropdown by category
-- Tutorial cards sorted by category order → tutorial order within category
+- Tutorial cards sorted by category order ➞ tutorial order within category
 - Featured toggle (star icon) - clicking sets that tutorial as featured, unfeaturing all others
 - Visibility toggle (● On / ○ Off pill)
-- Edit button → `TutorialModal`
+- Edit button ➞ `TutorialModal`
 - Delete with `confirm()` dialog
-- `+ Add Tutorial` → `TutorialModal` with `isNew: true`
+- `+ Add Tutorial` ➞ `TutorialModal` with `isNew: true`
 
 **`TutorialModal`** fields: Tool Name, Slug (auto-generated from name in add mode), Category, Difficulty, Logo Color + Initials, Lesson Count, Description, Tags (comma-separated), Enroll CTA Link, Download CTA Link, Display Order, checkboxes for Premium / Featured / Visible.
 
@@ -530,14 +530,14 @@ type AdminTab = 'tutorials' | 'categories' | 'content' | 'lessons'
 - List sorted by `order`
 - Shows tutorial count per category
 - Visibility toggle
-- Edit → `CategoryModal`
+- Edit ➞ `CategoryModal`
 - Delete: warns if tutorials are assigned to the category
 
 **`CategoryModal`** fields: Name, Slug (auto-generated in add mode), Accent Color (color picker + hex input), Order, Visible checkbox.
 
 ### Tab: Lessons
 
-Three-level hierarchy: **Tutorial → Chapters → Lessons**
+Three-level hierarchy: **Tutorial ➞ Chapters ➞ Lessons**
 
 ```
 [Select Tutorial dropdown]
@@ -643,10 +643,10 @@ Defined in `src/App.tsx`:
 ### URL structure
 
 ```
-/tutorials                          → Listing page
-/tutorials/chatgpt                  → Auto-redirects to first lesson
-/tutorials/chatgpt/what-is-ai       → Lesson reader (lesson slug in URL)
-/tutorials/chatgpt/how-chatgpt-works → Different lesson
+/tutorials                          ➞ Listing page
+/tutorials/chatgpt                  ➞ Auto-redirects to first lesson
+/tutorials/chatgpt/what-is-ai       ➞ Lesson reader (lesson slug in URL)
+/tutorials/chatgpt/how-chatgpt-works ➞ Different lesson
 ```
 
 ---
@@ -702,31 +702,31 @@ All modals, accordions, dropdowns, and interactive elements are built with raw H
 ```
 Admin panel (TutorialsAdmin.tsx)
   │
-  │  user edits → setData(newData)  [in-memory]
+  │  user edits ➞ setData(newData)  [in-memory]
   │
   ├── "Save Changes" clicked
-  │     └── saveTutorialData(data) → localStorage['primAI_tutorials']
+  │     └── saveTutorialData(data) ➞ localStorage['primAI_tutorials']
   │
   │
 Public site (TutorialPage.tsx, Tutorials.tsx)
   │
   └── loadTutorialData()
-        ├── localStorage['primAI_tutorials'] → parse → return
-        └── (if empty/error) → DEFAULT_TUTORIAL_DATA from tutorialData.ts
+        ├── localStorage['primAI_tutorials'] ➞ parse ➞ return
+        └── (if empty/error) ➞ DEFAULT_TUTORIAL_DATA from tutorialData.ts
 ```
 
 ```
 TutorialPageData
-  ├── hero          → Tutorials.tsx listing page header
-  ├── categories    → Tutorials.tsx filter sidebar
+  ├── hero          ➞ Tutorials.tsx listing page header
+  ├── categories    ➞ Tutorials.tsx filter sidebar
   ├── tutorials[]
-  │     ├── (basic fields)    → Tutorials.tsx card rendering
+  │     ├── (basic fields)    ➞ Tutorials.tsx card rendering
   │     ├── chapters[]
   │     │     └── lessons[]
-  │     │           └── blocks[] → TutorialPage.tsx → BlockRenderer
-  │     └── toolsAndStats    → TutorialPage.tsx right sidebar
-  ├── newsletter    → Tutorials.tsx newsletter strip
-  └── upsell        → Tutorials.tsx upsell CTA section
+  │     │           └── blocks[] ➞ TutorialPage.tsx ➞ BlockRenderer
+  │     └── toolsAndStats    ➞ TutorialPage.tsx right sidebar
+  ├── newsletter    ➞ Tutorials.tsx newsletter strip
+  └── upsell        ➞ Tutorials.tsx upsell CTA section
 ```
 
 ---
@@ -735,26 +735,26 @@ TutorialPageData
 
 ### Add a new tutorial with lessons
 
-1. Go to `/admin/tutorials` → **Tutorials** tab → **+ Add Tutorial**
+1. Go to `/admin/tutorials` ➞ **Tutorials** tab ➞ **+ Add Tutorial**
 2. Fill: Tool Name, select a Category, set Difficulty and order
 3. Save Changes (persists basic tutorial card)
-4. Switch to **Lessons** tab → select the new tutorial from dropdown
-5. Click **+ Add Chapter** → double-click to rename
-6. Inside the chapter → click **+ Add Lesson** → `LessonEditorModal` opens
+4. Switch to **Lessons** tab ➞ select the new tutorial from dropdown
+5. Click **+ Add Chapter** ➞ double-click to rename
+6. Inside the chapter ➞ click **+ Add Lesson** ➞ `LessonEditorModal` opens
 7. Fill: Title (slug auto-generates), Lesson #, Read Time, intro
-8. In Content Builder → **+ Add Block** dropdown → select block type → `BlockEditorModal` opens
-9. Fill block fields → **Save Block** → block appears in list
-10. Repeat for all blocks → **Save Lesson**
+8. In Content Builder ➞ **+ Add Block** dropdown ➞ select block type ➞ `BlockEditorModal` opens
+9. Fill block fields ➞ **Save Block** ➞ block appears in list
+10. Repeat for all blocks ➞ **Save Lesson**
 11. Click **Save Changes** at the top-right
 
 ### Add a block type to an existing lesson
 
-1. Admin → **Lessons** tab → select tutorial
-2. Find the lesson → click **Edit**
-3. In Content Builder → `+ Add Block` → choose type
-4. Fill fields in `BlockEditorModal` → **Save Block**
+1. Admin ➞ **Lessons** tab ➞ select tutorial
+2. Find the lesson ➞ click **Edit**
+3. In Content Builder ➞ `+ Add Block` ➞ choose type
+4. Fill fields in `BlockEditorModal` ➞ **Save Block**
 5. Reorder with ↑/↓ arrows if needed
-6. **Save Lesson** → **Save Changes**
+6. **Save Lesson** ➞ **Save Changes**
 
 ### Add a heading for TOC
 

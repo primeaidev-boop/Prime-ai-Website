@@ -100,7 +100,7 @@ function ProjectCard({ project, categories }: { project: Project; categories: Pr
             </div>
           </div>
           <span className="ml-auto text-xs font-medium" style={{ color: 'var(--electric)' }}>
-            View →
+            View ➞
           </span>
         </div>
       </div>
@@ -210,7 +210,7 @@ function FeaturedCard({ project, categories }: { project: Project; categories: P
               </div>
             </div>
             <span className="text-sm font-semibold" style={{ color: 'var(--electric)' }}>
-              View Project →
+              View Project ➞
             </span>
           </div>
         </div>

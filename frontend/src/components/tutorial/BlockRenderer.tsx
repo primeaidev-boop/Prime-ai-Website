@@ -727,7 +727,7 @@ function RAiToolCard({ block }: { block: AiToolCardBlock }) {
             className="text-xs px-4 py-2 rounded-full font-bold inline-block"
             style={{ border: '1px solid var(--electric)', color: 'var(--electric)' }}
           >
-            Try {block.toolName} →
+            Try {block.toolName} ➞
           </a>
         )}
       </div>

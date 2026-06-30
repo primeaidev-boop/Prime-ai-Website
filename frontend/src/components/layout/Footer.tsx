@@ -187,6 +187,7 @@ export function Footer() {
                 <FooterLink to="/" label="Home" />
                 <FooterLink to="/about" label="About Us" />
                 <FooterLink to="/courses" label="All Courses" />
+                <FooterLink to="/projects" label="Projects" />
                 <FooterLink to="/blog" label="Blog" />
                 <FooterLink to="/contact" label="Contact Us" />
               </ul>

@@ -94,7 +94,7 @@ function TutorialCard({
         className="btn-electric text-xs px-4 py-2 text-center"
         style={{ textDecoration: 'none' }}
       >
-        {pct === 0 ? 'Start Tutorial →' : pct === 100 ? 'Review Tutorial →' : 'Continue →'}
+        {pct === 0 ? 'Start Tutorial ➞' : pct === 100 ? 'Review Tutorial ➞' : 'Continue ➞'}
       </Link>
     </div>
   );
@@ -119,7 +119,7 @@ function CertCard({
         <div className="text-[11px]" style={{ color: 'var(--muted)' }}>Earned {fmtDate(cert.earnedAt)}</div>
       </div>
       <button onClick={onView} className="btn-electric text-[11px] px-3 py-1.5 shrink-0">
-        View →
+        View ➞
       </button>
     </div>
   );
@@ -272,7 +272,7 @@ export default function Dashboard() {
             msg="You haven't started any tutorials yet. Begin learning and your progress will appear here."
             cta={
               <Link to="/tutorials" className="btn-primary text-sm px-6 py-2.5" style={{ textDecoration: 'none' }}>
-                Browse Tutorials →
+                Browse Tutorials ➞
               </Link>
             }
           />
@@ -333,7 +333,7 @@ export default function Dashboard() {
               msg="Complete a certificate-eligible tutorial to earn your first certificate."
               cta={
                 <Link to="/tutorials" className="btn-outline text-sm px-5 py-2" style={{ textDecoration: 'none' }}>
-                  Find Tutorials →
+                  Find Tutorials ➞
                 </Link>
               }
             />
@@ -367,7 +367,7 @@ export default function Dashboard() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/courses" className="btn-primary text-sm px-6 py-2.5" style={{ textDecoration: 'none' }}>
-              Explore Courses →
+              Explore Courses ➞
             </Link>
             <Link to="/contact" className="btn-outline text-sm px-6 py-2.5" style={{ textDecoration: 'none' }}>
               Book a Free Demo

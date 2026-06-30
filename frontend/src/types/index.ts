@@ -315,7 +315,7 @@ export type ContentBlock =
 export type UnlockRule =
   | 'sequential'    // previous lesson must be marked complete
   | 'free'          // always accessible
-  | 'quiz'          // Phase 2 alias → treated as pass-quiz
+  | 'quiz'          // Phase 2 alias ➞ treated as pass-quiz
   | 'manual'        // admin-only; locked client-side always
   | 'pass-quiz'     // previous lesson quiz must be passed
   | 'mark-complete' // explicit Mark Complete click on previous lesson
@@ -369,7 +369,7 @@ export interface LessonProgress {
 
 export interface TutorialProgressRecord {
   tutorialId: string;
-  lessonsProgress: Record<string, LessonProgress>;  // lessonId → progress
+  lessonsProgress: Record<string, LessonProgress>;  // lessonId ➞ progress
   completedAt?: string;        // ISO timestamp when all visible lessons done
   learningMinutes: number;
   certificateEarned?: boolean;

@@ -43,19 +43,19 @@
 │  Railway (NestJS API)                                               │
 │                                                                     │
 │  main.ts bootstrap layer                                            │
-│  ├── helmet()          → security headers on every response         │
-│  ├── cookieParser()    → reads httpOnly JWT cookie                  │
-│  ├── enableCors()      → exact-match allowedOrigins whitelist       │
-│  └── ValidationPipe    → strips unknown fields, rejects bad input   │
+│  ├── helmet()          ➞ security headers on every response         │
+│  ├── cookieParser()    ➞ reads httpOnly JWT cookie                  │
+│  ├── enableCors()      ➞ exact-match allowedOrigins whitelist       │
+│  └── ValidationPipe    ➞ strips unknown fields, rejects bad input   │
 │                                                                     │
 │  ThrottlerGuard (APP_GUARD - global)                                │
-│  ├── All routes        → 100 req / 15 min / IP                     │
-│  ├── POST /auth/login  → 5 req  / 15 min / IP                     │
-│  ├── POST /bookings    → 5 req  / 1 hour  / IP                    │
-│  └── POST /enquiries   → 5 req  / 1 hour  / IP                    │
+│  ├── All routes        ➞ 100 req / 15 min / IP                     │
+│  ├── POST /auth/login  ➞ 5 req  / 15 min / IP                     │
+│  ├── POST /bookings    ➞ 5 req  / 1 hour  / IP                    │
+│  └── POST /enquiries   ➞ 5 req  / 1 hour  / IP                    │
 │                                                                     │
 │  JwtAuthGuard (Passport)                                            │
-│  └── Extracts JWT from httpOnly cookie → validates → 401 if bad   │
+│  └── Extracts JWT from httpOnly cookie ➞ validates ➞ 401 if bad   │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
                              │ SSL required (sslmode=require)
@@ -118,7 +118,7 @@ POST /api/auth/login
 |---|---|---|
 | `HttpOnly` | true | JavaScript cannot read it - blocks XSS token theft |
 | `Secure` | true (prod) | Only sent over HTTPS - blocks plaintext sniffing |
-| `SameSite` | `None` (prod) / `Lax` (dev) | `None` required for cross-origin Vercel→Railway requests; `Lax` is safe in dev |
+| `SameSite` | `None` (prod) / `Lax` (dev) | `None` required for cross-origin Vercel➞Railway requests; `Lax` is safe in dev |
 | `Max-Age` | 28800 (8h) | Short-lived session; admin must re-login daily |
 | `Path` | `/` | Cookie sent on all API requests |
 
@@ -142,7 +142,7 @@ ExtractJwt.fromExtractors([
 ```
 POST /api/auth/logout
   1. res.clearCookie('admin_token', { path: '/' })
-  2. Frontend: clear Zustand store → redirect to /admin/login
+  2. Frontend: clear Zustand store ➞ redirect to /admin/login
 ```
 
 The cookie is cleared server-side. Even if the frontend fails (JS error, network issue), the server has already invalidated the client's ability to authenticate with that cookie.
@@ -297,7 +297,7 @@ Blog post content is the only user-authored HTML in the system. Before rendering
 ```typescript
 // BlogPost.tsx
 const processedContent = sanitizeHtml(injectIds(post.content));
-// → <div dangerouslySetInnerHTML={{ __html: processedContent }} />
+// ➞ <div dangerouslySetInnerHTML={{ __html: processedContent }} />
 ```
 
 `sanitizeHtml` allows a strict allowlist:
@@ -386,7 +386,7 @@ git show f89307d:frontend/.env.production
 | `SMTP_PASS` | Railway env var | No | Safe |
 
 > **ACTION REQUIRED - DigitalOcean Spaces:**  
-> The local `backend/.env` contains active DO Spaces credentials. While these were never committed to git, they exist in plaintext on disk. Log into the DigitalOcean dashboard → API → Spaces Keys and rotate `DO8014C98F4WWJBHNWEP` immediately. Update the new key in Railway.
+> The local `backend/.env` contains active DO Spaces credentials. While these were never committed to git, they exist in plaintext on disk. Log into the DigitalOcean dashboard ➞ API ➞ Spaces Keys and rotate `DO8014C98F4WWJBHNWEP` immediately. Update the new key in Railway.
 
 ### `.gitignore` Coverage
 
@@ -504,20 +504,20 @@ APP=https://your-app.vercel.app
 ### 9.1 Authentication Tests
 
 ```bash
-# T01 - Admin route without token → must return 401
+# T01 - Admin route without token ➞ must return 401
 curl -s -o /dev/null -w "T01 (expect 401): %{http_code}\n" $API/api/admin/stats
 
-# T02 - Admin route with invalid token → must return 401
+# T02 - Admin route with invalid token ➞ must return 401
 curl -s -o /dev/null -w "T02 (expect 401): %{http_code}\n" \
   -H "Authorization: Bearer fake.jwt.token" $API/api/admin/stats
 
-# T03 - Login with wrong credentials → 401, no hint about which field
+# T03 - Login with wrong credentials ➞ 401, no hint about which field
 curl -s -w "\nT03 (expect 401): %{http_code}\n" \
   -X POST $API/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"fake@test.com","password":"wrongpass"}'
 
-# T04 - Login with correct credentials → 200, cookie set, NO token in body
+# T04 - Login with correct credentials ➞ 200, cookie set, NO token in body
 curl -sv -X POST $API/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@primaiinstitute.com","password":"Admin@123"}' 2>&1 \
@@ -555,13 +555,13 @@ done
 ### 9.3 Input Validation Tests
 
 ```bash
-# T08 - Empty body → 400
+# T08 - Empty body ➞ 400
 curl -s -o /dev/null -w "T08 (expect 400): %{http_code}\n" \
   -X POST $API/api/enquiries \
   -H "Content-Type: application/json" \
   -d '{}'
 
-# T09 - Invalid phone number → 400
+# T09 - Invalid phone number ➞ 400
 curl -s -w "\nT09 (expect 400): %{http_code}\n" \
   -X POST $API/api/bookings \
   -H "Content-Type: application/json" \
@@ -575,7 +575,7 @@ curl -s -w "\nT10 (expect 201 - stored as plain text): %{http_code}\n" \
   -d '{"name":"<script>alert(1)<\/script>","phone":"9876543210","profile":"OTHER","courseInterest":"NOT_SURE"}'
 # Note: React escapes this on render - <script> never executes
 
-# T11 - Message too long (>500 chars) → 400
+# T11 - Message too long (>500 chars) ➞ 400
 LONG=$(python3 -c "print('A'*501)")
 curl -s -o /dev/null -w "T11 (expect 400): %{http_code}\n" \
   -X POST $API/api/enquiries \
@@ -592,17 +592,17 @@ curl -s -w "\nT12 (expect 201 - extra field stripped): %{http_code}\n" \
 ### 9.4 CORS Tests
 
 ```bash
-# T13 - Request from evil origin → no ACAO header (blocked)
+# T13 - Request from evil origin ➞ no ACAO header (blocked)
 ACAO=$(curl -s -I -H "Origin: https://evil.com" $API/api/settings/public \
   | grep -i "access-control-allow-origin")
 echo "T13 - evil.com ACAO header (expect empty): '$ACAO'"
 
-# T14 - Request from allowed origin → ACAO header present
+# T14 - Request from allowed origin ➞ ACAO header present
 ACAO=$(curl -s -I -H "Origin: $APP" $API/api/settings/public \
   | grep -i "access-control-allow-origin")
 echo "T14 - Vercel origin ACAO header (expect $APP): '$ACAO'"
 
-# T15 - Preflight from evil origin → must return non-200 or no ACAO
+# T15 - Preflight from evil origin ➞ must return non-200 or no ACAO
 curl -s -o /dev/null -w "T15 OPTIONS evil.com (expect 500 or no ACAO): %{http_code}\n" \
   -X OPTIONS \
   -H "Origin: https://evil.com" \
@@ -720,7 +720,7 @@ The in-memory throttler resets on Railway instance restart. For sustained attack
 
 ### DigitalOcean Spaces Key Leak
 
-1. Log into DigitalOcean → API → Spaces Access Keys.
+1. Log into DigitalOcean ➞ API ➞ Spaces Access Keys.
 2. Delete the compromised key pair immediately.
 3. Generate a new key pair.
 4. Update `DO_SPACES_KEY` and `DO_SPACES_SECRET` in Railway.

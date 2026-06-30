@@ -123,15 +123,15 @@ Demo booking requests submitted via the "Book Free Demo" form on the public site
 | Phone | string | 10-digit Indian mobile |
 | Profile | enum | School Student / College Student / Working Professional / Business Owner / Other |
 | Course Interest | enum | Level 1 Foundation / Level 2A Generalist / Level 2B Developer / Not Sure |
-| Status | enum | NEW → CONTACTED → CONVERTED / LOST |
+| Status | enum | NEW ➞ CONTACTED ➞ CONVERTED / LOST |
 | Notes | string | Internal notes added by admin |
 | Created At | datetime | Submission timestamp |
 
 ### Status workflow
 
 ```
-NEW  →  CONTACTED  →  CONVERTED
-                   →  LOST
+NEW  ➞  CONTACTED  ➞  CONVERTED
+                   ➞  LOST
 ```
 
 Update status + add a note by clicking any row in the table.
@@ -412,7 +412,7 @@ Full blog management with categories, tags, authors, and rich-text post editor.
 ### Blog workflow
 
 ```
-Create Author → Create Category → Create Tags → Write Post (DRAFT) → Publish
+Create Author ➞ Create Category ➞ Create Tags ➞ Write Post (DRAFT) ➞ Publish
 ```
 
 ### Categories
@@ -626,13 +626,13 @@ Files are stored at `/var/www/primai/uploads/` on the server and served by Nginx
 
 | Method | Route | Description |
 |--------|-------|-------------|
-| POST | `/api/admin/media/upload?variant=content` | Upload image → WebP |
+| POST | `/api/admin/media/upload?variant=content` | Upload image ➞ WebP |
 
 ---
 
 ## 11. Database Reference
 
-**Connection (production):** See `/var/www/primai/backend/.env` → `DATABASE_URL`  
+**Connection (production):** See `/var/www/primai/backend/.env` ➞ `DATABASE_URL`  
 **Connection (local dev):** `postgresql://jadeja@localhost:5432/primai_db`
 
 ### Tables
@@ -688,12 +688,12 @@ The seed uses `upsert` - it creates missing rows but **never overwrites** existi
 ### Stack overview
 
 ```
-Internet → Cloudflare DNS → DigitalOcean (64.227.143.243)
+Internet ➞ Cloudflare DNS ➞ DigitalOcean (64.227.143.243)
                                     ↓
                               Nginx (443/80)
-                             /api/* → PM2/NestJS (port 3001)
-                             /uploads/* → /var/www/primai/uploads/
-                             /* → /var/www/primai/frontend/dist/ (SPA)
+                             /api/* ➞ PM2/NestJS (port 3001)
+                             /uploads/* ➞ /var/www/primai/uploads/
+                             /* ➞ /var/www/primai/frontend/dist/ (SPA)
 ```
 
 ### Server paths
@@ -805,7 +805,7 @@ If this recurs after a redeploy:
 
 ### Backend returns 401 Unauthorized
 
-1. Check the session cookie is set: in DevTools → Application → Cookies → `admin_token` should exist
+1. Check the session cookie is set: in DevTools ➞ Application ➞ Cookies ➞ `admin_token` should exist
 2. JWT expires after 8 hours - log out and log in again
 3. If `JWT_SECRET` changed in `.env`, all existing tokens are invalid - log in again
 
@@ -832,9 +832,9 @@ pm2 logs primai-backend --err --lines 50   # check error logs
 ```
 
 Common causes:
-- `DATABASE_URL` env var not loaded → ensure `.env` exists at `/var/www/primai/backend/.env`
-- PostgreSQL service not running → `systemctl status postgresql`
-- Port 3001 already in use → `lsof -i :3001`
+- `DATABASE_URL` env var not loaded ➞ ensure `.env` exists at `/var/www/primai/backend/.env`
+- PostgreSQL service not running ➞ `systemctl status postgresql`
+- Port 3001 already in use ➞ `lsof -i :3001`
 
 ---
 

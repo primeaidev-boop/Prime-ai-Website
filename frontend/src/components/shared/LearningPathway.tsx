@@ -283,7 +283,7 @@ export function LearningPathway() {
           </div>
         )}
 
-        {/* Connector line: active tab → card */}
+        {/* Connector line: active tab ➞ card */}
         {(l2a || l2b) && (
           <div
             className="w-px transition-all duration-300"

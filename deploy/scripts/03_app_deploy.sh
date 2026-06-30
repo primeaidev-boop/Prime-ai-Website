@@ -24,7 +24,7 @@ if [ ! -f "$APP_DIR/backend/.env" ]; then
 fi
 
 echo ""
-echo "=== [3/6] Build backend (NestJS → dist/) ==="
+echo "=== [3/6] Build backend (NestJS ➞ dist/) ==="
 cd "$APP_DIR/backend"
 npm ci --omit=dev
 npm run build
@@ -34,7 +34,7 @@ npx prisma migrate deploy
 npx prisma db seed || echo "[INFO] Seed skipped (data already exists)"
 
 echo ""
-echo "=== [4/6] Build frontend (Vite → dist/) ==="
+echo "=== [4/6] Build frontend (Vite ➞ dist/) ==="
 cd "$APP_DIR/frontend"
 # No VITE_API_URL needed - axios falls back to relative /api
 # Nginx routes /api/* to NestJS on the same domain, so relative paths work

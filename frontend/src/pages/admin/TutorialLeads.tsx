@@ -393,7 +393,7 @@ export default function TutorialLeads() {
                 className="btn-outline text-xs px-3 py-1.5"
                 style={page === totalPages ? { opacity: 0.4, cursor: 'not-allowed' } : {}}
               >
-                Next →
+                Next ➞
               </button>
             </div>
           </div>

@@ -233,7 +233,7 @@ export function TutorialGateModal({ tutorialSlug, tutorialName, onClose }: Props
               disabled={loading}
               style={loading ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
             >
-              {loading ? 'Please wait…' : 'Continue to Tutorial →'}
+              {loading ? 'Please wait…' : 'Continue to Tutorial ➞'}
             </button>
           </form>
 

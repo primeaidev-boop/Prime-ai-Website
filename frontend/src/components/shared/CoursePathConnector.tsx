@@ -96,7 +96,7 @@ export function CoursePathConnector() {
             `}</style>
           </defs>
 
-          {/* Top stem: center top → junction */}
+          {/* Top stem: center top ➞ junction */}
           <path
             d="M 350 0 L 350 55"
             stroke="#00d4ff"
@@ -145,7 +145,7 @@ export function CoursePathConnector() {
             CHOOSE YOUR TRACK
           </text>
 
-          {/* Left branch → Level 2A (orange) */}
+          {/* Left branch ➞ Level 2A (orange) */}
           <path
             d="M 350 55 C 350 110, 175 110, 175 160"
             stroke="#ff6b2b"
@@ -163,7 +163,7 @@ export function CoursePathConnector() {
           />
           <circle cx="175" cy="158" r="4" fill="#ff6b2b" opacity="0.9" filter="url(#glow-orange)" />
 
-          {/* Right branch → Level 2B (purple) */}
+          {/* Right branch ➞ Level 2B (purple) */}
           <path
             d="M 350 55 C 350 110, 525 110, 525 160"
             stroke="#a78bfa"
