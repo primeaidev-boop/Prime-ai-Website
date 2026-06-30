@@ -193,8 +193,11 @@ export function isLessonAccessible(
   tutorialId: string,
   progressOverride?: UserProgress,
 ): boolean {
-  // Free / explicitly unlocked lessons are always accessible
-  if (!lesson.locked || lesson.isFree) return true;
+  // Admin force-lock always wins — overrides isFree and unlockRule
+  if (lesson.locked) return false;
+
+  // Free lessons (not force-locked) are always accessible
+  if (lesson.isFree) return true;
 
   const idx = allLessons.findIndex((l) => l.id === lesson.id);
   if (idx <= 0) return true; // first lesson always accessible
