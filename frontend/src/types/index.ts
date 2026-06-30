@@ -405,6 +405,89 @@ export interface AnalyticsData {
   lastUpdated: string;
 }
 
+// ─── Projects Module ──────────────────────────────────────────────────────────
+
+/** Single impact metric shown on project detail page (admin can add/remove freely) */
+export interface ProjectImpactStat {
+  id: string;
+  value: string;  // e.g. "98%"
+  label: string;  // e.g. "Detection Accuracy"
+}
+
+/** Filter category pill for the listing page */
+export interface ProjectCategory {
+  id: string;
+  name: string;
+  slug: string;   // used for filtering
+  order: number;
+  isVisible: boolean;
+}
+
+/** Full project entry - all admin-editable fields */
+export interface Project {
+  id: string;
+  title: string;
+  slug: string;
+  shortDescription: string;
+  problemStatement: string;
+  solution: string;
+  keyFeatures: string[];          // checklist bullet points
+  category: string;               // matches ProjectCategory.slug
+  techStack: string[];            // variable tag list
+  coverImageUrl?: string;
+  // Featured / Award
+  isFeatured: boolean;
+  awardBadge?: string;            // e.g. "🏆 Best Innovation" - omit or empty = not shown
+  // Student info
+  studentName: string;
+  studentInitials: string;
+  studentPhotoUrl?: string;
+  studentCohort: string;
+  studentQuote: string;
+  // Mentor info
+  mentorName: string;
+  mentorTitle: string;
+  mentorQuote: string;
+  // Variable impact stats
+  impactStats: ProjectImpactStat[];
+  // Optional links - only rendered when non-empty
+  liveDemoUrl?: string;
+  sourceCodeUrl?: string;
+  // Admin controls
+  visible: boolean;
+  order: number;
+}
+
+/** Single stat in the listing-page header stats row */
+export interface ProjectPageStat {
+  id: string;
+  value: string;  // e.g. "500+"
+  label: string;  // e.g. "Student Projects"
+}
+
+export interface ProjectHero {
+  eyebrow: string;
+  heading1: string;
+  heading2Gradient: string;   // rendered with gradient-text
+  description: string;
+  ctaPrimary: string;
+  ctaSecondary: string;
+}
+
+export interface ProjectCta {
+  heading: string;
+  description: string;
+  btnLabel: string;
+}
+
+export interface ProjectPageData {
+  hero: ProjectHero;
+  stats: ProjectPageStat[];
+  categories: ProjectCategory[];
+  projects: Project[];
+  cta: ProjectCta;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 export interface AiCourse {

@@ -184,6 +184,33 @@ select option {
   color: var(--white);
 }
 
+/* ─── Admin form helpers ──────────────────────────────── */
+.admin-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  color: var(--white);
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  width: 100%;
+  transition: border-color 0.2s ease;
+  min-height: 40px;
+}
+.admin-input:focus {
+  outline: none;
+  border-color: var(--electric);
+  box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.15);
+}
+.admin-input::placeholder { color: var(--muted); }
+.admin-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: var(--muted);
+}
+
 /* ─── Page animations ─────────────────────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
