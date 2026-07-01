@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loadProjectsData } from '@/data/projectsData';
-import type { Project, ProjectCategory } from '@/types';
+import { loadProjectsData, saveProjectsData } from '@/data/projectsData';
+import { getProjectsData } from '@/api/projects';
+import type { Project, ProjectCategory, ProjectPageData } from '@/types';
 
 // ── Project Card ─────────────────────────────────────────────────────────────
 
@@ -225,10 +226,19 @@ const PAGE_SIZE = 6;
 
 export default function Projects() {
   const navigate = useNavigate();
-  const data = useMemo(() => loadProjectsData(), []);
+  const [data, setData] = useState<ProjectPageData>(() => loadProjectsData());
   const [activeCategory, setActiveCategory] = useState('all');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const filterBarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getProjectsData().then((serverData) => {
+      if (serverData) {
+        setData(serverData);
+        saveProjectsData(serverData);
+      }
+    }).catch(() => {});
+  }, []);
 
   const visibleCategories = useMemo(
     () => data.categories.filter((c) => c.isVisible).sort((a, b) => a.order - b.order),

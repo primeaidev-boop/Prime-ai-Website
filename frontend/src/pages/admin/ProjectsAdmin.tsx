@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { loadProjectsData, saveProjectsData, generateId, slugify } from '@/data/projectsData';
+import { getProjectsData, putProjectsData } from '@/api/projects';
 import type {
   ProjectPageData,
   Project,
@@ -92,16 +93,36 @@ export default function ProjectsAdmin() {
   const [data, setData] = useState<ProjectPageData>(() => loadProjectsData());
   const [activeTab, setActiveTab] = useState<AdminTab>('projects');
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Project modal state
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [showProjectModal, setShowProjectModal] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  function handleSave() {
-    saveProjectsData(data);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+  // Sync from backend on mount so admin always sees the latest DB state
+  useEffect(() => {
+    getProjectsData().then((serverData) => {
+      if (serverData) {
+        setData(serverData);
+        saveProjectsData(serverData);
+      }
+    }).catch(() => {});
+  }, []);
+
+  async function handleSave() {
+    setSaving(true);
+    try {
+      await putProjectsData(data);
+      saveProjectsData(data);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
+    } catch {
+      // Silent — localStorage already saved; backend may be unreachable
+      saveProjectsData(data);
+    } finally {
+      setSaving(false);
+    }
   }
 
   // ── Project CRUD ──────────────────────────────────────────────────────────
@@ -244,9 +265,11 @@ export default function ProjectsAdmin() {
         </div>
         <button
           onClick={handleSave}
+          disabled={saving}
           className="btn-primary px-6 py-2.5 text-sm font-semibold"
+          style={{ opacity: saving ? 0.7 : 1 }}
         >
-          {saved ? '✓ Saved!' : 'Save Changes'}
+          {saving ? 'Saving…' : saved ? '✓ Saved!' : 'Save Changes'}
         </button>
       </div>
 

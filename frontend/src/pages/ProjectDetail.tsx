@@ -1,6 +1,8 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { loadProjectsData } from '@/data/projectsData';
+import { loadProjectsData, saveProjectsData } from '@/data/projectsData';
+import { getProjectsData } from '@/api/projects';
+import type { ProjectPageData } from '@/types';
 
 function buildSrcDoc(html: string, css: string, js: string): string {
   const safeJs = js.replace(/<\/script>/gi, '<\\/script>');
@@ -19,7 +21,16 @@ function buildSrcDoc(html: string, css: string, js: string): string {
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const data = useMemo(() => loadProjectsData(), []);
+  const [data, setData] = useState<ProjectPageData>(() => loadProjectsData());
+
+  useEffect(() => {
+    getProjectsData().then((serverData) => {
+      if (serverData) {
+        setData(serverData);
+        saveProjectsData(serverData);
+      }
+    }).catch(() => {});
+  }, []);
 
   const project = useMemo(
     () => data.projects.find((p) => p.slug === slug && p.visible),
