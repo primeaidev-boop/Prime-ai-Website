@@ -18,10 +18,29 @@ function buildSrcDoc(html: string, css: string, js: string): string {
   // Escape closing tags so they can't break out of their container tag.
   const safeJs = js.replace(/<\/script>/gi, '<\\/script>');
   const safeCss = css.replace(/<\/style>/gi, '<\\/style>');
+  // In sandbox="allow-scripts" (no allow-same-origin), window.localStorage
+  // throws SecurityError and kills the whole script. Inject a shim first so
+  // any code that calls localStorage still runs (data is in-memory only).
+  const storagePatch =
+    '<script>(function(){' +
+    'function mem(){var s={};return{' +
+    'getItem:function(k){return s.hasOwnProperty(k)?s[k]:null;},' +
+    'setItem:function(k,v){s[String(k)]=String(v);},' +
+    'removeItem:function(k){delete s[String(k)];},' +
+    'clear:function(){s={};},' +
+    'key:function(i){return Object.keys(s)[i]??null;},' +
+    'get length(){return Object.keys(s).length;}' +
+    '};}' +
+    "['localStorage','sessionStorage'].forEach(function(n){" +
+    'try{window[n].getItem("__");}' +
+    'catch(e){try{Object.defineProperty(window,n,{value:mem(),configurable:true,writable:true});}catch(e2){}}' +
+    '});' +
+    '})();<\/script>';
   return [
     '<!DOCTYPE html><html><head>',
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width,initial-scale=1">',
+    storagePatch,
     `<style>*{box-sizing:border-box}body{margin:0;padding:16px}${safeCss}</style>`,
     `</head><body>${html}`,
     `<script>${safeJs}<\/script>`,

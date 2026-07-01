@@ -7,10 +7,31 @@ import type { ProjectPageData } from '@/types';
 function buildSrcDoc(html: string, css: string, js: string): string {
   const safeJs = js.replace(/<\/script>/gi, '<\\/script>');
   const safeCss = css.replace(/<\/style>/gi, '<\\/style>');
+  // In a sandbox="allow-scripts" iframe (no allow-same-origin), accessing
+  // window.localStorage throws SecurityError and kills the entire script.
+  // This shim catches that error and installs an in-memory replacement so
+  // games and apps that call localStorage without try/catch still run.
+  // Scores/prefs won't persist across page refreshes — everything else works.
+  const storagePatch =
+    '<script>(function(){' +
+    'function mem(){var s={};return{' +
+    'getItem:function(k){return s.hasOwnProperty(k)?s[k]:null;},' +
+    'setItem:function(k,v){s[String(k)]=String(v);},' +
+    'removeItem:function(k){delete s[String(k)];},' +
+    'clear:function(){s={};},' +
+    'key:function(i){return Object.keys(s)[i]??null;},' +
+    'get length(){return Object.keys(s).length;}' +
+    '};}' +
+    "['localStorage','sessionStorage'].forEach(function(n){" +
+    'try{window[n].getItem("__");}' +
+    'catch(e){try{Object.defineProperty(window,n,{value:mem(),configurable:true,writable:true});}catch(e2){}}' +
+    '});' +
+    '})();<\/script>';
   return [
     '<!DOCTYPE html><html><head>',
     '<meta charset="utf-8">',
     '<meta name="viewport" content="width=device-width,initial-scale=1">',
+    storagePatch,
     `<style>*{box-sizing:border-box}body{margin:0;padding:16px}${safeCss}</style>`,
     `</head><body>${html}`,
     `<script>${safeJs}<\/script>`,
