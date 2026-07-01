@@ -193,7 +193,7 @@ export function isLessonAccessible(
   tutorialId: string,
   progressOverride?: UserProgress,
 ): boolean {
-  // Free lessons are always accessible — the whole point of isFree is public access
+  // Free lessons are always accessible - the whole point of isFree is public access
   if (lesson.isFree) return true;
 
   // Admin force-lock on non-free lessons: locked:true + unlockRule:manual = permanent gate.

@@ -29,13 +29,17 @@ async function bootstrap() {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'"],
+          // 'unsafe-eval' is required by Monaco Editor's AMD loader (vs/loader.js uses eval()).
+          // Monaco is only loaded in the admin panel (JWT-protected), so risk is contained.
+          scriptSrc: ["'self'", "'unsafe-eval'", 'https://cdn.jsdelivr.net'],
           imgSrc: ["'self'", 'data:', 'https:'],
-          connectSrc: ["'self'"],
-          fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+          connectSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+          fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.jsdelivr.net'],
           objectSrc: ["'none'"],
           frameSrc: ["'self'", 'https://www.google.com', 'https://www.youtube.com', 'https://www.youtube-nocookie.com', 'https://player.vimeo.com'],
-          styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
+          // Monaco creates Web Workers via blob: URLs; CDN workers also need jsdelivr.net
+          workerSrc: ["'self'", 'blob:', 'https://cdn.jsdelivr.net'],
           // Only upgrade to HTTPS once SSL cert is active - on HTTP this breaks API calls
           upgradeInsecureRequests: isHttps ? [] : null,
         },

@@ -453,6 +453,11 @@ export interface Project {
   // Optional links - only rendered when non-empty
   liveDemoUrl?: string;
   sourceCodeUrl?: string;
+  // Live Code Runner - admin pastes HTML/CSS/JS, rendered in a sandboxed iframe
+  codeRunnerEnabled?: boolean;
+  codeHtml?: string;
+  codeCss?: string;
+  codeJs?: string;
   // Admin controls
   visible: boolean;
   order: number;

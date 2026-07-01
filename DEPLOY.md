@@ -1,4 +1,4 @@
-# PRIM AI Institute — Deployment Guide
+# PRIM AI Institute - Deployment Guide
 
 > **For:** Human admins and AI assistants (Claude Code, etc.)
 > **Project root:** `/home/jadeja/Videos/Doc of STAD/Project Prime Ai/prim-ai-institute/`
@@ -13,8 +13,8 @@
 primaiinstitute.com
 │
 ├── Nginx (reverse proxy + static file server)
-│   ├── /api/* → NestJS backend on :3001 (managed by PM2)
-│   └── /* → /var/www/primai/frontend/dist/ (Vite static build)
+│   ├── /api/* ➞ NestJS backend on :3001 (managed by PM2)
+│   └── /* ➞ /var/www/primai/frontend/dist/ (Vite static build)
 │
 ├── Backend: NestJS 10 + Prisma 5 + PostgreSQL 16
 │   └── /var/www/primai/backend/
@@ -35,7 +35,7 @@ ssh root@64.227.143.243
 # Password: Primai@#789Ai
 ```
 
-For non-interactive use (scripts, AI agents) — use Python paramiko:
+For non-interactive use (scripts, AI agents) - use Python paramiko:
 
 ```python
 import paramiko
@@ -50,10 +50,10 @@ client.connect('64.227.143.243', username='root', password='Primai@#789Ai', time
 
 | Remote | URL | Purpose |
 |--------|-----|---------|
-| `boop` | `https://primeaidev-boop:ghp_...@github.com/primeaidev-boop/Prime-ai-Website.git` | **Push target** (has embedded PAT — always push here) |
+| `boop` | `https://primeaidev-boop:ghp_...@github.com/primeaidev-boop/Prime-ai-Website.git` | **Push target** (has embedded PAT - always push here) |
 | `origin` | same repo without credentials | Pull-only fallback |
 
-**The production server uses `origin` (no PAT needed — it only pulls).**
+**The production server uses `origin` (no PAT needed - it only pulls).**
 
 ```bash
 # Push from local dev:
@@ -65,7 +65,7 @@ cd /var/www/primai && git fetch origin && git merge origin/main --ff-only
 
 > **Why `--ff-only`?** The server's local branch is named `master` (not `main`). Using
 > `--ff-only` against `origin/main` works because it's a clean linear history.
-> Never run `git pull` bare on the server — it will error because there is no
+> Never run `git pull` bare on the server - it will error because there is no
 > upstream tracking branch set for `master`.
 
 ---
@@ -74,7 +74,7 @@ cd /var/www/primai && git fetch origin && git merge origin/main --ff-only
 
 This is the sequence used for every production deploy. Follow it in order.
 
-### Step 1 — Commit and push from local
+### Step 1 - Commit and push from local
 
 ```bash
 cd /home/jadeja/Videos/Doc\ of\ STAD/Project\ Prime\ Ai/prim-ai-institute
@@ -96,26 +96,26 @@ EOF
 git push boop main
 ```
 
-### Step 2 — Pull on the production server
+### Step 2 - Pull on the production server
 
 ```bash
 ssh root@64.227.143.243 "cd /var/www/primai && git fetch origin && git merge origin/main --ff-only"
 ```
 
-### Step 3A — Frontend only changed
+### Step 3A - Frontend only changed
 
 ```bash
 ssh root@64.227.143.243 "cd /var/www/primai/frontend && npm run build"
-# Nginx serves dist/ directly — no restart needed.
+# Nginx serves dist/ directly - no restart needed.
 ```
 
-### Step 3B — Backend changed (new routes, services, etc.)
+### Step 3B - Backend changed (new routes, services, etc.)
 
 ```bash
 ssh root@64.227.143.243 "cd /var/www/primai/backend && npm run build && pm2 restart primai-backend"
 ```
 
-### Step 3C — New npm packages added
+### Step 3C - New npm packages added
 
 ```bash
 # Run npm install BEFORE building, on the server
@@ -124,14 +124,14 @@ ssh root@64.227.143.243 "cd /var/www/primai/frontend && npm install && npm run b
 ssh root@64.227.143.243 "cd /var/www/primai/backend && npm install && npm run build && pm2 restart primai-backend"
 ```
 
-### Step 3D — New Prisma migration
+### Step 3D - New Prisma migration
 
 ```bash
 # Migrations are applied with migrate deploy (non-interactive, safe for production)
 ssh root@64.227.143.243 "cd /var/www/primai/backend && npx prisma migrate deploy && npx prisma generate && npm run build && pm2 restart primai-backend"
 ```
 
-### Step 4 — Verify
+### Step 4 - Verify
 
 ```bash
 # Check PM2 status
@@ -146,7 +146,7 @@ ssh root@64.227.143.243 "curl -s -o /dev/null -w 'Site: %{http_code}\n' https://
 
 ---
 
-## 4. Decision Matrix — What to Run After Each Change
+## 4. Decision Matrix - What to Run After Each Change
 
 | What changed | npm install? | Backend build? | pm2 restart? | Frontend build? |
 |---|:-:|:-:|:-:|:-:|
@@ -182,7 +182,7 @@ npx prisma generate
 npx prisma migrate deploy   # creates the table + marks migration applied
 npx prisma generate
 
-# 5. On PRODUCTION — migrate deploy always works non-interactively:
+# 5. On PRODUCTION - migrate deploy always works non-interactively:
 ssh root@64.227.143.243 "cd /var/www/primai/backend && npx prisma migrate deploy && npx prisma generate"
 ```
 
@@ -191,7 +191,7 @@ ssh root@64.227.143.243 "cd /var/www/primai/backend && npx prisma migrate deploy
 
 ---
 
-## 6. PM2 — Backend Process Manager
+## 6. PM2 - Backend Process Manager
 
 ```bash
 pm2 list                        # show all processes + status
@@ -234,7 +234,7 @@ SELECT COUNT(*) FROM tutorial_leads;
 # Migration status
 cd /var/www/primai/backend && npx prisma migrate status
 
-# Seed (first-time only — creates default admin account)
+# Seed (first-time only - creates default admin account)
 npx prisma db seed
 ```
 
@@ -312,14 +312,14 @@ npm install                          # first time only
 npx prisma migrate dev --name init   # first time only  (works locally)
 npx prisma db seed                   # first time only
 npm run start:dev
-# → http://localhost:3001
-# → http://localhost:3001/api/docs  (Swagger, dev only)
+# ➞ http://localhost:3001
+# ➞ http://localhost:3001/api/docs  (Swagger, dev only)
 
 # Frontend (terminal 2)
 cd frontend
 npm install                          # first time only
 npm run dev
-# → http://localhost:5173
+# ➞ http://localhost:5173
 
 # Local DB
 # Engine: PostgreSQL 16 on localhost:5432
@@ -357,7 +357,7 @@ bash 05_ssl_setup.sh         # runs certbot --nginx for the domain
 | API returns 502 | NestJS is down | `pm2 restart primai-backend` |
 | API returns 413 | Request body too large | Already patched: 10 MB limit set in `main.ts` |
 | `prisma migrate deploy` fails P3018 | Table already exists (prior db push) | `npx prisma migrate resolve --applied <name>` |
-| `prisma migrate dev` hangs | Non-interactive terminal | Use `migrate deploy` or `migrate resolve` instead — never use `migrate dev` on this machine |
+| `prisma migrate dev` hangs | Non-interactive terminal | Use `migrate deploy` or `migrate resolve` instead - never use `migrate dev` on this machine |
 | Cert renewal fails | Nginx config error | `nginx -t` first; fix config; then `certbot renew` |
 | CORS error in browser | Request origin not in allowlist | Add origin to `ADDITIONAL_ORIGINS` in backend `.env` or to `allowedOrigins` in `main.ts` |
-| Fonts / YouTube embeds blocked | CSP header too strict | Edit `frameSrc`/`fontSrc` directives in `backend/src/main.ts` → rebuild + restart |
+| Fonts / YouTube embeds blocked | CSP header too strict | Edit `frameSrc`/`fontSrc` directives in `backend/src/main.ts` ➞ rebuild + restart |

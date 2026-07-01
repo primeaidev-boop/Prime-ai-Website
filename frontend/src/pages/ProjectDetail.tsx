@@ -1,6 +1,20 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { loadProjectsData } from '@/data/projectsData';
+
+function buildSrcDoc(html: string, css: string, js: string): string {
+  const safeJs = js.replace(/<\/script>/gi, '<\\/script>');
+  const safeCss = css.replace(/<\/style>/gi, '<\\/style>');
+  return [
+    '<!DOCTYPE html><html><head>',
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width,initial-scale=1">',
+    `<style>*{box-sizing:border-box}body{margin:0;padding:16px}${safeCss}</style>`,
+    `</head><body>${html}`,
+    `<script>${safeJs}<\/script>`,
+    '</body></html>',
+  ].join('');
+}
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -16,6 +30,25 @@ export default function ProjectDetail() {
     () => project ? data.categories.find((c) => c.slug === project.category) : undefined,
     [data.categories, project],
   );
+
+  // Live Demo state
+  const [demoKey, setDemoKey] = useState(0);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const demoContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onFsc = () => setIsFullscreen(!!document.fullscreenElement);
+    document.addEventListener('fullscreenchange', onFsc);
+    return () => document.removeEventListener('fullscreenchange', onFsc);
+  }, []);
+
+  function toggleFullscreen() {
+    if (isFullscreen) {
+      document.exitFullscreen();
+    } else {
+      demoContainerRef.current?.requestFullscreen();
+    }
+  }
 
   if (!project) {
     return (
@@ -198,6 +231,85 @@ export default function ProjectDetail() {
                 </div>
               )}
             </div>
+
+            {/* ── Live Code Demo ───────────────────────────────────────────── */}
+            {project.codeRunnerEnabled && project.codeHtml && (
+              <div className="glass-card overflow-hidden">
+                {/* Header bar */}
+                <div
+                  className="flex items-center justify-between px-6 py-4"
+                  style={{ borderBottom: '1px solid var(--border)' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <span
+                      className="text-xs font-bold px-2.5 py-1 rounded-full"
+                      style={{
+                        background: 'linear-gradient(135deg,var(--orange),var(--orange2))',
+                        color: '#fff',
+                      }}
+                    >
+                      LIVE
+                    </span>
+                    <h2
+                      className="text-2xl font-bold"
+                      style={{ fontFamily: 'var(--font-head)', color: 'var(--white)' }}
+                    >
+                      Live Demo
+                    </h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setDemoKey((k) => k + 1)}
+                      title="Reset demo"
+                      className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        color: 'var(--muted)',
+                        border: '1px solid var(--border)',
+                      }}
+                    >
+                      <span style={{ fontSize: '1rem' }}>↺</span> Reset
+                    </button>
+                    <button
+                      onClick={toggleFullscreen}
+                      title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+                      className="flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg transition-colors"
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        color: 'var(--muted)',
+                        border: '1px solid var(--border)',
+                      }}
+                    >
+                      <span style={{ fontSize: '1rem' }}>{isFullscreen ? '⊠' : '⛶'}</span>
+                      {isFullscreen ? 'Exit' : 'Fullscreen'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Sandboxed iframe - allow-scripts only, no allow-same-origin */}
+                <div
+                  ref={demoContainerRef}
+                  className="w-full"
+                  style={{
+                    height: isFullscreen ? '100vh' : 'clamp(300px, 50vw, 500px)',
+                    background: '#fff',
+                  }}
+                >
+                  <iframe
+                    key={demoKey}
+                    srcDoc={buildSrcDoc(
+                      project.codeHtml,
+                      project.codeCss ?? '',
+                      project.codeJs ?? '',
+                    )}
+                    sandbox="allow-scripts"
+                    title="Live Project Demo"
+                    className="w-full h-full"
+                    style={{ border: 'none' }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Student Story */}
             <div className="glass-card p-8">

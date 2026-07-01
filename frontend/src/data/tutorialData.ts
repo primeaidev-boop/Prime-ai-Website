@@ -422,7 +422,7 @@ export const DEFAULT_TUTORIAL_DATA: TutorialPageData = {
 // Under the new design, locked:true = admin force-lock, unlockRule alone controls gating.
 // This pure function normalises any data source (localStorage OR server) so sequential
 // lessons that were saved with locked:true get reset to locked:false.
-// Idempotent — safe to run on every load.
+// Idempotent - safe to run on every load.
 const PROGRESS_BASED_RULES = new Set([
   'sequential', 'mark-complete', 'read-fully', 'pass-quiz', 'watch-video', 'quiz', 'custom',
 ]);

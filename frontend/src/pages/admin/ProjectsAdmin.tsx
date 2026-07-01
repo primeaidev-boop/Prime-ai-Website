@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import Editor from '@monaco-editor/react';
 import { loadProjectsData, saveProjectsData, generateId, slugify } from '@/data/projectsData';
 import type {
   ProjectPageData,
@@ -9,6 +10,23 @@ import type {
 } from '@/types';
 
 type AdminTab = 'projects' | 'categories' | 'content';
+type CodeTab = 'html' | 'css' | 'js' | 'preview';
+
+// Builds the full HTML document injected into the sandboxed preview iframe.
+function buildSrcDoc(html: string, css: string, js: string): string {
+  // Escape closing tags so they can't break out of their container tag.
+  const safeJs = js.replace(/<\/script>/gi, '<\\/script>');
+  const safeCss = css.replace(/<\/style>/gi, '<\\/style>');
+  return [
+    '<!DOCTYPE html><html><head>',
+    '<meta charset="utf-8">',
+    '<meta name="viewport" content="width=device-width,initial-scale=1">',
+    `<style>*{box-sizing:border-box}body{margin:0;padding:16px}${safeCss}</style>`,
+    `</head><body>${html}`,
+    `<script>${safeJs}<\/script>`,
+    '</body></html>',
+  ].join('');
+}
 
 // ── Empty templates ───────────────────────────────────────────────────────────
 
@@ -37,6 +55,10 @@ function emptyProject(): Project {
     impactStats: [{ id: generateId(), value: '', label: '' }],
     liveDemoUrl: '',
     sourceCodeUrl: '',
+    codeRunnerEnabled: false,
+    codeHtml: '',
+    codeCss: '',
+    codeJs: '',
     visible: true,
     order: 0,
   };
@@ -642,6 +664,7 @@ function ProjectEditModal({
   onClose: () => void;
 }) {
   const [p, setP] = useState<Project>(initial);
+  const [codeTab, setCodeTab] = useState<CodeTab>('html');
 
   const updateP = useCallback(<K extends keyof Project>(field: K, value: Project[K]) => {
     setP((prev) => ({ ...prev, [field]: value }));
@@ -958,6 +981,107 @@ function ProjectEditModal({
                   <input className="admin-input" type="url" value={p.sourceCodeUrl ?? ''} placeholder="https://github.com/..." onChange={(e) => updateP('sourceCodeUrl', e.target.value)} />
                 </Field>
               </div>
+            </Section>
+
+            {/* Live Code Demo */}
+            <Section title="Live Code Demo">
+              <label className="flex items-center gap-2.5 text-sm cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={p.codeRunnerEnabled ?? false}
+                  onChange={(e) => updateP('codeRunnerEnabled', e.target.checked)}
+                  className="accent-cyan-400 w-4 h-4"
+                />
+                <span style={{ color: 'var(--muted)' }}>
+                  Enable Live Demo - embeds an interactive code runner on the public project page
+                </span>
+              </label>
+
+              {p.codeRunnerEnabled && (
+                <div className="flex flex-col gap-4 mt-1">
+                  {/* Tab bar */}
+                  <div className="flex gap-1.5">
+                    {(['html', 'css', 'js', 'preview'] as const).map((tab) => (
+                      <button
+                        key={tab}
+                        type="button"
+                        onClick={() => setCodeTab(tab)}
+                        className="px-4 py-1.5 text-xs font-bold rounded-md transition-colors"
+                        style={{
+                          background: codeTab === tab ? 'var(--electric)' : 'rgba(255,255,255,0.06)',
+                          color: codeTab === tab ? '#020818' : 'var(--muted)',
+                          border: `1px solid ${codeTab === tab ? 'var(--electric)' : 'var(--border)'}`,
+                        }}
+                      >
+                        {tab === 'preview' ? '▶ Preview' : tab.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Editors */}
+                  {codeTab !== 'preview' && (
+                    <div
+                      style={{
+                        border: '1px solid var(--border)',
+                        borderRadius: '0.5rem',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <Editor
+                        height="320px"
+                        language={codeTab === 'js' ? 'javascript' : codeTab}
+                        theme="vs-dark"
+                        value={
+                          codeTab === 'html' ? (p.codeHtml ?? '')
+                          : codeTab === 'css'  ? (p.codeCss ?? '')
+                          :                      (p.codeJs ?? '')
+                        }
+                        onChange={(v) =>
+                          updateP(
+                            codeTab === 'html' ? 'codeHtml'
+                            : codeTab === 'css' ? 'codeCss'
+                            :                    'codeJs',
+                            v ?? '',
+                          )
+                        }
+                        options={{
+                          minimap: { enabled: false },
+                          wordWrap: 'on',
+                          fontSize: 13,
+                          lineNumbers: 'on',
+                          scrollBeyondLastLine: false,
+                          tabSize: 2,
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {/* Inline preview */}
+                  {codeTab === 'preview' && (
+                    <div
+                      style={{
+                        border: '1px solid var(--border)',
+                        borderRadius: '0.5rem',
+                        overflow: 'hidden',
+                        height: '400px',
+                        background: '#fff',
+                      }}
+                    >
+                      <iframe
+                        srcDoc={buildSrcDoc(p.codeHtml ?? '', p.codeCss ?? '', p.codeJs ?? '')}
+                        sandbox="allow-scripts"
+                        title="Admin live preview"
+                        className="w-full h-full"
+                        style={{ border: 'none' }}
+                      />
+                    </div>
+                  )}
+
+                  <p className="text-xs" style={{ color: 'var(--muted)' }}>
+                    HTML body content · CSS styles · JavaScript - rendered in a fully sandboxed iframe on the public project page. Switch to Preview to check the output before saving.
+                  </p>
+                </div>
+              )}
             </Section>
           </div>
         </form>
