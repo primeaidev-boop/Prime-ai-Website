@@ -43,21 +43,47 @@ export default function ProjectDetail() {
   );
 
   // Live Demo state
+  const DEMO_SCALE = 0.85; // iframe zoom — content renders at compact/tablet width
   const [demoKey, setDemoKey] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const demoContainerRef = useRef<HTMLDivElement>(null);
+  const [nativeFsActive, setNativeFsActive] = useState(false);
+  const [isCssFullscreen, setIsCssFullscreen] = useState(false);
+  const isFullscreen = nativeFsActive || isCssFullscreen;
+  const demoRef = useRef<HTMLDivElement>(null); // outer card — used for native fullscreen
 
+  // Native fullscreen events (desktop Chrome/Firefox/Android)
   useEffect(() => {
-    const onFsc = () => setIsFullscreen(!!document.fullscreenElement);
+    const onFsc = () => setNativeFsActive(!!document.fullscreenElement);
     document.addEventListener('fullscreenchange', onFsc);
     return () => document.removeEventListener('fullscreenchange', onFsc);
   }, []);
 
+  // Escape closes CSS overlay fullscreen (iOS / fallback)
+  useEffect(() => {
+    if (!isCssFullscreen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setIsCssFullscreen(false); };
+    document.addEventListener('keydown', onKey);
+    // Prevent background scroll while overlay is open
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [isCssFullscreen]);
+
   function toggleFullscreen() {
-    if (isFullscreen) {
-      document.exitFullscreen();
+    // Dismiss either mode
+    if (isCssFullscreen) { setIsCssFullscreen(false); return; }
+    if (nativeFsActive) { document.exitFullscreen(); return; }
+
+    // Try native Fullscreen API (desktop + Android Chrome)
+    if (document.fullscreenEnabled && demoRef.current) {
+      demoRef.current.requestFullscreen().catch(() => {
+        // Rejected — iOS Safari or restricted context; fall back to CSS overlay
+        setIsCssFullscreen(true);
+      });
     } else {
-      demoContainerRef.current?.requestFullscreen();
+      // iOS Safari: fullscreenEnabled is false/undefined — always use CSS overlay
+      setIsCssFullscreen(true);
     }
   }
 
@@ -245,11 +271,25 @@ export default function ProjectDetail() {
 
             {/* ── Live Code Demo ───────────────────────────────────────────── */}
             {project.codeRunnerEnabled && project.codeHtml && (
-              <div className="glass-card overflow-hidden">
-                {/* Header bar */}
+              <div
+                ref={demoRef}
+                className="glass-card overflow-hidden"
+                style={isFullscreen ? {
+                  // CSS overlay fullscreen (iOS + fallback) OR native fullscreen layout
+                  ...(isCssFullscreen ? {
+                    position: 'fixed',
+                    inset: 0,
+                    zIndex: 9999,
+                    borderRadius: 0,
+                  } : {}),
+                  display: 'flex',
+                  flexDirection: 'column',
+                } : {}}
+              >
+                {/* Header bar — unchanged */}
                 <div
                   className="flex items-center justify-between px-6 py-4"
-                  style={{ borderBottom: '1px solid var(--border)' }}
+                  style={{ borderBottom: '1px solid var(--border)', flexShrink: 0 }}
                 >
                   <div className="flex items-center gap-3">
                     <span
@@ -297,13 +337,15 @@ export default function ProjectDetail() {
                   </div>
                 </div>
 
-                {/* Sandboxed iframe - allow-scripts only, no allow-same-origin */}
+                {/* Sandboxed iframe — allow-scripts only, no allow-same-origin */}
                 <div
-                  ref={demoContainerRef}
-                  className="w-full"
                   style={{
-                    height: isFullscreen ? '100vh' : 'clamp(300px, 50vw, 500px)',
+                    // Fill remaining space in fullscreen; fixed height otherwise
+                    flex: isFullscreen ? '1 1 0' : undefined,
+                    height: isFullscreen ? undefined : 'clamp(300px, 50vw, 500px)',
                     background: '#fff',
+                    overflow: 'hidden',
+                    position: 'relative',
                   }}
                 >
                   <iframe
@@ -315,8 +357,16 @@ export default function ProjectDetail() {
                     )}
                     sandbox="allow-scripts"
                     title="Live Project Demo"
-                    className="w-full h-full"
-                    style={{ border: 'none' }}
+                    style={{
+                      border: 'none',
+                      display: 'block',
+                      // Scale content to ~85% so the demo reads as a compact
+                      // tablet-style preview on all screen sizes and viewports.
+                      width: `${(100 / DEMO_SCALE).toFixed(1)}%`,
+                      height: `${(100 / DEMO_SCALE).toFixed(1)}%`,
+                      transform: `scale(${DEMO_SCALE})`,
+                      transformOrigin: 'top left',
+                    }}
                   />
                 </div>
               </div>
