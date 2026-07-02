@@ -11,7 +11,7 @@ function buildSrcDoc(html: string, css: string, js: string): string {
   // window.localStorage throws SecurityError and kills the entire script.
   // This shim catches that error and installs an in-memory replacement so
   // games and apps that call localStorage without try/catch still run.
-  // Scores/prefs won't persist across page refreshes — everything else works.
+  // Scores/prefs won't persist across page refreshes - everything else works.
   const storagePatch =
     '<script>(function(){' +
     'function mem(){var s={};return{' +
@@ -64,12 +64,12 @@ export default function ProjectDetail() {
   );
 
   // Live Demo state
-  const DEMO_SCALE = 0.85; // iframe zoom — content renders at compact/tablet width
+  const DEMO_SCALE = 0.85; // iframe zoom - content renders at compact/tablet width
   const [demoKey, setDemoKey] = useState(0);
   const [nativeFsActive, setNativeFsActive] = useState(false);
   const [isCssFullscreen, setIsCssFullscreen] = useState(false);
   const isFullscreen = nativeFsActive || isCssFullscreen;
-  const demoRef = useRef<HTMLDivElement>(null); // outer card — used for native fullscreen
+  const demoRef = useRef<HTMLDivElement>(null); // outer card - used for native fullscreen
 
   // Native fullscreen events (desktop Chrome/Firefox/Android)
   useEffect(() => {
@@ -99,11 +99,11 @@ export default function ProjectDetail() {
     // Try native Fullscreen API (desktop + Android Chrome)
     if (document.fullscreenEnabled && demoRef.current) {
       demoRef.current.requestFullscreen().catch(() => {
-        // Rejected — iOS Safari or restricted context; fall back to CSS overlay
+        // Rejected - iOS Safari or restricted context; fall back to CSS overlay
         setIsCssFullscreen(true);
       });
     } else {
-      // iOS Safari: fullscreenEnabled is false/undefined — always use CSS overlay
+      // iOS Safari: fullscreenEnabled is false/undefined - always use CSS overlay
       setIsCssFullscreen(true);
     }
   }
@@ -307,7 +307,7 @@ export default function ProjectDetail() {
                   flexDirection: 'column',
                 } : {}}
               >
-                {/* Header bar — unchanged */}
+                {/* Header bar - unchanged */}
                 <div
                   className="flex items-center justify-between px-6 py-4"
                   style={{ borderBottom: '1px solid var(--border)', flexShrink: 0 }}
@@ -358,7 +358,7 @@ export default function ProjectDetail() {
                   </div>
                 </div>
 
-                {/* Sandboxed iframe — allow-scripts only, no allow-same-origin */}
+                {/* Sandboxed iframe - allow-scripts only, no allow-same-origin */}
                 <div
                   style={{
                     // Fill remaining space in fullscreen; fixed height otherwise

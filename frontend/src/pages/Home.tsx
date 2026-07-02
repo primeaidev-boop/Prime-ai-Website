@@ -523,8 +523,8 @@ export default function Home() {
 
         {/* Mobile: horizontal scroll */}
         <div
-          className="md:hidden flex gap-4 overflow-x-auto pb-4 -mx-6 px-6"
-          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}
+          className="md:hidden flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-6 px-6"
+          style={{ scrollSnapType: 'x mandatory' }}
         >
           {TESTIMONIALS.map((t) => (
             <div key={t.name} style={{ minWidth: '78vw', maxWidth: '78vw', scrollSnapAlign: 'start', flexShrink: 0 }}>

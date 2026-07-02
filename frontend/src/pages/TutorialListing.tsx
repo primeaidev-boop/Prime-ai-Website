@@ -520,13 +520,13 @@ export default function TutorialListing() {
             />
           </div>
 
-          {/* Category pills */}
-          <div className="flex flex-wrap gap-2">
+          {/* Category pills — horizontal scroll on mobile so they never wrap */}
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {filterPills.map((pill) => (
               <button
                 key={pill}
                 onClick={() => setActiveCategory(pill)}
-                className="px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200"
+                className="shrink-0 px-4 py-1.5 rounded-full text-sm font-semibold transition-all duration-200"
                 style={
                   activeCategory === pill
                     ? { background: 'var(--electric)', color: 'var(--navy)' }

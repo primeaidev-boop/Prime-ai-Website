@@ -1,4 +1,4 @@
-# PRIM AI Institute — Project Reference
+# PRIM AI Institute - Project Reference
 
 **Client:** STAD Solution, Ahmedabad, India  
 **Developer:** Mouryrajsinh Jadeja  
@@ -25,20 +25,20 @@
 
 ---
 
-## Phase 1 — Marketing Site + Lead Gen (Complete)
+## Phase 1 - Marketing Site + Lead Gen (Complete)
 
 - Public marketing pages: Home, About, Courses listing, Contact
-- Demo booking form — stored in PostgreSQL, WhatsApp alert via MSG91
-- Contact/enquiry form — stored in PostgreSQL, WhatsApp alert via MSG91
+- Demo booking form - stored in PostgreSQL, WhatsApp alert via MSG91
+- Contact/enquiry form - stored in PostgreSQL, WhatsApp alert via MSG91
 - Admin dashboard with JWT authentication (bcrypt passwords)
 - Lead management: status updates (NEW/CONTACTED/CONVERTED/LOST), notes, CSV export
-- Site settings CMS — editable key/value pairs from admin panel
+- Site settings CMS - editable key/value pairs from admin panel
 - Rate limiting (100 req / 15 min per IP via Throttler)
 - CORS locked to frontend URL
 
 ---
 
-## Phase 2 — Tutorial System (Complete)
+## Phase 2 - Tutorial System (Complete)
 
 ### Public Tutorial Listing (`/tutorials`)
 - Category filter tabs with visibility toggle
@@ -51,9 +51,9 @@
 - Sidebar with chapter + lesson tree
 - Sequential lesson unlock (previous lesson must be completed to access next)
 - Unlock rules: `sequential`, `mark-complete`, `free`, `pass-quiz`, `read-fully`, `watch-video`, `manual`
-- `isFree` flag overrides locks — always accessible regardless of progress
+- `isFree` flag overrides locks - always accessible regardless of progress
 - Admin `manual` lock = permanent gate regardless of user progress
-- Lesson complete button — marks progress in localStorage, immediately unlocks next lesson in sidebar
+- Lesson complete button - marks progress in localStorage, immediately unlocks next lesson in sidebar
 - Progress persists across page refresh
 - Next → button navigates to the next accessible lesson
 
@@ -83,14 +83,14 @@
 - Prompt templates link
 - Admin-editable per tutorial
 
-### Tutorial CMS (admin — `/admin/tutorials`)
+### Tutorial CMS (admin - `/admin/tutorials`)
 - Full CRUD for tutorials, chapters, lessons, content blocks
 - Drag-reorder for lessons and blocks
 - TipTap rich text editor for `richText` blocks
 - Monaco editor for `code` blocks
 - Backend persistence: JSON blob stored in `site_settings` table (`key = tutorial_data`)
-- `GET /tutorials/data` — public, no auth
-- `PUT /tutorials/data` — JWT required
+- `GET /tutorials/data` - public, no auth
+- `PUT /tutorials/data` - JWT required
 
 ### Tutorial Leads
 - Email capture on newsletter strip
@@ -98,7 +98,7 @@
 
 ---
 
-## Phase 3 — Courses Module (Complete)
+## Phase 3 - Courses Module (Complete)
 
 - Three course levels: L1 Foundation, L2A Generalist, L2B Developer
 - Per-course pages with: Who It's For, Curriculum Modules, Tools, Outcomes, Before/After, Eligibility, FAQs, Testimonials
@@ -120,7 +120,7 @@
 ### Project Detail (`/projects/:slug`)
 - Full-width cover hero with action buttons (Live Demo, Source Code)
 - About the Project: Problem, Solution, Key Features
-- **Live Code Demo** — sandboxed iframe (`sandbox="allow-scripts"` only, never `allow-same-origin`)
+- **Live Code Demo** - sandboxed iframe (`sandbox="allow-scripts"` only, never `allow-same-origin`)
   - Authored in admin with Monaco editor (HTML / CSS / JS tabs + live preview)
   - Rendered via `srcDoc`, never written to server
   - Reset + Fullscreen buttons
@@ -135,8 +135,8 @@
 - Category management tab
 - Hero + stats content tab
 - Save publishes to PostgreSQL (`site_settings` table, `key = projects_data`)
-- `GET /projects/data` — public, no auth
-- `PUT /projects/data` — JWT required
+- `GET /projects/data` - public, no auth
+- `PUT /projects/data` - JWT required
 
 ### Data Architecture
 - Backend PostgreSQL is the **source of truth** for all project data
@@ -180,7 +180,7 @@ Triggers: new demo booking, new enquiry.
 | `bookings` | `demo_bookings` | Public POST + admin CRUD + CSV |
 | `enquiries` | `enquiries` | Public POST + admin CRUD + CSV |
 | `auth` | `admins` | JWT login, bcrypt |
-| `admin` | — | Dashboard stats + recent leads |
+| `admin` | - | Dashboard stats + recent leads |
 | `settings` | `site_settings` | Key/value CMS store |
 | `media` | filesystem `/uploads` | File upload + static serve |
 | `blog` | `blog_posts` | Admin CRUD + public read |
@@ -188,7 +188,7 @@ Triggers: new demo booking, new enquiry.
 | `tutorials` | `site_settings` (key: `tutorial_data`) | JSON blob |
 | `tutorial-leads` | `tutorial_leads` | Email capture |
 | `projects` | `site_settings` (key: `projects_data`) | JSON blob |
-| `notifications` | — | MSG91 / console |
+| `notifications` | - | MSG91 / console |
 
 ---
 

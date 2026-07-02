@@ -101,8 +101,8 @@ export default function Contact() {
               </div>
             </a>
 
-            {/* 2×2 info grid */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* 2×2 info grid — 1-col on mobile, 2-col on sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Phone */}
               <a
                 href={`tel:${s.contactPhone.replace(/\s/g, '')}`}

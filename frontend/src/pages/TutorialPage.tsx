@@ -467,7 +467,7 @@ function CenterContent({
     : 'Mark as Complete';
 
   return (
-    <div className="max-w-[860px] mx-auto px-6 md:px-12 pt-24 pb-28">
+    <div className="max-w-[860px] mx-auto px-6 md:px-12 pt-28 lg:pt-24 pb-28">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-[11px] mb-8 flex-wrap" style={{ color: 'var(--muted)' }}>
         <Link to="/tutorials" className="hover:underline" style={{ color: 'var(--muted)' }}>Tutorials</Link>
@@ -600,6 +600,7 @@ export default function TutorialPage() {
   // ── Real progress state ──────────────────────────────────────────────────────
   const [progress, setProgress] = useState<UserProgress>(() => loadUserProgress());
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [tocOpen, setTocOpen] = useState(false);
   const [lockedBanner, setLockedBanner] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showCertModal, setShowCertModal] = useState(false);
@@ -773,6 +774,37 @@ export default function TutorialPage() {
         </div>
       )}
 
+      {/* TOC / right-sidebar drawer — slides in from the right, below xl */}
+      {tocOpen && (
+        <div className="xl:hidden fixed inset-0 z-40">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setTocOpen(false)} />
+          <aside
+            className="absolute top-0 right-0 w-[280px] h-full z-50 flex flex-col"
+            style={{ background: 'rgba(2,6,18,0.99)', borderLeft: '1px solid var(--border)' }}
+          >
+            {/* Drawer header */}
+            <div
+              className="flex items-center justify-between px-4 py-3 shrink-0"
+              style={{ borderBottom: '1px solid var(--border)' }}
+            >
+              <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'var(--muted)' }}>
+                Contents
+              </span>
+              <button onClick={() => setTocOpen(false)} className="p-1 text-lg" style={{ color: 'var(--muted)' }}>✕</button>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <RightSidebar
+                lesson={currentLesson}
+                tutorial={tutorial}
+                sessionTime={sessionTime}
+                isSaved={isSaved}
+                onToggleSave={handleToggleSave}
+              />
+            </div>
+          </aside>
+        </div>
+      )}
+
       {/* Mobile lesson toggle button */}
       <button
         onClick={() => setSidebarOpen(true)}
@@ -780,6 +812,15 @@ export default function TutorialPage() {
         style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.25)', color: 'var(--electric)' }}
       >
         ☰ Lessons
+      </button>
+
+      {/* Contents / TOC toggle button — visible below xl where the right sidebar is hidden */}
+      <button
+        onClick={() => setTocOpen(true)}
+        className="xl:hidden fixed top-[68px] right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium"
+        style={{ background: 'rgba(0,212,255,0.1)', border: '1px solid rgba(0,212,255,0.25)', color: 'var(--electric)' }}
+      >
+        Contents ☰
       </button>
 
       {/* Center content */}

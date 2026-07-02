@@ -367,7 +367,7 @@ export default function Projects() {
           }}
         >
           <div className="max-w-6xl mx-auto">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-hide">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 md:pb-0">
               {visibleCategories.map((cat) => (
                 <button
                   key={cat.slug}

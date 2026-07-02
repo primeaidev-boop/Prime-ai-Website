@@ -179,6 +179,17 @@ textarea::placeholder {
   color: var(--muted);
 }
 
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23A8B8D0' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.75rem;
+  cursor: pointer;
+}
+
 select option {
   background: #0d1a2d;
   color: var(--white);
@@ -282,6 +293,7 @@ select option {
 }
 
 /* Hide scrollbar for carousel rows */
+.no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
 /* ─── Hero Graphic Animations ────────────────────────── */

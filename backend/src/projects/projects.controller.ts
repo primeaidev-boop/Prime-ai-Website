@@ -8,14 +8,14 @@ import { ProjectsService } from './projects.service';
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  /** Public — any visitor fetches the live projects data */
+  /** Public - any visitor fetches the live projects data */
   @Get('data')
   @Header('Cache-Control', 'no-store')
   async getData() {
     return this.projectsService.getData();
   }
 
-  /** Admin-only — persists the full projects payload to the DB */
+  /** Admin-only - persists the full projects payload to the DB */
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Put('data')

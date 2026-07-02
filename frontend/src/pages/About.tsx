@@ -76,7 +76,7 @@ export default function About() {
               {s.aboutBadgeText}
             </div>
             <h1
-              className="text-4xl md:text-6xl font-bold leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
               style={{ fontFamily: 'var(--font-head)', letterSpacing: '-1px', color: 'var(--white)' }}
             >
               {s.aboutHeroH1}

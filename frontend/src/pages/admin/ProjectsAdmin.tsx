@@ -13,6 +13,43 @@ import type {
 type AdminTab = 'projects' | 'categories' | 'content';
 type CodeTab = 'html' | 'css' | 'js' | 'preview';
 
+/**
+ * Converts any Google Drive share URL to a thumbnail URL that browsers can
+ * load as an <img> src. The /thumbnail endpoint always returns a real JPEG
+ * (unlike uc?export=view which returns an HTML warning page for large files).
+ *
+ * Handles both common Drive share formats:
+ *   https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+ *   https://drive.google.com/open?id=FILE_ID
+ *
+ * Non-Drive URLs are returned unchanged.
+ */
+function convertImageUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return trimmed;
+
+  const driveId = (() => {
+    // Format 1: /file/d/FILE_ID/
+    const m1 = trimmed.match(/drive\.google\.com\/file\/d\/([^/?#]+)/);
+    if (m1) return m1[1];
+    // Format 2: ?id=FILE_ID or &id=FILE_ID
+    const m2 = trimmed.match(/drive\.google\.com\/.*[?&]id=([^&#+]+)/);
+    if (m2) return m2[1];
+    return null;
+  })();
+
+  if (driveId) {
+    // /thumbnail?sz=w1200 always returns a real image - never an HTML interstitial
+    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
+  }
+
+  // Also upgrade any previously-saved uc?export=view URLs
+  const ucId = trimmed.match(/drive\.google\.com\/uc\?.*[?&]?id=([^&#+]+)/);
+  if (ucId) return `https://drive.google.com/thumbnail?id=${ucId[1]}&sz=w1200`;
+
+  return trimmed;
+}
+
 // Builds the full HTML document injected into the sandboxed preview iframe.
 function buildSrcDoc(html: string, css: string, js: string): string {
   // Escape closing tags so they can't break out of their container tag.
@@ -137,7 +174,7 @@ export default function ProjectsAdmin() {
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch {
-      // Silent — localStorage already saved; backend may be unreachable
+      // Silent - localStorage already saved; backend may be unreachable
       saveProjectsData(data);
     } finally {
       setSaving(false);
@@ -837,9 +874,39 @@ function ProjectEditModal({
                   <input
                     className="admin-input"
                     value={p.coverImageUrl ?? ''}
-                    onChange={(e) => updateP('coverImageUrl', e.target.value)}
-                    placeholder="https://..."
+                    onChange={(e) => updateP('coverImageUrl', convertImageUrl(e.target.value))}
+                    placeholder="Paste any image URL or Google Drive share link"
                   />
+                  {p.coverImageUrl && (
+                    <div
+                      className="mt-2 overflow-hidden rounded-lg"
+                      style={{ border: '1px solid var(--border)' }}
+                    >
+                      <img
+                        key={p.coverImageUrl}
+                        src={p.coverImageUrl}
+                        alt="Cover preview"
+                        className="w-full object-cover"
+                        style={{ maxHeight: 160 }}
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = 'none';
+                          const msg = e.currentTarget.nextElementSibling as HTMLElement | null;
+                          if (msg) msg.style.display = 'block';
+                        }}
+                        onLoad={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = 'block';
+                          const msg = e.currentTarget.nextElementSibling as HTMLElement | null;
+                          if (msg) msg.style.display = 'none';
+                        }}
+                      />
+                      <p
+                        className="text-xs px-3 py-2"
+                        style={{ color: 'var(--orange)', display: 'none' }}
+                      >
+                        Image failed to load - check the URL or make sure the Google Drive file is shared as "Anyone with the link can view".
+                      </p>
+                    </div>
+                  )}
                 </Field>
                 <Field className="md:col-span-2"><label className="admin-label">Short Description</label>
                   <textarea
