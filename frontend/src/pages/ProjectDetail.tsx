@@ -2,6 +2,7 @@ import { useMemo, useState, useRef, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { loadProjectsData, saveProjectsData } from '@/data/projectsData';
 import { getProjectsData } from '@/api/projects';
+import { BlockRenderer } from '@/components/tutorial/BlockRenderer';
 import type { ProjectPageData } from '@/types';
 
 function buildSrcDoc(html: string, css: string, js: string): string {
@@ -289,6 +290,15 @@ export default function ProjectDetail() {
                 </div>
               )}
             </div>
+
+            {/* ── Rich Content Blocks ──────────────────────────────────────── */}
+            {project.contentBlocks && project.contentBlocks.length > 0 && (
+              <div className="flex flex-col gap-6">
+                {project.contentBlocks.map((block) => (
+                  <BlockRenderer key={block.id} block={block} />
+                ))}
+              </div>
+            )}
 
             {/* ── Live Code Demo ───────────────────────────────────────────── */}
             {project.codeRunnerEnabled && project.codeHtml && (

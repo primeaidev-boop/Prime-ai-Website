@@ -82,7 +82,7 @@ function LockedBanner({ visible }: { visible: boolean }) {
         transform: visible ? 'translateY(0)' : 'translateY(-8px)',
       }}
     >
-      🔒 Complete the previous lesson to unlock this one.
+      🔒 This lesson is locked. Please choose an available lesson.
     </div>
   );
 }
@@ -572,6 +572,7 @@ export default function TutorialPage() {
   const sessionTime = useSessionTimer();
 
   const [data, setData] = useState<TutorialPageData>(() => loadTutorialData());
+  const [serverDataLoaded, setServerDataLoaded] = useState(false);
 
   useEffect(() => {
     getTutorialData().then((serverData) => {
@@ -582,7 +583,7 @@ export default function TutorialPage() {
         setData(migrated);
         saveTutorialData(migrated);
       }
-    }).catch(() => {});
+    }).catch(() => {}).finally(() => setServerDataLoaded(true));
   }, []);
 
   const tutorial = data.tutorials.find((t) => t.slug === slug);
@@ -608,6 +609,7 @@ export default function TutorialPage() {
   // ── Track view + start lesson on navigation ──────────────────────────────────
   useEffect(() => {
     if (!tutorial || !currentLesson) return;
+    if (!isLessonAccessible(currentLesson, allLessons, tutorial.id, progress)) return;
     recordTutorialView(tutorial.id);
     const updated = startLesson(tutorial.id, currentLesson.id);
     setProgress(updated);
@@ -618,14 +620,19 @@ export default function TutorialPage() {
   useEffect(() => {
     if (!tutorial || !currentLesson || !allLessons.length) return;
     if (!isLessonAccessible(currentLesson, allLessons, tutorial.id, progress)) {
-      const fallback = findFirstIncomplete(allLessons, tutorial.id, progress) ?? allLessons[0];
-      navigate(`/tutorials/${slug}/${fallback.slug}`, { replace: true });
+      const fallback =
+        findFirstIncomplete(allLessons, tutorial.id, progress) ??
+        allLessons.find((lesson) => isLessonAccessible(lesson, allLessons, tutorial.id, progress));
+
+      if (fallback && fallback.id !== currentLesson.id) {
+        navigate(`/tutorials/${slug}/${fallback.slug}`, { replace: true });
+      }
       setLockedBanner(true);
       const t = setTimeout(() => setLockedBanner(false), 4000);
       return () => clearTimeout(t);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentLesson?.id, tutorial?.id]);
+  }, [currentLesson?.id, tutorial?.id, progress]);
 
   // ── Auto-redirect /tutorials/:slug to first lesson ───────────────────────────
   useEffect(() => {
@@ -644,6 +651,12 @@ export default function TutorialPage() {
   const isSaved = progress.savedTutorials.includes(tutorial?.id ?? '');
 
   const certificate = progress.certificates.find((c) => c.tutorialId === (tutorial?.id ?? '')) ?? null;
+
+  const canAccessCurrentLesson = !!(
+    tutorial &&
+    currentLesson &&
+    isLessonAccessible(currentLesson, allLessons, tutorial.id, progress)
+  );
 
   // ── Navigation handler ───────────────────────────────────────────────────────
   const handleLessonNav = useCallback((lesson: Lesson) => {
@@ -695,6 +708,14 @@ export default function TutorialPage() {
   }, [tutorial?.id]);
 
   // ── Empty / error states ─────────────────────────────────────────────────────
+  if (!serverDataLoaded) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center pt-20 px-6" style={{ background: 'var(--navy)', color: 'var(--muted)' }}>
+        <div className="text-sm">Loading lesson...</div>
+      </div>
+    );
+  }
+
   if (!tutorial) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center pt-20 px-6" style={{ background: 'var(--navy)', color: 'var(--muted)' }}>
@@ -730,6 +751,24 @@ export default function TutorialPage() {
       <div className="min-h-screen flex flex-col items-center justify-center pt-20 px-6" style={{ background: 'var(--navy)', color: 'var(--muted)' }}>
         <p>Lesson not found.</p>
         <Link to={`/tutorials/${slug}`} className="btn-outline mt-4 px-6 py-2.5 text-sm">← Back to {tutorial.name}</Link>
+      </div>
+    );
+  }
+
+  if (!canAccessCurrentLesson) {
+    const firstAvailable = allLessons.find((lesson) => isLessonAccessible(lesson, allLessons, tutorial.id, progress));
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center pt-20 px-6" style={{ background: 'var(--navy)', color: 'var(--muted)' }}>
+        <div className="text-5xl mb-4">🔒</div>
+        <h1 className="text-xl font-bold mb-2 text-center" style={{ color: 'var(--white)', fontFamily: 'Montserrat, sans-serif' }}>Lesson locked</h1>
+        <p className="mb-6 text-center">This lesson is not available right now.</p>
+        {firstAvailable ? (
+          <button onClick={() => handleLessonNav(firstAvailable)} className="btn-primary px-6 py-2.5 text-sm">
+            Go to Available Lesson
+          </button>
+        ) : (
+          <Link to="/tutorials" className="btn-outline px-6 py-2.5 text-sm">Browse Tutorials</Link>
+        )}
       </div>
     );
   }

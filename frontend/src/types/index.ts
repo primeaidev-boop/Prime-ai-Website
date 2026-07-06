@@ -458,6 +458,8 @@ export interface Project {
   codeHtml?: string;
   codeCss?: string;
   codeJs?: string;
+  // Rich content blocks rendered below "About the Project" on the detail page
+  contentBlocks?: ContentBlock[];
   // Admin controls
   visible: boolean;
   order: number;

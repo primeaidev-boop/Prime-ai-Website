@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { loadProjectsData, saveProjectsData, generateId, slugify } from '@/data/projectsData';
 import { getProjectsData, putProjectsData } from '@/api/projects';
+import { BlockEditorSection, PROJECT_ALLOWED_BLOCK_TYPES } from '@/components/shared/BlockEditor';
 import type {
   ProjectPageData,
   Project,
@@ -116,6 +117,7 @@ function emptyProject(): Project {
     codeHtml: '',
     codeCss: '',
     codeJs: '',
+    contentBlocks: [],
     visible: true,
     order: 0,
   };
@@ -1090,6 +1092,15 @@ function ProjectEditModal({
                   <input className="admin-input" type="url" value={p.sourceCodeUrl ?? ''} placeholder="https://github.com/..." onChange={(e) => updateP('sourceCodeUrl', e.target.value)} />
                 </Field>
               </div>
+            </Section>
+
+            {/* Project Content Blocks */}
+            <Section title="Project Content (optional rich blocks shown on detail page)">
+              <BlockEditorSection
+                blocks={p.contentBlocks ?? []}
+                onChange={(contentBlocks) => setP((prev) => ({ ...prev, contentBlocks }))}
+                allowedBlockTypes={PROJECT_ALLOWED_BLOCK_TYPES}
+              />
             </Section>
 
             {/* Live Code Demo */}
