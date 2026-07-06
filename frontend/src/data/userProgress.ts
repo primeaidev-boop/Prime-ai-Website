@@ -184,7 +184,16 @@ export function setLearnerName(name: string): UserProgress {
 
 /**
  * Returns true if the given lesson is accessible to the current user.
- * Reads the lesson's own unlockRule against the PREVIOUS lesson's progress.
+ *
+ * The admin panel's Locked checkbox IS the sequential gate:
+ *   - locked:false ("✓ Open" in admin)  → always accessible, regardless of progress
+ *   - locked:true  ("🔒 Locked" in admin) → a progress gate that auto-unlocks when the
+ *     PREVIOUS lesson satisfies this lesson's unlockRule (sequential = prev completed).
+ *     Completing lessons one by one unlocks the chain step by step.
+ *   - locked:true + unlockRule:'manual'   → permanent admin lock, never auto-unlocks.
+ *
+ * isFree deliberately does NOT bypass the lock — it controls the FREE pricing badge,
+ * not access. An admin-locked free lesson stays locked until the previous one is done.
  * Pass progressOverride to avoid a redundant localStorage read.
  */
 export function isLessonAccessible(
@@ -193,25 +202,21 @@ export function isLessonAccessible(
   tutorialId: string,
   progressOverride?: UserProgress,
 ): boolean {
-  // Free lessons are always accessible — the whole point of isFree is public access
-  if (lesson.isFree) return true;
+  // Admin marked it Open → always accessible
+  if (!lesson.locked) return true;
 
-  // Admin force-lock on non-free lessons: locked:true + unlockRule:manual = permanent gate.
-  // locked:true + any progress-based rule is a legacy/accidental marker; migrateLockedSemantics()
-  // strips it on every data load, but this is a last-resort safety net for stale data.
-  if (lesson.locked && lesson.unlockRule === 'manual') return false;
+  // Locked lessons: how do they unlock?
+  if (lesson.unlockRule === 'manual') return false; // admin-only, never auto-unlocks
+  if (lesson.unlockRule === 'free') return true;    // rule says always free access
 
   const idx = allLessons.findIndex((l) => l.id === lesson.id);
-  if (idx <= 0) return true; // first lesson always accessible
+  if (idx <= 0) return true; // first lesson can't wait on a previous one
 
   const prevLesson = allLessons[idx - 1];
   const p = progressOverride ?? loadUserProgress();
   const prev = p.tutorials[tutorialId]?.lessonsProgress[prevLesson.id];
 
   switch (lesson.unlockRule) {
-    case 'free':
-      return true;
-
     case 'pass-quiz':
     case 'quiz': // Phase 2 alias
       return prev?.quizPassed === true;
@@ -223,9 +228,6 @@ export function isLessonAccessible(
     case 'watch-video':
       // Video watched OR completed (falls back gracefully)
       return prev?.videoWatched === true || prev?.status === 'completed';
-
-    case 'manual':
-      return false; // Never unlocked client-side
 
     case 'sequential':
     case 'mark-complete':
