@@ -418,10 +418,31 @@ export const DEFAULT_TUTORIAL_DATA: TutorialPageData = {
 
 // ── localStorage helpers ──────────────────────────────────────────────────────
 
-// Kept for backward-compatible imports. Lock semantics are now simple:
-// locked:true is an admin force-lock; unlockRule controls progress-based gates.
+// locked:true only means a hard admin gate when paired with unlockRule:'manual'.
+// For every progress-based unlockRule (sequential, mark-complete, etc.) locked:true
+// is a legacy/accidental marker that must not block progression — this function
+// strips it so sequential lessons unlock automatically as the user completes them.
+// Idempotent - safe to run on every load.
+const PROGRESS_BASED_RULES = new Set([
+  'sequential', 'mark-complete', 'read-fully', 'pass-quiz', 'watch-video', 'quiz', 'custom',
+]);
+
 export function migrateLockedSemantics(data: TutorialPageData): TutorialPageData {
-  return data;
+  let changed = false;
+  const tutorials = data.tutorials.map((tut) => ({
+    ...tut,
+    chapters: (tut.chapters ?? []).map((ch) => ({
+      ...ch,
+      lessons: ch.lessons.map((l) => {
+        if (l.locked && PROGRESS_BASED_RULES.has(l.unlockRule)) {
+          changed = true;
+          return { ...l, locked: false };
+        }
+        return l;
+      }),
+    })),
+  }));
+  return changed ? { ...data, tutorials } : data;
 }
 
 export function loadTutorialData(): TutorialPageData {
