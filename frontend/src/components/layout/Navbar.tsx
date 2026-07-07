@@ -84,7 +84,7 @@ export function Navbar() {
       >
         <NavLink to="/" className="flex items-center">
           <img
-            src="/Asset%2016.svg"
+            src="/Asset%2025.svg"
             alt="PRIM AI Institute"
             className="h-9 w-auto"
             style={{ maxHeight: 36 }}
