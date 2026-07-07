@@ -310,7 +310,7 @@ export default function PrivacyPolicy() {
             <ContactBlock
               items={[
                 { icon: '📧', text: 'privacy@primai.in', href: 'mailto:privacy@primai.in' },
-                { icon: '📞', text: '+91 XXXXX XXXXX', href: 'tel:+91XXXXXXXXXX' },
+                { icon: '📞', text: '+91 7573055577', href: 'tel:+917573055577' },
                 { icon: '📍', text: 'PRIM AI Institute, Ahmedabad, Gujarat, India' },
                 { icon: '🕐', text: 'Response: 72 hours acknowledgment · 30 days resolution' },
               ]}
@@ -327,9 +327,9 @@ export default function PrivacyPolicy() {
             <ContactBlock
               items={[
                 { icon: '📍', text: 'Ahmedabad, Gujarat, India' },
-                { icon: '📞', text: '+91 XXXXX XXXXX', href: 'tel:+91XXXXXXXXXX' },
+                { icon: '📞', text: '+91 7573055577', href: 'tel:+917573055577' },
                 { icon: '✉️', text: 'info@primai.in', href: 'mailto:info@primai.in' },
-                { icon: '💬', text: 'WhatsApp: +91 XXXXX XXXXX' },
+                { icon: '💬', text: 'WhatsApp: +91 7573055577' },
                 { icon: '🕐', text: 'Monday to Friday, 9 AM – 7 PM' },
               ]}
             />

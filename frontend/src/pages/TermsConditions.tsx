@@ -364,8 +364,8 @@ export default function TermsConditions() {
               linkColor="var(--orange)"
               items={[
                 { icon: '📧', text: 'info@primai.in', href: 'mailto:info@primai.in' },
-                { icon: '📞', text: '+91 XXXXX XXXXX', href: 'tel:+91XXXXXXXXXX' },
-                { icon: '💬', text: 'WhatsApp: +91 XXXXX XXXXX' },
+                { icon: '📞', text: '+91 7573055577', href: 'tel:+917573055577' },
+                { icon: '💬', text: 'WhatsApp: +91 7573055577' },
                 { icon: '🕐', text: 'Response: 72 hours · Resolution: 30 days' },
               ]}
             />

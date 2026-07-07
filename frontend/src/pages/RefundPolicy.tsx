@@ -265,8 +265,8 @@ export default function RefundPolicy() {
           >
             {[
               { icon: '📧', text: 'info@primai.in',           href: 'mailto:info@primai.in' },
-              { icon: '📞', text: '+91 XXXXX XXXXX',          href: 'tel:+91XXXXXXXXXX' },
-              { icon: '💬', text: 'WhatsApp: +91 XXXXX XXXXX' },
+              { icon: '📞', text: '+91 7573055577',          href: 'tel:+917573055577' },
+              { icon: '💬', text: 'WhatsApp: +91 7573055577' },
               { icon: '📍', text: 'Ahmedabad, Gujarat, India' },
               { icon: '🕐', text: 'Monday to Friday, 9 AM – 7 PM' },
             ].map((item, i) => (
