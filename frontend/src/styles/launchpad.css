@@ -1,0 +1,181 @@
+/* Scoped design tokens for the 10-Day AI Launchpad campaign page only.
+   Deliberately distinct from globals.css's --navy/--electric/--orange system
+   (per product decision) — namespaced under --lp-* / .lp- so nothing here
+   ever collides with or overrides the site-wide tokens/classes used
+   everywhere else. Only imported by AiLaunchpad.tsx, so it code-splits with
+   that lazy route and never loads on any other page. */
+
+.launchpad-page {
+  --lp-navy: #0d1b2a;
+  --lp-bg: #0d0d0d;
+  --lp-orange: #f97316;
+  --lp-orange2: #fb923c;
+  --lp-blue: #3b82f6;
+  --lp-cyan: #22d3ee;
+  --lp-white: #ffffff;
+  --lp-muted: rgba(255, 255, 255, 0.65);
+  --lp-card: rgba(255, 255, 255, 0.045);
+  --lp-border: rgba(255, 255, 255, 0.09);
+  --lp-font-head: 'Montserrat', sans-serif;
+  --lp-font-body: 'Plus Jakarta Sans', sans-serif;
+
+  background: var(--lp-bg);
+  color: var(--lp-white);
+  font-family: var(--lp-font-body);
+  min-height: 100vh;
+}
+
+.lp-glass-card {
+  background: var(--lp-card);
+  border: 1px solid var(--lp-border);
+  border-radius: 1rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.lp-glass-card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.lp-glass-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(249, 115, 22, 0.25);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.lp-btn-primary {
+  background: linear-gradient(135deg, var(--lp-orange), var(--lp-orange2));
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-family: var(--lp-font-head);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lp-btn-primary:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.lp-btn-primary:active {
+  transform: translateY(0);
+}
+
+.lp-btn-outline {
+  background: transparent;
+  color: var(--lp-blue);
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-family: var(--lp-font-head);
+  border: 1px solid var(--lp-blue);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lp-btn-outline:hover {
+  background: var(--lp-blue);
+  color: var(--lp-bg);
+}
+
+.lp-section-tag {
+  display: inline-block;
+  color: var(--lp-cyan);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: var(--lp-font-head);
+}
+
+.lp-gradient-text {
+  background: linear-gradient(135deg, var(--lp-cyan), var(--lp-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.launchpad-page input[type='text'],
+.launchpad-page input[type='tel'],
+.launchpad-page select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--lp-border);
+  border-radius: 0.5rem;
+  color: var(--lp-white);
+  padding: 0.75rem 1rem;
+  font-family: var(--lp-font-body);
+  font-size: 0.95rem;
+  width: 100%;
+  transition: border-color 0.2s ease;
+  min-height: 44px;
+}
+
+.launchpad-page input:focus,
+.launchpad-page select:focus {
+  outline: none;
+  border-color: var(--lp-cyan);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.15);
+}
+
+.launchpad-page input::placeholder {
+  color: var(--lp-muted);
+}
+
+.launchpad-page select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23A8B8D0' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.75rem;
+  cursor: pointer;
+}
+
+.launchpad-page select option {
+  background: #12131a;
+  color: var(--lp-white);
+}
+
+@keyframes lp-pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .5; transform: scale(.8); }
+}
+.lp-pulse-dot { animation: lp-pulse-dot 2s infinite; }
+
+@keyframes lp-fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lp-anim-1 { opacity: 0; animation: lp-fade-up .8s .1s both; }
+.lp-anim-2 { opacity: 0; animation: lp-fade-up .8s .25s both; }
+.lp-anim-3 { opacity: 0; animation: lp-fade-up .8s .4s both; }
+.lp-anim-4 { opacity: 0; animation: lp-fade-up .8s .55s both; }
+
+.lp-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.lp-reveal.lp-visible { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-pulse-dot,
+  .lp-anim-1, .lp-anim-2, .lp-anim-3, .lp-anim-4 { animation: none; opacity: 1; }
+  .lp-reveal { opacity: 1; transform: none; transition: none; }
+}

@@ -35,6 +35,7 @@ const UserDashboard = lazy(() => import('@/pages/Dashboard'));
 const Projects = lazy(() => import('@/pages/Projects'));
 const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
 const ProjectsAdmin = lazy(() => import('@/pages/admin/ProjectsAdmin'));
+const AiLaunchpad = lazy(() => import('@/pages/AiLaunchpad'));
 
 function PublicLayout() {
   return (
@@ -102,6 +103,7 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<TermsConditions />} />
         <Route path="/refund-policy" element={<RefundPolicy />} />
+        <Route path="/programs/10-day-ai-launchpad" element={<AiLaunchpad />} />
       </Route>
 
       <Route path="/admin/login" element={
