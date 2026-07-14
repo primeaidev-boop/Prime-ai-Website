@@ -1,10 +1,15 @@
-import { useState, useEffect, useMemo, type ReactNode } from 'react';
+import { useState, useEffect, useMemo, lazy, Suspense, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { loadUserProgress, setLearnerName, toggleSaveTutorial } from '@/data/userProgress';
 import { loadTutorialData, saveTutorialData } from '@/data/tutorialData';
 import { getTutorialData } from '@/api/tutorials';
-import { CertificateModal } from '@/components/tutorial/CertificateModal';
 import type { UserProgress, Tutorial, Certificate, TutorialPageData } from '@/types';
+
+// Lazy: bundles html2canvas + jsPDF (~182 KB gzip) - only fetched when the
+// certificate modal is actually opened, not on every dashboard visit.
+const CertificateModal = lazy(() =>
+  import('@/components/tutorial/CertificateModal').then((m) => ({ default: m.CertificateModal })),
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -64,7 +69,7 @@ function TutorialCard({
       )}
       <div className="flex items-center gap-3">
         {tutorial.thumbnailUrl ? (
-          <img src={tutorial.thumbnailUrl} alt={tutorial.name} className="w-9 h-9 rounded-lg object-cover shrink-0" style={{ border: '1px solid var(--border)' }} />
+          <img src={tutorial.thumbnailUrl} alt={tutorial.name} loading="lazy" className="w-9 h-9 rounded-lg object-cover shrink-0" style={{ border: '1px solid var(--border)' }} />
         ) : (
           <div className="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-white text-xs shrink-0" style={{ background: tutorial.logoColor }}>
             {tutorial.logoInitials}
@@ -378,15 +383,17 @@ export default function Dashboard() {
 
       {/* Certificate modal */}
       {activeCert && (
-        <CertificateModal
-          certificate={{ ...activeCert, learnerName: progress.learnerName || activeCert.learnerName }}
-          onClose={() => setActiveCert(null)}
-          onNameSaved={(name) => {
-            const updated = loadUserProgress();
-            setProgress(updated);
-            setNameInput(name);
-          }}
-        />
+        <Suspense fallback={null}>
+          <CertificateModal
+            certificate={{ ...activeCert, learnerName: progress.learnerName || activeCert.learnerName }}
+            onClose={() => setActiveCert(null)}
+            onNameSaved={(name) => {
+              const updated = loadUserProgress();
+              setProgress(updated);
+              setNameInput(name);
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );

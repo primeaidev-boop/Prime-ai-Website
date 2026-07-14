@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback, lazy, Suspense } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { loadTutorialData, saveTutorialData, migrateLockedSemantics } from '@/data/tutorialData';
 import { getTutorialData } from '@/api/tutorials';
@@ -10,11 +10,16 @@ import {
 } from '@/data/userProgress';
 import { recordTutorialView } from '@/data/analyticsData';
 import { BlockRenderer, extractRichTextHeadings } from '@/components/tutorial/BlockRenderer';
-import { CertificateModal } from '@/components/tutorial/CertificateModal';
 import type {
   Tutorial, Chapter, Lesson, UserProgress,
   TutorialUpsell, Certificate,
 } from '@/types';
+
+// Lazy: bundles html2canvas + jsPDF (~182 KB gzip) - only fetched when the
+// certificate modal is actually opened, not on every lesson-page visit.
+const CertificateModal = lazy(() =>
+  import('@/components/tutorial/CertificateModal').then((m) => ({ default: m.CertificateModal })),
+);
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 
@@ -119,7 +124,7 @@ function LeftSidebar({
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             {tutorial.thumbnailUrl ? (
-              <img src={tutorial.thumbnailUrl} alt={tutorial.name} className="w-6 h-6 rounded object-cover shrink-0" style={{ border: '1px solid var(--border)' }} />
+              <img src={tutorial.thumbnailUrl} alt={tutorial.name} loading="lazy" className="w-6 h-6 rounded object-cover shrink-0" style={{ border: '1px solid var(--border)' }} />
             ) : (
               <div className="w-6 h-6 rounded text-[10px] font-bold text-white flex items-center justify-center shrink-0" style={{ background: tutorial.logoColor }}>
                 {tutorial.logoInitials}
@@ -731,7 +736,7 @@ export default function TutorialPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center pt-20 px-6" style={{ background: 'var(--navy)', color: 'var(--muted)' }}>
         {tutorial.thumbnailUrl ? (
-          <img src={tutorial.thumbnailUrl} alt={tutorial.name} className="w-16 h-16 rounded-2xl object-cover mb-6" style={{ border: '1px solid var(--border)' }} />
+          <img src={tutorial.thumbnailUrl} alt={tutorial.name} loading="lazy" className="w-16 h-16 rounded-2xl object-cover mb-6" style={{ border: '1px solid var(--border)' }} />
         ) : (
           <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold text-white mb-6" style={{ background: tutorial.logoColor }}>
             {tutorial.logoInitials}
@@ -935,17 +940,19 @@ export default function TutorialPage() {
 
       {/* Certificate modal */}
       {showCertModal && certificate && (
-        <CertificateModal
-          certificate={certificate}
-          onClose={() => setShowCertModal(false)}
-          onNameSaved={(name) => {
-            const updated = loadUserProgress();
-            setProgress(updated);
-            // Refresh certificate with updated name
-            const cert = updated.certificates.find((c) => c.tutorialId === tutorial.id);
-            if (cert) cert.learnerName = name;
-          }}
-        />
+        <Suspense fallback={null}>
+          <CertificateModal
+            certificate={certificate}
+            onClose={() => setShowCertModal(false)}
+            onNameSaved={(name) => {
+              const updated = loadUserProgress();
+              setProgress(updated);
+              // Refresh certificate with updated name
+              const cert = updated.certificates.find((c) => c.tutorialId === tutorial.id);
+              if (cert) cert.learnerName = name;
+            }}
+          />
+        </Suspense>
       )}
     </div>
   );
