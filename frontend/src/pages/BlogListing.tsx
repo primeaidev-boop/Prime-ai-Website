@@ -17,6 +17,7 @@ function PostCard({ post }: { post: BlogPost }) {
           <img
             src={post.coverImageUrl}
             alt={post.title}
+            loading="lazy"
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
@@ -50,7 +51,7 @@ function PostCard({ post }: { post: BlogPost }) {
           {post.showAuthor ? (
             <div className="flex items-center gap-2">
               {post.author.avatarUrl ? (
-                <img src={post.author.avatarUrl} alt={post.author.name} className="w-7 h-7 rounded-full object-cover" />
+                <img src={post.author.avatarUrl} alt={post.author.name} loading="lazy" className="w-7 h-7 rounded-full object-cover" />
               ) : (
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
                   style={{ background: 'rgba(0,212,255,0.15)', color: 'var(--electric)' }}>

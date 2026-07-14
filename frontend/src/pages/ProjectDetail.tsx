@@ -416,6 +416,7 @@ export default function ProjectDetail() {
                   <img
                     src={project.studentPhotoUrl}
                     alt={project.studentName}
+                    loading="lazy"
                     className="w-16 h-16 rounded-full object-cover shrink-0"
                   />
                 ) : (

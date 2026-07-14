@@ -159,6 +159,7 @@ function AuthorBio({ author }: { author: BlogPostType['author'] }) {
         <img
           src={author.avatarUrl}
           alt={author.name}
+          loading="lazy"
           className="w-16 h-16 rounded-full object-cover shrink-0"
           style={{ border: '2px solid rgba(0,212,255,0.2)' }}
         />
@@ -198,7 +199,7 @@ function KeepReadingCard({ post }: { post: BlogPostType }) {
           style={{ background: 'linear-gradient(to top, var(--navy), transparent)' }}
         />
         {post.coverImageUrl ? (
-          <img src={post.coverImageUrl} alt={post.title} className="w-full h-full object-cover" />
+          <img src={post.coverImageUrl} alt={post.title} loading="lazy" className="w-full h-full object-cover" />
         ) : (
           <div
             className="absolute inset-0 flex items-center justify-center"
@@ -381,7 +382,7 @@ export default function BlogPost() {
                   style={{ background: 'var(--card)', border: '1px solid var(--border)' }}
                 >
                   {post.author.avatarUrl ? (
-                    <img src={post.author.avatarUrl} alt={post.author.name} className="w-8 h-8 rounded-full object-cover" />
+                    <img src={post.author.avatarUrl} alt={post.author.name} loading="lazy" className="w-8 h-8 rounded-full object-cover" />
                   ) : (
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"

@@ -147,6 +147,7 @@ function RImage({ block }: { block: ImageBlock }) {
       <img
         src={block.src}
         alt={block.alt}
+        loading="lazy"
         className="w-full rounded-xl"
         style={{ border: '1px solid var(--border)' }}
       />

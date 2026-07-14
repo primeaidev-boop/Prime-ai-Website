@@ -182,7 +182,7 @@ function HeroGraphic({ tutorials, reducedMotion }: { tutorials: Tutorial[]; redu
               }}
             >
               {tut.thumbnailUrl ? (
-                <img src={tut.thumbnailUrl} alt={tut.name} className="w-full h-full object-cover rounded-xl" />
+                <img src={tut.thumbnailUrl} alt={tut.name} loading="lazy" className="w-full h-full object-cover rounded-xl" />
               ) : (
                 <>
                   <span className="font-bold text-base text-white">{tut.logoInitials}</span>

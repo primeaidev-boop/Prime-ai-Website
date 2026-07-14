@@ -8,6 +8,7 @@ function TrainerAvatar({ name, imgUrl }: { name: string; imgUrl: string }) {
       <img
         src={imgUrl}
         alt={name}
+        loading="lazy"
         className="w-28 h-28 rounded-full object-cover flex-shrink-0"
         style={{ border: '2px solid rgba(0,212,255,.3)' }}
       />

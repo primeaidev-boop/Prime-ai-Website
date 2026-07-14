@@ -16,6 +16,7 @@ function ProjectCard({ project, categories }: { project: Project; categories: Pr
           <img
             src={project.coverImageUrl}
             alt={project.title}
+            loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
@@ -83,7 +84,7 @@ function ProjectCard({ project, categories }: { project: Project; categories: Pr
         {/* Student info */}
         <div className="flex items-center gap-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
           {project.studentPhotoUrl ? (
-            <img src={project.studentPhotoUrl} alt={project.studentName} className="w-7 h-7 rounded-full object-cover" />
+            <img src={project.studentPhotoUrl} alt={project.studentName} loading="lazy" className="w-7 h-7 rounded-full object-cover" />
           ) : (
             <div
               className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
@@ -125,6 +126,7 @@ function FeaturedCard({ project, categories }: { project: Project; categories: P
             <img
               src={project.coverImageUrl}
               alt={project.title}
+              loading="lazy"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               style={{ minHeight: 220 }}
             />
@@ -192,7 +194,7 @@ function FeaturedCard({ project, categories }: { project: Project; categories: P
           <div className="flex items-center justify-between pt-4" style={{ borderTop: '1px solid var(--border)' }}>
             <div className="flex items-center gap-2">
               {project.studentPhotoUrl ? (
-                <img src={project.studentPhotoUrl} alt={project.studentName} className="w-8 h-8 rounded-full object-cover" />
+                <img src={project.studentPhotoUrl} alt={project.studentName} loading="lazy" className="w-8 h-8 rounded-full object-cover" />
               ) : (
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
