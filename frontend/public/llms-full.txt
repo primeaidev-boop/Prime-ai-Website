@@ -1,0 +1,102 @@
+# PRIM AI Institute
+
+> PRIM AI Institute is a hands-on AI education institute in Ahmedabad, Gujarat, India (ISO 9001:2015 certified). We teach 40+ AI tools to non-technical audiences — students, working professionals, homemakers, and business owners — plus a dedicated developer track. Tagline: "Learn AI. Use AI. Lead with AI."
+
+## About
+
+PRIM AI Institute ("Gujarat's premier AI training institute") empowers students, professionals, and entrepreneurs with real-world AI skills through classroom-first, hands-on training in Ahmedabad, Gujarat, India. Programs emphasize in-person, instructor-led practice on real tools; the Level 1 Foundation Program is additionally available online.
+
+- **Institute name:** PRIM AI Institute
+- **Location:** Ahmedabad, Gujarat, India
+- **Address:** 1016, 10th Floor, Ganesh Glory, Off S.G. Highway, Jagatpur Road, Gota, Ahmedabad – 382470
+- **Founded:** [TODO: founding year]
+- **Certification:** ISO 9001:2015 certified
+- **Teaching mode:** Classroom-first, hands-on (Level 1 available Online + Offline; Level 2A/2B offline)
+- **Languages of instruction:** Hindi & Gujarati
+- **Website:** https://primaiinstitute.com
+- **Phone / WhatsApp:** +91 7573055577
+- **Email:** primeai.dev@gmail.com
+- **Working hours:** Mon – Sat: 9 AM – 6 PM IST
+- **Tagline:** "Learn AI. Use AI. Lead with AI."
+
+## Core Philosophy
+
+"AI is the science like electricity; ChatGPT, Claude, and every tool we teach are appliances built on that science."
+
+Tools come and go; the science endures. PRIM AI Institute teaches learners the principles behind AI alongside 40+ current tools, so they can evaluate and adopt any new tool that appears — rather than being dependent on any single product.
+
+## Programs
+
+All programs include 1-to-1 personal mentorship, ISO 9001:2015 certification, and placement assistance (1500+ hiring partners). Training days: Monday to Friday.
+
+### Level 1 — AI Foundation Program
+- **Format:** 8 weeks, 40 hours. Online + Offline (Ahmedabad classroom).
+- **Audience:** Complete beginners — students, working professionals, homemakers, business owners. No coding or technical background required.
+- **Modules:**
+  - AI Fundamentals & Getting Started
+  - Prompt Engineering & Content Creation
+  - Creative AI · Design, Images & Presentations
+  - Real-World Application & Final Project
+- **Fees:** [TODO: not published on the site — contact the institute]
+- **Batch timings:** Monday to Friday; [TODO: exact batch times — contact the institute]
+
+### Level 2A — AI Generalist Program
+- **Format:** 12 weeks, offline, hands-on, in-person classroom in Ahmedabad.
+- **Audience:** Non-technical learners (typically after Level 1) who want to apply AI deeply in their career, business, or daily work. Master 15+ AI tools for content creation, design, video, and business automation. No coding needed.
+- **Modules:**
+  - Advanced Prompt Engineering & AI Writing
+  - AI Design, Image & Visual Content
+  - AI Video Creation & Presentations
+  - Workflow Automation & Final Project
+- **Fees:** [TODO: not published on the site — contact the institute]
+- **Batch timings:** Monday to Friday; [TODO: exact batch times — contact the institute]
+
+### Level 2B — AI Developer Program
+- **Format:** 8 weeks, offline, hands-on, in-person classroom in Ahmedabad.
+- **Audience:** Learners who want to code smarter, build faster, and develop AI-powered applications — the developer track.
+- **Modules:**
+  - AI-Assisted Coding & Developer Tools
+  - LLM APIs & AI Integration
+  - AI App Development & No-Code Tools
+  - Testing, Automation & Deployment
+  - Capstone Project & Portfolio Building
+- **Fees:** [TODO: not published on the site — contact the institute]
+- **Batch timings:** Monday to Friday; [TODO: exact batch times — contact the institute]
+
+### 10-Day AI Launchpad
+- **Format:** Intensive 10-day program — daily hands-on sessions, real tools, completion certificate.
+- **Details:** https://primaiinstitute.com/programs/10-day-ai-launchpad
+
+## Free Learning Resources
+
+- **Tutorials:** 120+ free step-by-step tutorials covering 40+ AI tools (ChatGPT, Claude, Google Gemini, Perplexity, Midjourney, Canva AI, GitHub Copilot, Cursor AI, Notion AI, and more) at https://primaiinstitute.com/tutorials
+- **Blog:** Practical AI articles for careers and business at https://primaiinstitute.com/blog
+- **Student Projects:** Real AI applications built by students at https://primaiinstitute.com/projects
+
+## Frequently Asked Facts
+
+- **Are classes online or offline?** Training is classroom-first and hands-on in Ahmedabad. The Level 1 Foundation Program is available both Online and Offline; Level 2A (AI Generalist) and Level 2B (AI Developer) are offline.
+- **Do I need a technical background?** No. Level 1 (Foundation) and Level 2A (AI Generalist) are designed for non-technical audiences. Level 2B (AI Developer) is the technical track.
+- **Who attends?** Students, working professionals, homemakers, business owners, and aspiring AI developers.
+- **How many tools are taught?** 40+ AI tools across the programs, including ChatGPT and Claude, taught alongside the science that powers them.
+- **What languages are classes taught in?** Hindi & Gujarati.
+- **Is the institute certified?** Yes — ISO 9001:2015 certified.
+- **Is placement assistance offered?** Yes — placement assistance with 1500+ hiring partners.
+- **Is there mentorship?** Yes — 1-to-1 personal mentorship on all programs.
+- **Where is the institute located?** 1016, 10th Floor, Ganesh Glory, Off S.G. Highway, Jagatpur Road, Gota, Ahmedabad – 382470, Gujarat, India.
+- **What are the fees?** Fees are not published on the website — contact the institute at +91 7573055577 (phone/WhatsApp) or primeai.dev@gmail.com.
+- **How do I enroll?** Book a free demo or send an enquiry via https://primaiinstitute.com/contact, call/WhatsApp +91 7573055577.
+
+## Links
+
+- [Home](https://primaiinstitute.com/): Overview of PRIM AI Institute and its programs.
+- [About](https://primaiinstitute.com/about): Institute story, trainers, and teaching philosophy.
+- [Courses](https://primaiinstitute.com/courses): Level 1 Foundation, Level 2A AI Generalist, Level 2B AI Developer.
+- [AI Foundation Program](https://primaiinstitute.com/courses/l1): Level 1 details.
+- [AI Generalist Program](https://primaiinstitute.com/courses/l2a): Level 2A details.
+- [AI Developer Program](https://primaiinstitute.com/courses/l2b): Level 2B details.
+- [10-Day AI Launchpad](https://primaiinstitute.com/programs/10-day-ai-launchpad): Intensive short program.
+- [Blog](https://primaiinstitute.com/blog): Articles on practical AI for careers and business.
+- [Tutorials](https://primaiinstitute.com/tutorials): Free step-by-step AI tool tutorials.
+- [Student Projects](https://primaiinstitute.com/projects): Showcase of student-built AI projects.
+- [Contact](https://primaiinstitute.com/contact): Location, phone, email, enquiry form, and admissions questions.

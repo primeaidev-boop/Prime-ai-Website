@@ -347,6 +347,19 @@ export function Footer() {
                   )}
                 </Fragment>
               ))}
+              <div className="w-1 h-1 rounded-full hidden md:block" style={{ background: 'var(--border)' }} />
+              {/* Plain <a> (not <Link>): /llms.txt is a static file, the SPA router must not intercept it */}
+              <a
+                href="/llms.txt"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs transition-colors duration-200"
+                style={{ color: 'var(--muted)' }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--white)'; }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = 'var(--muted)'; }}
+              >
+                LLM Info
+              </a>
             </div>
           </div>
         </div>
