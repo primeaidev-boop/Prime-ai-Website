@@ -225,7 +225,7 @@ export class SeoRenderService {
   }
 
   // ── HTML injection ─────────────────────────────────────────────────────────
-  async renderRoute(rawPath: string): Promise<string> {
+  async renderRoute(rawPath: string, nonce: string): Promise<string> {
     const path = (rawPath.split('?')[0] || '/').replace(/\/{2,}/g, '/');
     const meta = await this.resolveMeta(path);
     let html = this.readIndexHtml();
@@ -234,6 +234,12 @@ export class SeoRenderService {
     const description = meta.description || DEFAULT_DESC;
     const image = meta.image || DEFAULT_IMAGE;
     const url = `${SITE}${path}`;
+
+    // Stamp the request's CSP nonce onto the build's static inline scripts
+    // (GTM bootstrap snippet + site-wide JSON-LD) so they match this response's
+    // script-src 'nonce-...' value instead of needing 'unsafe-inline'.
+    html = html.replace(/<script>/g, `<script nonce="${nonce}">`);
+    html = html.replace(/<script type="application\/ld\+json">/g, `<script type="application/ld+json" nonce="${nonce}">`);
 
     // Replace the static <title> and meta description
     html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`);
@@ -260,7 +266,7 @@ export class SeoRenderService {
       `    <meta name="twitter:description" content="${esc(description)}" />`,
       `    <meta name="twitter:image" content="${esc(image)}" />`,
       ...(meta.jsonLd
-        ? [`    <script type="application/ld+json">${jsonLd(meta.jsonLd)}</script>`]
+        ? [`    <script type="application/ld+json" nonce="${nonce}">${jsonLd(meta.jsonLd)}</script>`]
         : []),
     ].join('\n');
 

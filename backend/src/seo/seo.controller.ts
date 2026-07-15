@@ -1,7 +1,7 @@
-import { Controller, Get, Header, Req } from '@nestjs/common';
+import { Controller, Get, Header, Req, Res } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { SkipThrottle } from '@nestjs/throttler';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { SeoService } from './seo.service';
 import { SeoRenderService } from './seo-render.service';
 
@@ -36,9 +36,12 @@ export class SeoController {
   @Get(['render', 'render/*'])
   @Header('Content-Type', 'text/html; charset=utf-8')
   @Header('Cache-Control', 'no-cache')
-  async render(@Req() req: Request): Promise<string> {
+  async render(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<string> {
     // Path after the /api/seo/render prefix = the original site path
     const sitePath = req.path.replace(/^\/api\/seo\/render/, '') || '/';
-    return this.seoRenderService.renderRoute(sitePath);
+    // Same nonce main.ts stamped into this response's CSP script-src header,
+    // so inline <script> tags (GTM bootstrap, JSON-LD) are allowed without 'unsafe-inline'.
+    const nonce = res.locals.cspNonce as string;
+    return this.seoRenderService.renderRoute(sitePath, nonce);
   }
 }

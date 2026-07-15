@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const cookieParser = require('cookie-parser') as () => ReturnType<typeof import('cookie-parser')>;
 import helmet from 'helmet';
+import { randomBytes } from 'crypto';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -24,6 +25,14 @@ async function bootstrap() {
   const isHttps = process.env.HTTPS_ENABLED === 'true';
 
   // ── Security headers ──────────────────────────────────────────────────────
+  // Per-request nonce for inline <script> tags (GTM bootstrap snippet, JSON-LD
+  // blocks injected by the SEO renderer). Must run before helmet() so the CSP
+  // directive functions below can read it off res.locals.
+  app.use((_req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) => {
+    res.locals.cspNonce = randomBytes(16).toString('base64');
+    next();
+  });
+
   app.use(
     helmet({
       contentSecurityPolicy: {
@@ -31,12 +40,47 @@ async function bootstrap() {
           defaultSrc: ["'self'"],
           // 'unsafe-eval' is required by Monaco Editor's AMD loader (vs/loader.js uses eval()).
           // Monaco is only loaded in the admin panel (JWT-protected), so risk is contained.
-          scriptSrc: ["'self'", "'unsafe-eval'", 'https://cdn.jsdelivr.net'],
-          imgSrc: ["'self'", 'data:', 'https:'],
-          connectSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+          // GTM/GA4/Meta Pixel scripts are allow-listed by origin; the inline GTM
+          // bootstrap snippet in frontend/index.html is allowed via per-request nonce
+          // instead of 'unsafe-inline' (see res.locals.cspNonce above).
+          scriptSrc: [
+            "'self'",
+            "'unsafe-eval'",
+            'https://cdn.jsdelivr.net',
+            'https://www.googletagmanager.com',
+            'https://www.google-analytics.com',
+            'https://connect.facebook.net',
+            (_req, res) => `'nonce-${(res as unknown as { locals: { cspNonce: string } }).locals.cspNonce}'`,
+          ],
+          imgSrc: [
+            "'self'",
+            'data:',
+            'https:',
+            'https://www.google-analytics.com',
+            'https://www.googletagmanager.com',
+            'https://www.facebook.com',
+          ],
+          connectSrc: [
+            "'self'",
+            'https://cdn.jsdelivr.net',
+            'https://www.google-analytics.com',
+            'https://analytics.google.com',
+            'https://region1.google-analytics.com',
+            'https://region1.analytics.google.com',
+            'https://www.googletagmanager.com',
+            'https://stats.g.doubleclick.net',
+            'https://www.facebook.com',
+          ],
           fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.jsdelivr.net'],
           objectSrc: ["'none'"],
-          frameSrc: ["'self'", 'https://www.google.com', 'https://www.youtube.com', 'https://www.youtube-nocookie.com', 'https://player.vimeo.com'],
+          frameSrc: [
+            "'self'",
+            'https://www.google.com',
+            'https://www.youtube.com',
+            'https://www.youtube-nocookie.com',
+            'https://player.vimeo.com',
+            'https://www.googletagmanager.com',
+          ],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
           // Monaco creates Web Workers via blob: URLs; CDN workers also need jsdelivr.net
           workerSrc: ["'self'", 'blob:', 'https://cdn.jsdelivr.net'],
