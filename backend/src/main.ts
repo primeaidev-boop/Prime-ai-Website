@@ -40,17 +40,22 @@ async function bootstrap() {
           defaultSrc: ["'self'"],
           // 'unsafe-eval' is required by Monaco Editor's AMD loader (vs/loader.js uses eval()).
           // Monaco is only loaded in the admin panel (JWT-protected), so risk is contained.
-          // GTM/GA4/Meta Pixel scripts are allow-listed by origin; the inline GTM
-          // bootstrap snippet in frontend/index.html is allowed via per-request nonce
-          // instead of 'unsafe-inline' (see res.locals.cspNonce above).
+          // 'strict-dynamic': trust propagates from the nonced entry scripts (GTM bootstrap,
+          // Vite module entry) to any <script> those scripts create via non-parser insertion
+          // (gtm.js injecting GTM tags like the Meta Pixel Custom HTML tag; Monaco's AMD loader
+          // creating <script>/worker tags from cdn.jsdelivr.net). Browsers that support
+          // strict-dynamic ignore the host-source list below entirely - it's kept only as a
+          // fallback for older browsers that don't understand strict-dynamic. 'unsafe-eval' and
+          // the nonce keyword are NOT ignored by strict-dynamic, so Monaco's eval() still works.
           scriptSrc: [
-            "'self'",
+            "'strict-dynamic'",
+            (_req, res) => `'nonce-${(res as unknown as { locals: { cspNonce: string } }).locals.cspNonce}'`,
             "'unsafe-eval'",
+            "'self'",
             'https://cdn.jsdelivr.net',
             'https://www.googletagmanager.com',
             'https://www.google-analytics.com',
             'https://connect.facebook.net',
-            (_req, res) => `'nonce-${(res as unknown as { locals: { cspNonce: string } }).locals.cspNonce}'`,
           ],
           imgSrc: [
             "'self'",
@@ -70,6 +75,7 @@ async function bootstrap() {
             'https://www.googletagmanager.com',
             'https://stats.g.doubleclick.net',
             'https://www.facebook.com',
+            'https://tagassistant.google.com',
           ],
           fontSrc: ["'self'", 'https://fonts.gstatic.com', 'https://cdn.jsdelivr.net'],
           objectSrc: ["'none'"],
@@ -80,6 +86,7 @@ async function bootstrap() {
             'https://www.youtube-nocookie.com',
             'https://player.vimeo.com',
             'https://www.googletagmanager.com',
+            'https://tagassistant.google.com',
           ],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
           // Monaco creates Web Workers via blob: URLs; CDN workers also need jsdelivr.net

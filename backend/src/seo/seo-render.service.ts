@@ -76,6 +76,18 @@ const STATIC_META: Record<string, Omit<RouteMeta, 'jsonLd'>> = {
     description:
       'An intensive 10-day program to go from AI-curious to AI-confident: daily hands-on sessions, real tools, and a completion certificate.',
   },
+  '/privacy': {
+    title: 'Privacy Policy — PRIM AI Institute',
+    description: 'How PRIM AI Institute collects, uses, and protects your personal information.',
+  },
+  '/terms': {
+    title: 'Terms & Conditions — PRIM AI Institute',
+    description: 'Terms and conditions governing use of the PRIM AI Institute website and services.',
+  },
+  '/refund-policy': {
+    title: 'Refund Policy — PRIM AI Institute',
+    description: 'Our refund and cancellation policy for PRIM AI Institute courses and programs.',
+  },
 };
 
 const COURSE_ROUTE_LEVEL: Record<string, CourseLevel> = {
@@ -235,11 +247,12 @@ export class SeoRenderService {
     const image = meta.image || DEFAULT_IMAGE;
     const url = `${SITE}${path}`;
 
-    // Stamp the request's CSP nonce onto the build's static inline scripts
-    // (GTM bootstrap snippet + site-wide JSON-LD) so they match this response's
-    // script-src 'nonce-...' value instead of needing 'unsafe-inline'.
-    html = html.replace(/<script>/g, `<script nonce="${nonce}">`);
-    html = html.replace(/<script type="application\/ld\+json">/g, `<script type="application/ld+json" nonce="${nonce}">`);
+    // Stamp the request's CSP nonce onto EVERY <script> tag in the build (GTM
+    // bootstrap, site-wide JSON-LD, and the Vite module entry point). Required
+    // because 'strict-dynamic' makes browsers ignore the 'self' host-source
+    // entirely, so the Vite entry script depends on this nonce to run at all -
+    // missing it here would blank the whole site.
+    html = html.replace(/<script(?=[ >])/g, `<script nonce="${nonce}"`);
 
     // Replace the static <title> and meta description
     html = html.replace(/<title>[\s\S]*?<\/title>/, `<title>${esc(title)}</title>`);
