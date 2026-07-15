@@ -17,6 +17,7 @@ import { CoursesModule } from './courses/courses.module';
 import { TutorialsModule } from './tutorials/tutorials.module';
 import { TutorialLeadsModule } from './tutorial-leads/tutorial-leads.module';
 import { ProjectsModule } from './projects/projects.module';
+import { SeoModule } from './seo/seo.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ProjectsModule } from './projects/projects.module';
     TutorialsModule,
     TutorialLeadsModule,
     ProjectsModule,
+    SeoModule,
   ],
   providers: [
     {
