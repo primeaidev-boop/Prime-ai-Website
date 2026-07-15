@@ -2,7 +2,7 @@
 // Modeled tightly on TutorialGateModal.tsx (same fields, same validation,
 // same submitTutorialLead()/tutorial_leads table) rather than DemoModal,
 // since DemoModal's courseInterest enum has no value for this program and
-// its POST /api/bookings has no source-tagging column — see plan doc.
+// its POST /api/bookings has no source-tagging column - see plan doc.
 // Zero backend changes: reuses the existing POST /api/tutorial-leads as-is.
 
 import { createPortal } from 'react-dom';
@@ -149,7 +149,7 @@ export function LaunchpadLeadModal({ isOpen, onClose }: Props) {
               className="text-xl font-bold mb-1"
               style={{ fontFamily: 'var(--lp-font-head)' }}
             >
-              Reserve Your Seat — ₹399
+              Reserve Your Seat - ₹399
             </h2>
             <p className="mb-6 text-sm" style={{ color: 'var(--lp-muted)' }}>
               Enter your details and our team will confirm your batch on WhatsApp.
@@ -226,7 +226,7 @@ export function LaunchpadLeadModal({ isOpen, onClose }: Props) {
                 disabled={loading}
                 style={loading ? { opacity: 0.7, cursor: 'not-allowed' } : {}}
               >
-                {loading ? 'Reserving...' : 'Reserve My Seat — ₹399 ➞'}
+                {loading ? 'Reserving...' : 'Reserve My Seat - ₹399 ➞'}
               </button>
             </form>
           </>

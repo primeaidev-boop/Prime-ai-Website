@@ -1,17 +1,17 @@
 # PRIM AI Institute
 
-> PRIM AI Institute is a hands-on AI education institute in Ahmedabad, Gujarat, India (ISO 9001:2015 certified). We teach 40+ AI tools to non-technical audiences — students, working professionals, homemakers, and business owners — plus a dedicated developer track. Tagline: "Learn AI. Use AI. Lead with AI."
+> PRIM AI Institute is a hands-on AI education institute in Ahmedabad, Gujarat, India (ISO 9001:2015 certified). We teach 40+ AI tools to non-technical audiences - students, working professionals, homemakers, and business owners - plus a dedicated developer track. Tagline: "Learn AI. Use AI. Lead with AI."
 
 ## Key Facts
 
 - **What we teach:**
-  - **Level 1 — AI Foundation Program:** 8-week, 40-hour hands-on AI foundation course covering 40+ AI tools. Online + Offline. Monday to Friday.
-  - **Level 2A — AI Generalist Program:** 12-week advanced track for non-technical learners who want to apply AI across work and business. Offline, hands-on. Monday to Friday.
-  - **Level 2B — AI Developer Program:** 8-week advanced track for learners building AI-powered applications and workflows. Offline, hands-on. Monday to Friday.
+  - **Level 1 - AI Foundation Program:** 8-week, 40-hour hands-on AI foundation course covering 40+ AI tools. Online + Offline. Monday to Friday.
+  - **Level 2A - AI Generalist Program:** 12-week advanced track for non-technical learners who want to apply AI across work and business. Offline, hands-on. Monday to Friday.
+  - **Level 2B - AI Developer Program:** 8-week advanced track for learners building AI-powered applications and workflows. Offline, hands-on. Monday to Friday.
 - **Teaching mode:** Classroom-first, hands-on training in Ahmedabad, Gujarat, India. Level 1 is available Online + Offline; Level 2A and 2B are offline.
 - **Languages of instruction:** Hindi & Gujarati.
 - **Mentorship:** 1-to-1 personal mentorship on all programs.
-- **Placement assistance:** Yes — 1500+ hiring partners.
+- **Placement assistance:** Yes - 1500+ hiring partners.
 - **Who it's for:** Students, working professionals, homemakers, business owners, and aspiring AI developers. No technical background required for the Foundation and Generalist tracks.
 - **Certification:** ISO 9001:2015 certified institute.
 - **Website:** https://primaiinstitute.com

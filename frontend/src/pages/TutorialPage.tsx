@@ -818,7 +818,7 @@ export default function TutorialPage() {
         </div>
       )}
 
-      {/* TOC / right-sidebar drawer — slides in from the right, below xl */}
+      {/* TOC / right-sidebar drawer - slides in from the right, below xl */}
       {tocOpen && (
         <div className="xl:hidden fixed inset-0 z-40">
           <div className="absolute inset-0 bg-black/60" onClick={() => setTocOpen(false)} />
@@ -858,7 +858,7 @@ export default function TutorialPage() {
         ☰ Lessons
       </button>
 
-      {/* Contents / TOC toggle button — visible below xl where the right sidebar is hidden */}
+      {/* Contents / TOC toggle button - visible below xl where the right sidebar is hidden */}
       <button
         onClick={() => setTocOpen(true)}
         className="xl:hidden fixed top-[68px] right-3 z-20 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium"

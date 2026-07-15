@@ -4,7 +4,7 @@
 > **Project root:** `/home/jadeja/Videos/Doc of STAD/Project Prime Ai/prim-ai-institute/`
 > **Production server:** `200.97.169.195` (Hostinger KVM 2, Ubuntu 24.04)
 > **Live domain:** `https://primaiinstitute.com`
-> **Last major update:** 2026-07-14 — migrated from DigitalOcean to Hostinger,
+> **Last major update:** 2026-07-14 - migrated from DigitalOcean to Hostinger,
 > added HTTP/2 + Brotli + asset caching. See "Server History" at the bottom.
 
 ---
@@ -59,7 +59,7 @@ client.connect('200.97.169.195', username='root', password='Primai@#789Ai', time
 | `origin` | same repo without credentials | Pull-only fallback |
 
 **The production server's clone tracks `main` directly** (fresh clone during
-the 2026-07 migration — the old server's `master`-branch quirk is gone).
+the 2026-07 migration - the old server's `master`-branch quirk is gone).
 
 ```bash
 # Push from local dev:
@@ -209,7 +209,7 @@ pm2 save                        # persist process list across reboots
   (note: `dist/src/main.js`, not `dist/main.js`).
 - PM2 config: `/var/www/primai/backend/ecosystem.config.js`
   (300 MB memory cap, logs under `/var/log/pm2/`).
-- Boot persistence: systemd unit `pm2-root` is **enabled** — after a server
+- Boot persistence: systemd unit `pm2-root` is **enabled** - after a server
   reboot PM2 resurrects the saved process list automatically. Verify with
   `systemctl is-enabled pm2-root`.
 
@@ -226,20 +226,20 @@ cat /var/log/nginx/error.log    # error logs
 
 - Live config: `/etc/nginx/sites-available/primaiinstitute.com`
   (symlinked into `sites-enabled/`; the stock `default` site is also enabled
-  as the catch-all for direct-IP requests — leave it alone).
-- **Source of truth in repo: `deploy/nginx/primai.conf`** — kept in sync with
+  as the catch-all for direct-IP requests - leave it alone).
+- **Source of truth in repo: `deploy/nginx/primai.conf`** - kept in sync with
   the deployed file. If you change one, change the other.
 - Rollback copies live next to the config:
   `primaiinstitute.com.pre-perf-*.bak` (restore with `cp` + `nginx -t` + reload).
 
-### Performance features (added 2026-07-14 — do not remove when editing)
+### Performance features (added 2026-07-14 - do not remove when editing)
 
 | Feature | Where | Why |
 |---|---|---|
 | `listen 443 ssl http2` | both listen lines | HTTP/2 multiplexing for the SPA's many chunks |
 | `brotli on` + types | server block | ~24% smaller JS than default gzip (needs `libnginx-mod-http-brotli-filter` apt package, already installed) |
 | `gzip_comp_level 6`, `gzip_vary on` | server block | better gzip for non-brotli clients |
-| `location /assets/` ➞ 1y immutable | server block | Vite filenames are content-hashed — safe to cache forever; repeat visits make zero asset requests |
+| `location /assets/` ➞ 1y immutable | server block | Vite filenames are content-hashed - safe to cache forever; repeat visits make zero asset requests |
 | `location = /index.html` ➞ `no-cache` | server block | deploys reach users on their next navigation |
 
 ---
@@ -259,11 +259,11 @@ SELECT COUNT(*) FROM tutorial_leads;
 cd /var/www/primai/backend && npx prisma migrate status
 ```
 
-- PostgreSQL **16** (the old DO server ran 14 — dumps from 14 restore into 16
+- PostgreSQL **16** (the old DO server ran 14 - dumps from 14 restore into 16
   fine; the reverse is not guaranteed).
 - CMS-style content (tutorials, projects, course pages) is stored as JSON
   blobs in `site_settings` (keys: `tutorial_data`, `projects_data`,
-  `course_page_data`) — there are no dedicated tables for those. This is by
+  `course_page_data`) - there are no dedicated tables for those. This is by
   design, not an error.
 
 **Default admin credentials:**
@@ -305,7 +305,7 @@ which Nginx proxies to the local NestJS backend. **Never set `VITE_API_URL` in p
 
 ---
 
-## 10. SSL Certificate — ⚠️ READ THIS
+## 10. SSL Certificate - ⚠️ READ THIS
 
 The current certificate was issued **2026-07-13 via a manual DNS-01 challenge**
 (because DNS didn't point at this server yet during migration).
@@ -326,7 +326,7 @@ certbot renew --dry-run
 certbot certificates   # shows expiry dates
 ```
 
-No Nginx config change is needed afterwards — the cert paths
+No Nginx config change is needed afterwards - the cert paths
 (`/etc/letsencrypt/live/primaiinstitute.com/...`) stay the same.
 
 ---
@@ -338,7 +338,7 @@ No Nginx config change is needed afterwards — the cert paths
   `https://dcc.godaddy.com/manage/primaiinstitute.com/dns`.
 - `A @ ➞ 200.97.169.195` (TTL 600s), `CNAME www ➞ primaiinstitute.com`.
 - The zone contains leftover `NS ns1-3.digitalocean.com` records from an old
-  half-migration — they are **inert** (registry delegation never moved) but
+  half-migration - they are **inert** (registry delegation never moved) but
   should be cleaned up someday. Do not touch the `domaincontrol.com` NS records.
 - Leftover `TXT _acme-challenge*` records from the 2026-07 cert issuance can
   be deleted at any time.
@@ -422,11 +422,11 @@ bash 05_ssl_setup.sh         # runs certbot --nginx for the domain
 | `npm run build` fails with "Cannot find module X" | New package added but not installed | `npm install` then build again |
 | PM2 shows `errored` status | Backend crashed on startup | `pm2 logs primai-backend --lines 100 --nostream` to read the error |
 | API returns 502 | NestJS is down | `pm2 restart primai-backend` |
-| API returns 429 | App rate limiter (100 req/15 min per IP) | Wait 15 min — by design, don't "fix" |
+| API returns 429 | App rate limiter (100 req/15 min per IP) | Wait 15 min - by design, don't "fix" |
 | API returns 413 | Request body too large | Already patched: 10 MB limit set in `main.ts` |
 | `prisma migrate deploy` fails P3018 | Table already exists (prior db push) | `npx prisma migrate resolve --applied <name>` |
 | `prisma migrate dev` hangs | Non-interactive terminal | Use `migrate deploy` or `migrate resolve` instead - never use `migrate dev` on this machine |
-| HTTPS cert warning in browser | Cert expired (manual cert doesn't auto-renew!) | See §10 — reissue with `certbot certonly --nginx` |
+| HTTPS cert warning in browser | Cert expired (manual cert doesn't auto-renew!) | See §10 - reissue with `certbot certonly --nginx` |
 | Users see old frontend after deploy | Build didn't run, or index.html cached | Rebuild; confirm `curl -sI https://primaiinstitute.com/ \| grep -i cache` shows `no-cache` |
 | Fonts / YouTube embeds blocked | CSP header too strict | Edit `frameSrc`/`fontSrc` directives in `backend/src/main.ts` ➞ rebuild + restart |
 | CORS error in browser | Request origin not in allowlist | Add origin to `ADDITIONAL_ORIGINS` in backend `.env` or to `allowedOrigins` in `main.ts` |
@@ -440,4 +440,4 @@ bash 05_ssl_setup.sh         # runs certbot --nginx for the domain
 | 2026-06-19 | Initial deploy on DigitalOcean droplet `64.227.143.243` (Ubuntu 22.04, PG 14, Nginx 1.18) |
 | 2026-07-13 | **Full migration to Hostinger KVM 2 `200.97.169.195`** (Ubuntu 24.04, PG 16, Nginx 1.24). DB dump/restore verified row-for-row; uploads checksum-verified; DNS cut over via GoDaddy; SSL reissued via DNS-01 |
 | 2026-07-14 | Performance pass: HTTP/2, Brotli, immutable `/assets/` caching, lazy-loaded CertificateModal, image lazy-loading, API session cache. Measured ~40-58% faster TTFB vs old server + 24% smaller JS wire size |
-| — | **Old DO droplet:** kept running as rollback safety net. After ~3-5 stable days it can be stopped (Nginx/PM2) and later destroyed. Until destroyed: never edit it, it holds the pre-migration state |
+| - | **Old DO droplet:** kept running as rollback safety net. After ~3-5 stable days it can be stopped (Nginx/PM2) and later destroyed. Until destroyed: never edit it, it holds the pre-migration state |

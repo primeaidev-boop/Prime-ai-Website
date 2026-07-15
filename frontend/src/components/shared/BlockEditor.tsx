@@ -459,7 +459,7 @@ export function BlockEditorModal({ block, onChange, onSave, onClose }: {
       >
         <div className="flex items-center justify-between mb-5">
           <h3 className="text-base font-bold" style={{ color: 'var(--white)' }}>
-            Edit Block — {BLOCK_TYPES.find((bt) => bt.value === block.type)?.label}
+            Edit Block - {BLOCK_TYPES.find((bt) => bt.value === block.type)?.label}
           </h3>
           <button onClick={onClose} style={{ color: 'var(--muted)' }}>✕</button>
         </div>

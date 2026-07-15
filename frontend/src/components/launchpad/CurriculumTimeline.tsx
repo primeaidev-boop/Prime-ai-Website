@@ -59,7 +59,7 @@ function DayRow({ item, isOpen, onToggle }: DayRowProps) {
   );
 }
 
-// Days 6-10 in the curriculum are the 5 hands-on "Project" days —
+// Days 6-10 in the curriculum are the 5 hands-on "Project" days -
 // used to drive an accurate "projects unlocked" count, not a 1:1 day count.
 const PROJECT_DAY_THRESHOLD = 6;
 

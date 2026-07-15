@@ -420,7 +420,7 @@ export const DEFAULT_TUTORIAL_DATA: TutorialPageData = {
 
 // Kept for backward-compatible imports. The admin Locked flag is now the sequential
 // gate itself (see isLessonAccessible in userProgress.ts), so data passes through
-// unchanged — stripping locked here would destroy the admin's gating choices.
+// unchanged - stripping locked here would destroy the admin's gating choices.
 export function migrateLockedSemantics(data: TutorialPageData): TutorialPageData {
   return data;
 }

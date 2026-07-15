@@ -5,7 +5,7 @@ import { readFileSync, statSync } from 'fs';
 import { resolve } from 'path';
 
 const SITE = 'https://primaiinstitute.com';
-const DEFAULT_TITLE = 'PRIM AI Institute — Learn AI. Use AI. Lead with AI.';
+const DEFAULT_TITLE = 'PRIM AI Institute - Learn AI. Use AI. Lead with AI.';
 const DEFAULT_DESC =
   "Gujarat's premier AI training institute - empowering students, professionals, and entrepreneurs with real-world AI skills.";
 const DEFAULT_IMAGE = `${SITE}/og-image.png`;
@@ -42,50 +42,50 @@ function jsonLd(obj: object): string {
 const STATIC_META: Record<string, Omit<RouteMeta, 'jsonLd'>> = {
   '/': { title: DEFAULT_TITLE, description: DEFAULT_DESC },
   '/about': {
-    title: 'About Us — PRIM AI Institute',
+    title: 'About Us - PRIM AI Institute',
     description:
       'ISO 9001:2015 certified AI training institute in Ahmedabad. We believe AI education should be accessible to every Indian - from Class 6 to CEO.',
   },
   '/courses': {
-    title: 'AI Courses & Programs — PRIM AI Institute',
+    title: 'AI Courses & Programs - PRIM AI Institute',
     description:
       'Structured AI programs: AI Foundation, AI Generalist (15+ tools, no coding), and AI Developer. Hands-on training with mentorship and certification in Ahmedabad.',
   },
   '/contact': {
-    title: 'Contact Us — PRIM AI Institute',
+    title: 'Contact Us - PRIM AI Institute',
     description:
       'Start your AI journey today. Connect with our admissions team for course details, campus visits, or corporate AI training. Ahmedabad, Gujarat.',
   },
   '/tutorials': {
-    title: 'Free AI Tool Tutorials — PRIM AI Institute',
+    title: 'Free AI Tool Tutorials - PRIM AI Institute',
     description:
       'Master every AI tool, one tutorial at a time. 40+ tools, 120+ free step-by-step tutorials: ChatGPT, Claude, Gemini, Midjourney, GitHub Copilot and more.',
   },
   '/projects': {
-    title: 'Student Projects — PRIM AI Institute',
+    title: 'Student Projects - PRIM AI Institute',
     description:
       'Explore AI applications, websites, automations, and business solutions built by our students - real projects with real impact.',
   },
   '/blog': {
-    title: 'Blog — PRIM AI Institute',
+    title: 'Blog - PRIM AI Institute',
     description:
       'Practical AI insights: tool guides, career advice, prompt engineering, and the future of generative AI - from the PRIM AI Institute team.',
   },
   '/programs/10-day-ai-launchpad': {
-    title: '10-Day AI Launchpad — PRIM AI Institute',
+    title: '10-Day AI Launchpad - PRIM AI Institute',
     description:
       'An intensive 10-day program to go from AI-curious to AI-confident: daily hands-on sessions, real tools, and a completion certificate.',
   },
   '/privacy': {
-    title: 'Privacy Policy — PRIM AI Institute',
+    title: 'Privacy Policy - PRIM AI Institute',
     description: 'How PRIM AI Institute collects, uses, and protects your personal information.',
   },
   '/terms': {
-    title: 'Terms & Conditions — PRIM AI Institute',
+    title: 'Terms & Conditions - PRIM AI Institute',
     description: 'Terms and conditions governing use of the PRIM AI Institute website and services.',
   },
   '/refund-policy': {
-    title: 'Refund Policy — PRIM AI Institute',
+    title: 'Refund Policy - PRIM AI Institute',
     description: 'Our refund and cancellation policy for PRIM AI Institute courses and programs.',
   },
 };
@@ -147,7 +147,7 @@ export class SeoRenderService {
       });
       if (post && post.status === BlogStatus.PUBLISHED) {
         return {
-          title: `${post.title} — PRIM AI Institute`,
+          title: `${post.title} - PRIM AI Institute`,
           description: post.excerpt,
           image: abs(post.coverImageUrl) ?? DEFAULT_IMAGE,
           ogType: 'article',
@@ -182,7 +182,7 @@ export class SeoRenderService {
       });
       if (course) {
         return {
-          title: `${course.title} — PRIM AI Institute`,
+          title: `${course.title} - PRIM AI Institute`,
           description: course.tagline,
           image: abs(course.heroImageUrl) ?? DEFAULT_IMAGE,
           jsonLd: {
@@ -208,7 +208,7 @@ export class SeoRenderService {
       const tut = data?.tutorials?.find((t) => t.slug === tutMatch[1] && t.isVisible !== false);
       if (tut?.name) {
         return {
-          title: `${tut.name} Tutorial — Free AI Training | PRIM AI Institute`,
+          title: `${tut.name} Tutorial - Free AI Training | PRIM AI Institute`,
           description: tut.description || `Free step-by-step ${tut.name} tutorials from PRIM AI Institute.`,
         };
       }
@@ -221,7 +221,7 @@ export class SeoRenderService {
       const proj = data?.projects?.find((p) => p.slug === projMatch[1] && p.visible !== false);
       if (proj?.title) {
         return {
-          title: `${proj.title} — Student Project | PRIM AI Institute`,
+          title: `${proj.title} - Student Project | PRIM AI Institute`,
           description: proj.shortDescription || DEFAULT_DESC,
           image: abs(proj.coverImageUrl) ?? DEFAULT_IMAGE,
         };

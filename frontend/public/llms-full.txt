@@ -1,6 +1,6 @@
 # PRIM AI Institute
 
-> PRIM AI Institute is a hands-on AI education institute in Ahmedabad, Gujarat, India (ISO 9001:2015 certified). We teach 40+ AI tools to non-technical audiences — students, working professionals, homemakers, and business owners — plus a dedicated developer track. Tagline: "Learn AI. Use AI. Lead with AI."
+> PRIM AI Institute is a hands-on AI education institute in Ahmedabad, Gujarat, India (ISO 9001:2015 certified). We teach 40+ AI tools to non-technical audiences - students, working professionals, homemakers, and business owners - plus a dedicated developer track. Tagline: "Learn AI. Use AI. Lead with AI."
 
 ## About
 
@@ -23,24 +23,24 @@ PRIM AI Institute ("Gujarat's premier AI training institute") empowers students,
 
 "AI is the science like electricity; ChatGPT, Claude, and every tool we teach are appliances built on that science."
 
-Tools come and go; the science endures. PRIM AI Institute teaches learners the principles behind AI alongside 40+ current tools, so they can evaluate and adopt any new tool that appears — rather than being dependent on any single product.
+Tools come and go; the science endures. PRIM AI Institute teaches learners the principles behind AI alongside 40+ current tools, so they can evaluate and adopt any new tool that appears - rather than being dependent on any single product.
 
 ## Programs
 
 All programs include 1-to-1 personal mentorship, ISO 9001:2015 certification, and placement assistance (1500+ hiring partners). Training days: Monday to Friday.
 
-### Level 1 — AI Foundation Program
+### Level 1 - AI Foundation Program
 - **Format:** 8 weeks, 40 hours. Online + Offline (Ahmedabad classroom).
-- **Audience:** Complete beginners — students, working professionals, homemakers, business owners. No coding or technical background required.
+- **Audience:** Complete beginners - students, working professionals, homemakers, business owners. No coding or technical background required.
 - **Modules:**
   - AI Fundamentals & Getting Started
   - Prompt Engineering & Content Creation
   - Creative AI · Design, Images & Presentations
   - Real-World Application & Final Project
-- **Fees:** [TODO: not published on the site — contact the institute]
-- **Batch timings:** Monday to Friday; [TODO: exact batch times — contact the institute]
+- **Fees:** [TODO: not published on the site - contact the institute]
+- **Batch timings:** Monday to Friday; [TODO: exact batch times - contact the institute]
 
-### Level 2A — AI Generalist Program
+### Level 2A - AI Generalist Program
 - **Format:** 12 weeks, offline, hands-on, in-person classroom in Ahmedabad.
 - **Audience:** Non-technical learners (typically after Level 1) who want to apply AI deeply in their career, business, or daily work. Master 15+ AI tools for content creation, design, video, and business automation. No coding needed.
 - **Modules:**
@@ -48,23 +48,23 @@ All programs include 1-to-1 personal mentorship, ISO 9001:2015 certification, an
   - AI Design, Image & Visual Content
   - AI Video Creation & Presentations
   - Workflow Automation & Final Project
-- **Fees:** [TODO: not published on the site — contact the institute]
-- **Batch timings:** Monday to Friday; [TODO: exact batch times — contact the institute]
+- **Fees:** [TODO: not published on the site - contact the institute]
+- **Batch timings:** Monday to Friday; [TODO: exact batch times - contact the institute]
 
-### Level 2B — AI Developer Program
+### Level 2B - AI Developer Program
 - **Format:** 8 weeks, offline, hands-on, in-person classroom in Ahmedabad.
-- **Audience:** Learners who want to code smarter, build faster, and develop AI-powered applications — the developer track.
+- **Audience:** Learners who want to code smarter, build faster, and develop AI-powered applications - the developer track.
 - **Modules:**
   - AI-Assisted Coding & Developer Tools
   - LLM APIs & AI Integration
   - AI App Development & No-Code Tools
   - Testing, Automation & Deployment
   - Capstone Project & Portfolio Building
-- **Fees:** [TODO: not published on the site — contact the institute]
-- **Batch timings:** Monday to Friday; [TODO: exact batch times — contact the institute]
+- **Fees:** [TODO: not published on the site - contact the institute]
+- **Batch timings:** Monday to Friday; [TODO: exact batch times - contact the institute]
 
 ### 10-Day AI Launchpad
-- **Format:** Intensive 10-day program — daily hands-on sessions, real tools, completion certificate.
+- **Format:** Intensive 10-day program - daily hands-on sessions, real tools, completion certificate.
 - **Details:** https://primaiinstitute.com/programs/10-day-ai-launchpad
 
 ## Free Learning Resources
@@ -80,11 +80,11 @@ All programs include 1-to-1 personal mentorship, ISO 9001:2015 certification, an
 - **Who attends?** Students, working professionals, homemakers, business owners, and aspiring AI developers.
 - **How many tools are taught?** 40+ AI tools across the programs, including ChatGPT and Claude, taught alongside the science that powers them.
 - **What languages are classes taught in?** Hindi & Gujarati.
-- **Is the institute certified?** Yes — ISO 9001:2015 certified.
-- **Is placement assistance offered?** Yes — placement assistance with 1500+ hiring partners.
-- **Is there mentorship?** Yes — 1-to-1 personal mentorship on all programs.
+- **Is the institute certified?** Yes - ISO 9001:2015 certified.
+- **Is placement assistance offered?** Yes - placement assistance with 1500+ hiring partners.
+- **Is there mentorship?** Yes - 1-to-1 personal mentorship on all programs.
 - **Where is the institute located?** 1016, 10th Floor, Ganesh Glory, Off S.G. Highway, Jagatpur Road, Gota, Ahmedabad – 382470, Gujarat, India.
-- **What are the fees?** Fees are not published on the website — contact the institute at +91 7573055577 (phone/WhatsApp) or primeai.dev@gmail.com.
+- **What are the fees?** Fees are not published on the website - contact the institute at +91 7573055577 (phone/WhatsApp) or primeai.dev@gmail.com.
 - **How do I enroll?** Book a free demo or send an enquiry via https://primaiinstitute.com/contact, call/WhatsApp +91 7573055577.
 
 ## Links

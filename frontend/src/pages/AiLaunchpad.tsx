@@ -1,4 +1,4 @@
-// Standalone campaign landing page — NOT wired into the /admin ContentBlock
+// Standalone campaign landing page - NOT wired into the /admin ContentBlock
 // system, no row in the `courses` table. See the implementation plan for the
 // design-token and lead-capture-reuse decisions behind this page's choices.
 
@@ -20,7 +20,7 @@ import {
 } from '@/data/aiLaunchpadContent';
 import '@/styles/launchpad.css';
 
-const PAGE_TITLE = '10-Day AI Launchpad — ₹399 | PRIM AI Institute';
+const PAGE_TITLE = '10-Day AI Launchpad - ₹399 | PRIM AI Institute';
 const PAGE_DESCRIPTION =
   'Learn practical AI in 10 live days for ₹399. 5 real projects, certificate included, no coding required. For students, professionals, homemakers & business owners.';
 
@@ -64,7 +64,7 @@ export default function AiLaunchpad() {
 
   // Per-page title + OG/meta override, same pattern as RefundPolicy.tsx's
   // document.title swap, extended to social tags since this is a paid-ad
-  // destination. No react-helmet — none of this codebase's pages use it.
+  // destination. No react-helmet - none of this codebase's pages use it.
   useEffect(() => {
     const prevTitle = document.title;
     const ogTitle = document.head.querySelector('meta[property="og:title"]')?.getAttribute('content') ?? '';
@@ -77,7 +77,7 @@ export default function AiLaunchpad() {
     updateMetaTag('meta[property="og:description"]', 'content', PAGE_DESCRIPTION);
     updateMetaTag('meta[name="twitter:title"]', 'content', PAGE_TITLE);
     updateMetaTag('meta[name="twitter:description"]', 'content', PAGE_DESCRIPTION);
-    // og:image intentionally left as the site default (/og-image.png) —
+    // og:image intentionally left as the site default (/og-image.png) -
     // TODO: supply a dedicated campaign OG image and set it here.
 
     return () => {
@@ -132,7 +132,7 @@ export default function AiLaunchpad() {
           </div>
         </div>
         <button onClick={modal.open} className="lp-btn-primary text-xs sm:text-sm px-5 py-2.5 flex-1 sm:flex-none">
-          Reserve My Seat — ₹399
+          Reserve My Seat - ₹399
         </button>
       </div>
 
@@ -161,12 +161,12 @@ export default function AiLaunchpad() {
           </h1>
 
           <p className="lp-anim-3 text-base md:text-lg leading-relaxed mb-8 max-w-xl mx-auto" style={{ color: 'var(--lp-muted)' }}>
-            For students, professionals, homemakers, and business owners — no coding, no prior experience needed.
+            For students, professionals, homemakers, and business owners - no coding, no prior experience needed.
           </p>
 
           <div className="lp-anim-4 flex flex-wrap justify-center gap-3">
             <button onClick={modal.open} className="lp-btn-primary px-7 py-3 text-sm">
-              Reserve My Seat — ₹399
+              Reserve My Seat - ₹399
             </button>
             <button onClick={scrollToSample} className="lp-btn-outline px-7 py-3 text-sm">
               Watch a Free Sample Session
@@ -298,7 +298,7 @@ export default function AiLaunchpad() {
               className="flex-1 min-h-24 rounded-xl flex items-center justify-center text-center text-xs px-3"
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px dashed var(--lp-border)', color: 'var(--lp-muted)' }}
               role="img"
-              aria-label="Certificate of Completion sample — TODO: replace with real design"
+              aria-label="Certificate of Completion sample - TODO: replace with real design"
             >
               🏆 Certificate design coming soon
             </div>
@@ -356,10 +356,10 @@ export default function AiLaunchpad() {
             </div>
 
             <button onClick={modal.open} className="lp-btn-primary w-full py-3 text-sm mb-3">
-              Reserve My Seat — ₹399
+              Reserve My Seat - ₹399
             </button>
             <p className="text-[0.7rem]" style={{ color: 'var(--lp-muted)' }}>
-              Seats are limited per live batch — once a batch fills, you'll be offered the next one.
+              Seats are limited per live batch - once a batch fills, you'll be offered the next one.
             </p>
           </div>
         </div>
@@ -418,7 +418,7 @@ export default function AiLaunchpad() {
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <button onClick={modal.open} className="lp-btn-primary px-8 py-3 text-base">
-              Reserve My Seat — ₹399
+              Reserve My Seat - ₹399
             </button>
             <a href={waUrl} target="_blank" rel="noopener noreferrer" className="lp-btn-outline px-8 py-3 text-base">
               💬 WhatsApp Us

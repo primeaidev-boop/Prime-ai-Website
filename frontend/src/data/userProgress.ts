@@ -192,7 +192,7 @@ export function setLearnerName(name: string): UserProgress {
  *     Completing lessons one by one unlocks the chain step by step.
  *   - locked:true + unlockRule:'manual'   → permanent admin lock, never auto-unlocks.
  *
- * isFree deliberately does NOT bypass the lock — it controls the FREE pricing badge,
+ * isFree deliberately does NOT bypass the lock - it controls the FREE pricing badge,
  * not access. An admin-locked free lesson stays locked until the previous one is done.
  * Pass progressOverride to avoid a redundant localStorage read.
  */

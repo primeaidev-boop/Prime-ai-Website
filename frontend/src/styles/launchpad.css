@@ -1,6 +1,6 @@
 /* Scoped design tokens for the 10-Day AI Launchpad campaign page only.
    Deliberately distinct from globals.css's --navy/--electric/--orange system
-   (per product decision) — namespaced under --lp-* / .lp- so nothing here
+   (per product decision) - namespaced under --lp-* / .lp- so nothing here
    ever collides with or overrides the site-wide tokens/classes used
    everywhere else. Only imported by AiLaunchpad.tsx, so it code-splits with
    that lazy route and never loads on any other page. */

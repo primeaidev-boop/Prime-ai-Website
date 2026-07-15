@@ -520,7 +520,7 @@ export default function TutorialListing() {
             />
           </div>
 
-          {/* Category pills — horizontal scroll on mobile so they never wrap */}
+          {/* Category pills - horizontal scroll on mobile so they never wrap */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
             {filterPills.map((pill) => (
               <button
