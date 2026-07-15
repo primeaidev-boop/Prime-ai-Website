@@ -1,0 +1,9 @@
+# PRIM AI Institute - https://primaiinstitute.com
+User-agent: *
+Allow: /
+# Private/auth areas - no crawl value
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+
+Sitemap: https://primaiinstitute.com/sitemap.xml
