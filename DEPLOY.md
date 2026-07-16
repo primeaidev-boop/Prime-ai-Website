@@ -337,9 +337,14 @@ No Nginx config change is needed afterwards - the cert paths
   `ns53/ns54.domaincontrol.com`). Manage records at
   `https://dcc.godaddy.com/manage/primaiinstitute.com/dns`.
 - `A @ ➞ 200.97.169.195` (TTL 600s), `CNAME www ➞ primaiinstitute.com`.
-- The zone contains leftover `NS ns1-3.digitalocean.com` records from an old
-  half-migration - they are **inert** (registry delegation never moved) but
-  should be cleaned up someday. Do not touch the `domaincontrol.com` NS records.
+- ⚠️ **DELETE the leftover `NS ns1-3.digitalocean.com` records** (from an old
+  half-migration). Proven NOT inert on 2026-07-16: some ISP resolvers follow
+  them to DigitalOcean DNS, which still answers with the old droplet IP -
+  users were served the stale pre-migration site for days. As a shim, the old
+  droplet's Nginx now reverse-proxies everything to the live server
+  (rollback copy: `primai.pre-proxy-*.bak` on the droplet), but the records
+  must be deleted before the droplet is destroyed.
+  Do not touch the `domaincontrol.com` NS records.
 - Leftover `TXT _acme-challenge*` records from the 2026-07 cert issuance can
   be deleted at any time.
 
