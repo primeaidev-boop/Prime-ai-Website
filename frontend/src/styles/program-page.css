@@ -1,0 +1,422 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   Light-theme CSS for standalone Program landing pages (/program/:slug)
+   All classes are scoped under .pp-root so they never bleed into the main site.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* ── Reset & root variables ─────────────────────────────────────────────── */
+
+.pp-root {
+  --pp-bg:          #F5F8FC;
+  --pp-surface:     #FFFFFF;
+  --pp-navy:        #1E293B;
+  --pp-navy-dark:   #0F172A;
+  --pp-muted:       #475569;
+  --pp-orange:      #F97316;
+  --pp-orange-end:  #FDBA74;
+  --pp-blue:        #6399FF;
+  --pp-blue-dark:   #005AC2;
+  --pp-green:       #10B981;
+  --pp-dark-band:   #0D1B2A;
+  --pp-border:      #E2E8F0;
+  --pp-font-head:   'Montserrat', sans-serif;
+  --pp-font-body:   'Plus Jakarta Sans', sans-serif;
+
+  background-color: var(--pp-bg);
+  color: var(--pp-navy-dark);
+  font-family: var(--pp-font-body);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Prevent the main site's global dark-theme variables from showing through */
+.pp-root * {
+  box-sizing: border-box;
+}
+
+/* ── Typography ──────────────────────────────────────────────────────────── */
+
+.pp-display {
+  font-family: var(--pp-font-head);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--pp-navy-dark);
+}
+
+.pp-headline {
+  font-family: var(--pp-font-head);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--pp-navy-dark);
+}
+
+.pp-gradient-text {
+  background: linear-gradient(to right, var(--pp-orange), var(--pp-orange-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pp-stat-number {
+  font-family: var(--pp-font-head);
+  font-size: clamp(64px, 10vw, 80px);
+  font-weight: 700;
+  line-height: 1;
+  background: linear-gradient(to right, var(--pp-orange), var(--pp-orange-end));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: block;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+
+.pp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 9999px;
+  font-family: var(--pp-font-head);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+}
+
+.pp-btn-primary {
+  background-color: var(--pp-orange);
+  color: #fff;
+}
+
+.pp-btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(249, 115, 22, 0.3);
+}
+
+.pp-btn-white {
+  background-color: #fff;
+  color: var(--pp-orange);
+}
+
+.pp-btn-white:hover {
+  transform: scale(1.04);
+}
+
+.pp-btn-green {
+  background-color: var(--pp-green);
+  color: #fff;
+}
+
+.pp-btn-green:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+
+.pp-card {
+  background: var(--pp-surface);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px -2px rgba(30, 41, 59, 0.12);
+  border: 1px solid var(--pp-border);
+}
+
+.pp-card-hover {
+  transition: transform 0.3s ease;
+}
+
+.pp-card-hover:hover {
+  transform: translateY(-8px);
+}
+
+/* ── Badges ──────────────────────────────────────────────────────────────── */
+
+.pp-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 12px;
+  white-space: nowrap;
+}
+
+.pp-badge-orange {
+  background: rgba(249, 115, 22, 0.12);
+  color: var(--pp-orange);
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.pp-badge-orange-solid {
+  background: var(--pp-orange);
+  color: #fff;
+}
+
+.pp-badge-green {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--pp-green);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.pp-badge-blue {
+  background: rgba(99, 153, 255, 0.12);
+  color: var(--pp-blue-dark);
+  border: 1px solid rgba(99, 153, 255, 0.25);
+}
+
+.pp-badge-grey {
+  background: #F1F4F8;
+  color: #6B7280;
+}
+
+/* ── Day-plan circles ────────────────────────────────────────────────────── */
+
+.pp-day-circle {
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  border-radius: 16px;
+  color: #fff;
+  font-family: var(--pp-font-head);
+  font-weight: 700;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pp-day-circle-blue   { background-color: var(--pp-blue); }
+.pp-day-circle-orange { background-color: var(--pp-orange); }
+
+/* ── Announcement bar ────────────────────────────────────────────────────── */
+
+.pp-announcement {
+  background: var(--pp-navy);
+  color: #fff;
+  text-align: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-family: var(--pp-font-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Sticky header ───────────────────────────────────────────────────────── */
+
+.pp-header {
+  background: rgba(247, 250, 254, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: box-shadow 0.3s;
+  border-bottom: 1px solid var(--pp-border);
+}
+
+.pp-header-scrolled {
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.1);
+}
+
+/* ── Dark band sections ──────────────────────────────────────────────────── */
+
+.pp-dark-band {
+  background: var(--pp-dark-band);
+  color: #fff;
+}
+
+.pp-dark-band .pp-muted-text {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── FAQ accordion ───────────────────────────────────────────────────────── */
+
+.pp-faq-item {
+  border-bottom: 1px solid var(--pp-border);
+  padding-bottom: 24px;
+}
+
+.pp-faq-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  cursor: pointer;
+  font-family: var(--pp-font-body);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--pp-navy-dark);
+  gap: 16px;
+}
+
+.pp-faq-icon {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 400;
+  border: 1px solid var(--pp-border);
+  color: var(--pp-muted);
+  transition: transform 0.3s, border-color 0.3s, color 0.3s;
+  flex-shrink: 0;
+}
+
+.pp-faq-icon.open {
+  transform: rotate(45deg);
+  border-color: var(--pp-orange);
+  color: var(--pp-orange);
+}
+
+.pp-faq-answer {
+  color: var(--pp-muted);
+  margin-top: 12px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+/* ── Image placeholders (when URL is empty) ──────────────────────────────── */
+
+.pp-img-placeholder {
+  background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  border-radius: inherit;
+}
+
+/* ── Avatar circle for testimonials / mentor fallback ────────────────────── */
+
+.pp-avatar {
+  border-radius: 50%;
+  overflow: hidden;
+  object-fit: cover;
+  border: 4px solid rgba(249, 115, 22, 0.15);
+}
+
+.pp-avatar-placeholder {
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94A3B8;
+  font-size: 24px;
+  flex-shrink: 0;
+  border: 4px solid rgba(249, 115, 22, 0.15);
+}
+
+/* ── Scroll-reveal animation ─────────────────────────────────────────────── */
+
+.pp-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.pp-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Always show content when JS animation can't fire (reduced-motion / SSR) */
+@media (prefers-reduced-motion: reduce) {
+  .pp-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Form inputs ─────────────────────────────────────────────────────────── */
+
+.pp-input {
+  width: 100%;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--pp-border);
+  background: #fff;
+  color: var(--pp-navy-dark);
+  font-size: 16px;
+  font-family: var(--pp-font-body);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pp-input:focus {
+  border-color: var(--pp-orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+}
+
+/* ── Section padding shorthand ───────────────────────────────────────────── */
+
+.pp-section {
+  padding-top: 96px;
+  padding-bottom: 96px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (max-width: 640px) {
+  .pp-section {
+    padding-top: 64px;
+    padding-bottom: 64px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .pp-faq-btn {
+    font-size: 16px;
+  }
+}
+
+/* ── Mobile sticky bottom bar ────────────────────────────────────────────── */
+
+.pp-mobile-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  border-radius: 16px 16px 0 0;
+}
+
+@media (min-width: 768px) {
+  .pp-mobile-bar { display: none; }
+  .pp-body-mobile-pad { padding-bottom: 0 !important; }
+}
+
+/* ── Content max-width ───────────────────────────────────────────────────── */
+
+.pp-container {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+}

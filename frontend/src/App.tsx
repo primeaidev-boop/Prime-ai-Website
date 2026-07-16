@@ -36,6 +36,8 @@ const Projects = lazy(() => import('@/pages/Projects'));
 const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
 const ProjectsAdmin = lazy(() => import('@/pages/admin/ProjectsAdmin'));
 const AiLaunchpad = lazy(() => import('@/pages/AiLaunchpad'));
+const ProgramPage = lazy(() => import('@/pages/ProgramPage'));
+const ProgramPagesAdmin = lazy(() => import('@/pages/admin/ProgramPagesAdmin'));
 
 function PublicLayout() {
   return (
@@ -106,6 +108,13 @@ export default function App() {
         <Route path="/programs/10-day-ai-launchpad" element={<AiLaunchpad />} />
       </Route>
 
+      {/* Standalone light-theme program landing pages — no site Navbar/Footer */}
+      <Route path="/program/:slug" element={
+        <Suspense fallback={<PageLoader />}>
+          <ProgramPage />
+        </Suspense>
+      } />
+
       <Route path="/admin/login" element={
         <Suspense fallback={<PageLoader />}>
           <AdminLogin />
@@ -129,6 +138,7 @@ export default function App() {
         <Route path="blog" element={<BlogPosts />} />
         <Route path="blog/new" element={<BlogPostEditor />} />
         <Route path="blog/:id/edit" element={<BlogPostEditor />} />
+        <Route path="program-pages" element={<ProgramPagesAdmin />} />
       </Route>
     </Routes>
     </>

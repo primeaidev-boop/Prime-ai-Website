@@ -12,6 +12,7 @@ const links = [
   { to: '/admin/tutorial-leads', icon: '🎯', label: 'Tutorial Leads' },
   { to: '/admin/projects', icon: '🚀', label: 'Projects' },
   { to: '/admin/blog', icon: '✍️', label: 'Blog Posts' },
+  { to: '/admin/program-pages', icon: '📄', label: 'Program Pages' },
   { to: '/admin/settings', icon: '⚙️', label: 'Settings' },
 ];
 
@@ -28,7 +29,7 @@ export function Sidebar() {
     >
       <div className="mb-6 px-2">
         <img
-          src="/Asset%2016.svg"
+          src="/Asset%2025.svg"
           alt="PRIM AI Institute"
           className="h-7 w-auto mb-1"
         />
