@@ -80,6 +80,17 @@ model SiteSetting {
   @@map("site_settings")
 }
 
+// Generic CMS store: one JSONB document per page/section (homePage, programPages, …).
+// Replaces localStorage-only persistence so admin edits reach every visitor.
+model PageContent {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  content   Json
+  updatedAt DateTime @updatedAt
+
+  @@map("page_content")
+}
+
 // ─── Blog Module ─────────────────────────────────────────────────────────────
 
 enum BlogStatus {

@@ -18,6 +18,7 @@ import { TutorialsModule } from './tutorials/tutorials.module';
 import { TutorialLeadsModule } from './tutorial-leads/tutorial-leads.module';
 import { ProjectsModule } from './projects/projects.module';
 import { SeoModule } from './seo/seo.module';
+import { ContentModule } from './content/content.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { SeoModule } from './seo/seo.module';
     TutorialLeadsModule,
     ProjectsModule,
     SeoModule,
+    ContentModule,
   ],
   providers: [
     {
