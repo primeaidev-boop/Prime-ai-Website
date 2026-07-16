@@ -1,13 +1,15 @@
 // Admin CMS for Program Pages (/program/:slug)
 // Follows the same glass-card + tab pattern as TutorialsAdmin / ProjectsAdmin.
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   loadProgramPagesData,
   saveProgramPagesData,
   emptyProgramPage,
   pgId,
 } from '@/data/programPagesData';
+import { getPageContent, putPageContent } from '@/api/content';
+import { convertImageUrl } from '@/lib/imageUrl';
 import type {
   ProgramPage,
   PgNavLink,
@@ -269,8 +271,8 @@ function ProgramEditor({
               value={p.visible ? 'true' : 'false'}
               onChange={(e) => set('visible', e.target.value === 'true')}
             >
-              <option value="true">Yes — reachable at /program/{p.slug}</option>
-              <option value="false">No — returns 404</option>
+              <option value="true">Yes - reachable at /program/{p.slug}</option>
+              <option value="false">No - returns 404</option>
             </select>
           </Field>
         </div>
@@ -995,12 +997,59 @@ export default function ProgramPagesAdmin() {
   const [editing, setEditing] = useState<ProgramPage | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState('');
+  const [serverEmpty, setServerEmpty] = useState(false);
+  const [pushing, setPushing] = useState(false);
 
-  function persist(updated: ProgramPage[]) {
-    saveProgramPagesData(updated);
-    setPages(updated);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  // Load the published server content on mount. If the server has nothing
+  // but this browser has local edits, offer the one-click migration below.
+  useEffect(() => {
+    getPageContent<ProgramPage[]>('programPages').then((serverPages) => {
+      if (Array.isArray(serverPages) && serverPages.length > 0) {
+        setPages(serverPages);
+        saveProgramPagesData(serverPages); // local copy is cache only
+      } else if (localStorage.getItem('primAI_programPages')) {
+        setServerEmpty(true);
+      }
+    });
+  }, []);
+
+  // Google Drive share links return HTML, not image bytes - normalize every
+  // image field once, at the single save choke-point.
+  function normalizeImages(p: ProgramPage): ProgramPage {
+    return {
+      ...p,
+      heroImage: convertImageUrl(p.heroImage),
+      pricingCertImage: convertImageUrl(p.pricingCertImage),
+      footerCertImage: convertImageUrl(p.footerCertImage),
+      buildCards: p.buildCards.map((c) => ({ ...c, image: convertImageUrl(c.image) })),
+      classroomImages: p.classroomImages.map((c) => ({ ...c, url: convertImageUrl(c.url) })),
+      learnerCards: p.learnerCards.map((c) => ({ ...c, image: convertImageUrl(c.image) })),
+      mentors: p.mentors.map((m) => ({ ...m, image: convertImageUrl(m.image) })),
+      testimonials: p.testimonials.map((t) => ({ ...t, image: convertImageUrl(t.image) })),
+    };
+  }
+
+  // Server is the write target; success/failure reflects the real API result.
+  async function persist(updated: ProgramPage[]) {
+    const normalized = updated.map(normalizeImages);
+    setPages(normalized);
+    setSaveError('');
+    try {
+      await putPageContent('programPages', normalized);
+      saveProgramPagesData(normalized); // cache of last successful save
+      setServerEmpty(false);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      setSaveError('Save failed - changes are NOT on the server. Check you are still logged in, then save again.');
+    }
+  }
+
+  async function pushLocalToServer() {
+    setPushing(true);
+    await persist(loadProgramPagesData());
+    setPushing(false);
   }
 
   function handleSave(updated: ProgramPage) {
@@ -1050,7 +1099,21 @@ export default function ProgramPagesAdmin() {
         </div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {saved && (
-            <span style={{ color: '#4ade80', fontSize: 13, fontWeight: 600 }}>✓ Saved</span>
+            <span style={{ color: '#4ade80', fontSize: 13, fontWeight: 600 }}>✓ Saved to server</span>
+          )}
+          {saveError && (
+            <span style={{ color: '#f87171', fontSize: 13, fontWeight: 600, maxWidth: 320 }}>{saveError}</span>
+          )}
+          {serverEmpty && (
+            <button
+              type="button"
+              onClick={pushLocalToServer}
+              disabled={pushing}
+              className="btn-electric"
+              style={{ padding: '10px 18px', fontSize: 13 }}
+            >
+              {pushing ? 'Pushing…' : '⬆ Push local content to server'}
+            </button>
           )}
           <button
             type="button"
@@ -1106,7 +1169,7 @@ export default function ProgramPagesAdmin() {
                   flexShrink: 0,
                   transition: 'all 0.2s',
                 }}
-                title={page.visible ? 'Published — click to unpublish' : 'Unpublished — click to publish'}
+                title={page.visible ? 'Published - click to unpublish' : 'Unpublished - click to publish'}
               >
                 {page.visible ? '🟢' : '⚫'}
               </button>

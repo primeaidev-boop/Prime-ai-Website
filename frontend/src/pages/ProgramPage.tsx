@@ -4,7 +4,10 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getProgramBySlug } from '@/data/programPagesData';
+import { loadProgramPagesData, saveProgramPagesData } from '@/data/programPagesData';
+import { getPageContent } from '@/api/content';
+import { convertImageUrl } from '@/lib/imageUrl';
+import type { ProgramPage as ProgramPageData } from '@/data/programPagesData';
 import type {
   PgBatch,
   PgBuildCard,
@@ -59,7 +62,7 @@ function Img({
       </div>
     );
   }
-  return <img src={src} alt={alt} className={className} style={style} />;
+  return <img src={convertImageUrl(src)} alt={alt} className={className} style={style} />;
 }
 
 // ── Avatar: circular with placeholder ────────────────────────────────────────
@@ -83,7 +86,7 @@ function Avatar({
   }
   return (
     <img
-      src={src}
+      src={convertImageUrl(src)}
       alt={alt}
       className="pp-avatar"
       style={{ ...sizeStyle, objectFit: 'cover' }}
@@ -127,11 +130,23 @@ function FaqRow({ faq }: { faq: PgFaq }) {
 
 export default function ProgramPage() {
   const { slug } = useParams<{ slug: string }>();
-  // Synchronous read - localStorage is always available, so there is no async
-  // loading phase. This ensures reveal refs are attached before their effects run.
+  // Paint immediately from the local cache/bundled defaults, then replace with
+  // the published server content so every visitor sees the admin's real edits.
+  const [pages, setPages] = useState<ProgramPageData[]>(() => loadProgramPagesData());
+  const [serverChecked, setServerChecked] = useState(false);
+  useEffect(() => {
+    getPageContent<ProgramPageData[]>('programPages')
+      .then((serverPages) => {
+        if (Array.isArray(serverPages) && serverPages.length > 0) {
+          setPages(serverPages);
+          saveProgramPagesData(serverPages); // demoted to cache of last fetch
+        }
+      })
+      .finally(() => setServerChecked(true));
+  }, []);
   const page = useMemo(
-    () => (slug ? (getProgramBySlug(slug) ?? null) : null),
-    [slug],
+    () => (slug ? (pages.find((p) => p.slug === slug && p.visible) ?? null) : null),
+    [pages, slug],
   );
   const [scrolled, setScrolled] = useState(false);
   const [formName, setFormName] = useState('');
@@ -190,6 +205,9 @@ export default function ProgramPage() {
   }
 
   if (!page) {
+    if (!serverChecked) {
+      return <div style={{ minHeight: '100vh', background: '#F5F8FC' }} />;
+    }
     return (
       <div style={{ minHeight: '100vh', background: '#F5F8FC', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
         <h1 style={{ fontFamily: 'Montserrat, sans-serif', fontSize: 32, color: '#0F172A' }}>Program not found</h1>

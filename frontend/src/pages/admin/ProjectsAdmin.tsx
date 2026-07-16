@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { loadProjectsData, saveProjectsData, generateId, slugify } from '@/data/projectsData';
 import { getProjectsData, putProjectsData } from '@/api/projects';
+import { convertImageUrl } from '@/lib/imageUrl';
 import { BlockEditorSection, PROJECT_ALLOWED_BLOCK_TYPES } from '@/components/shared/BlockEditor';
 import type {
   ProjectPageData,
@@ -13,43 +14,6 @@ import type {
 
 type AdminTab = 'projects' | 'categories' | 'content';
 type CodeTab = 'html' | 'css' | 'js' | 'preview';
-
-/**
- * Converts any Google Drive share URL to a thumbnail URL that browsers can
- * load as an <img> src. The /thumbnail endpoint always returns a real JPEG
- * (unlike uc?export=view which returns an HTML warning page for large files).
- *
- * Handles both common Drive share formats:
- *   https://drive.google.com/file/d/FILE_ID/view?usp=sharing
- *   https://drive.google.com/open?id=FILE_ID
- *
- * Non-Drive URLs are returned unchanged.
- */
-function convertImageUrl(raw: string): string {
-  const trimmed = raw.trim();
-  if (!trimmed) return trimmed;
-
-  const driveId = (() => {
-    // Format 1: /file/d/FILE_ID/
-    const m1 = trimmed.match(/drive\.google\.com\/file\/d\/([^/?#]+)/);
-    if (m1) return m1[1];
-    // Format 2: ?id=FILE_ID or &id=FILE_ID
-    const m2 = trimmed.match(/drive\.google\.com\/.*[?&]id=([^&#+]+)/);
-    if (m2) return m2[1];
-    return null;
-  })();
-
-  if (driveId) {
-    // /thumbnail?sz=w1200 always returns a real image - never an HTML interstitial
-    return `https://drive.google.com/thumbnail?id=${driveId}&sz=w1200`;
-  }
-
-  // Also upgrade any previously-saved uc?export=view URLs
-  const ucId = trimmed.match(/drive\.google\.com\/uc\?.*[?&]?id=([^&#+]+)/);
-  if (ucId) return `https://drive.google.com/thumbnail?id=${ucId[1]}&sz=w1200`;
-
-  return trimmed;
-}
 
 // Builds the full HTML document injected into the sandboxed preview iframe.
 function buildSrcDoc(html: string, css: string, js: string): string {
