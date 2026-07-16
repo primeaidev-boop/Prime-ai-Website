@@ -1,5 +1,5 @@
 // Standalone light-theme landing page for /program/:slug
-// No main-site Navbar/Footer — this page ships its own sticky header + footer.
+// No main-site Navbar/Footer - this page ships its own sticky header + footer.
 // Styling lives in styles/program-page.css (scoped .pp-root).
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -127,7 +127,7 @@ function FaqRow({ faq }: { faq: PgFaq }) {
 
 export default function ProgramPage() {
   const { slug } = useParams<{ slug: string }>();
-  // Synchronous read — localStorage is always available, so there is no async
+  // Synchronous read - localStorage is always available, so there is no async
   // loading phase. This ensures reveal refs are attached before their effects run.
   const page = useMemo(
     () => (slug ? (getProgramBySlug(slug) ?? null) : null),
@@ -244,7 +244,7 @@ export default function ProgramPage() {
             style={{
               fontFamily: 'var(--pp-font-head)',
               fontWeight: 700,
-              fontSize: 20,
+              fontSize: 22,
               color: 'var(--pp-navy-dark)',
             }}
           >
@@ -286,26 +286,18 @@ export default function ProgramPage() {
       {/* ── 3. Hero ─────────────────────────────────────────────────── */}
       <section
         style={{
-          paddingTop: 160,
-          paddingBottom: 96,
+          paddingTop: 80,
+          paddingBottom: 80,
           paddingLeft: 24,
           paddingRight: 24,
         }}
       >
-        <div
-          className="pp-container"
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 48,
-            alignItems: 'center',
-          }}
-        >
+        <div className="pp-container pp-grid-hero">
           {/* Left */}
-          <div style={{ flex: '1 1 360px', minWidth: 0 }}>
+          <div style={{ minWidth: 0 }}>
             <h1
               className="pp-display"
-              style={{ fontSize: 'clamp(32px, 5vw, 56px)', marginBottom: 24 }}
+              style={{ fontSize: 'clamp(36px, 5vw, 48px)', marginBottom: 24 }}
             >
               {page.heroHeading}{' '}
               <span className="pp-gradient-text">{page.heroHeadingGradient}</span>
@@ -315,39 +307,45 @@ export default function ProgramPage() {
               {page.heroSubtext}
             </p>
 
-            {/* Price row */}
+            {/* Price row - original: strike stacked ABOVE price (flex-col) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ color: '#94A3B8', textDecoration: 'line-through', fontSize: 18 }}>
+                  {page.heroStrikePrice}
+                </span>
                 <span
                   style={{
                     fontFamily: 'var(--pp-font-head)',
                     fontWeight: 700,
-                    fontSize: 40,
+                    fontSize: 32,
                     color: 'var(--pp-navy-dark)',
+                    lineHeight: 1.2,
                   }}
                 >
                   {page.heroPrice}
                 </span>
-                <span style={{ color: '#94A3B8', textDecoration: 'line-through', fontSize: 20 }}>
-                  {page.heroStrikePrice}
-                </span>
               </div>
               {page.heroPriceBadge && (
-                <span className="pp-badge pp-badge-green">{page.heroPriceBadge}</span>
+                <span
+                  className="pp-badge pp-badge-green"
+                  style={{ fontSize: 13, padding: '5px 14px', textTransform: 'none', letterSpacing: 0 }}
+                >
+                  {page.heroPriceBadge}
+                </span>
               )}
             </div>
 
             <a
               href="#enroll"
               className="pp-btn pp-btn-primary"
-              style={{ padding: '20px 40px', fontSize: 18 }}
+              style={{ padding: '16px 32px', fontSize: 16 }}
             >
               {page.heroCtaText}
             </a>
           </div>
 
-          {/* Right — hero image */}
-          <div style={{ flex: '1 1 360px', minWidth: 0, position: 'relative' }}>
+          {/* Right - hero image */}
+          <div style={{ minWidth: 0, position: 'relative' }}>
             <Img
               src={page.heroImage}
               alt="Program preview"
@@ -394,18 +392,17 @@ export default function ProgramPage() {
       </section>
 
       {/* ── 4. Stat band ────────────────────────────────────────────── */}
-      <section className="pp-dark-band" style={{ padding: '80px 24px' }}>
+      <section className="pp-dark-band" style={{ padding: '64px 24px' }}>
         <div
           className="pp-container"
-          style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto' }}
+          style={{ textAlign: 'center', maxWidth: 896, margin: '0 auto' }}
         >
-          <span className="pp-stat-number">{page.statNumber}</span>
+          <span className="pp-stat-number" style={{ marginBottom: 16 }}>{page.statNumber}</span>
           <p
             style={{
-              color: 'rgba(255,255,255,0.85)',
-              fontSize: 'clamp(16px, 2.5vw, 22px)',
-              lineHeight: 1.5,
-              marginTop: 16,
+              color: '#fff',
+              fontSize: 'clamp(24px, 3vw, 30px)',
+              lineHeight: 1.4,
               fontFamily: 'var(--pp-font-head)',
               fontWeight: 600,
             }}
@@ -418,31 +415,20 @@ export default function ProgramPage() {
       {/* ── 5. What You'll Build ────────────────────────────────────── */}
       <section id="build" className="pp-section">
         <div ref={rBuild} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(24px, 4vw, 44px)', textAlign: 'center', marginBottom: 64 }}
-          >
-            {page.buildSectionTitle}
-          </h2>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: 40,
-            }}
-          >
+          <h2 className="pp-h2">{page.buildSectionTitle}</h2>
+          <div className="pp-grid-build">
             {page.buildCards.map((card: PgBuildCard) => (
               <div key={card.id} className="pp-card pp-card-hover" style={{ overflow: 'hidden' }}>
                 <Img
                   src={card.image}
                   alt={card.title}
-                  style={{ width: '100%', height: 240, objectFit: 'cover', display: 'block' }}
+                  style={{ width: '100%', height: 224, objectFit: 'cover', display: 'block' }}
                 />
-                <div style={{ padding: '28px 32px' }}>
+                <div style={{ padding: 24 }}>
                   <h3
                     style={{
                       fontFamily: 'var(--pp-font-body)',
-                      fontWeight: 700,
+                      fontWeight: 600,
                       fontSize: 18,
                       color: 'var(--pp-navy-dark)',
                     }}
@@ -459,13 +445,10 @@ export default function ProgramPage() {
       {/* ── 6. 10-Day Plan ──────────────────────────────────────────── */}
       <section
         id="plan"
-        style={{ background: '#EEF2F8', padding: '96px 24px' }}
+        style={{ background: '#F1F4F8', padding: '80px 24px' }}
       >
         <div ref={rDayPlan} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(24px, 4vw, 44px)', textAlign: 'center', marginBottom: 32 }}
-          >
+          <h2 className="pp-h2" style={{ marginBottom: 32 }}>
             {page.dayPlanTitle}
           </h2>
 
@@ -481,35 +464,29 @@ export default function ProgramPage() {
           >
             <span
               className="pp-btn"
-              style={{ background: 'var(--pp-blue)', color: '#fff', padding: '12px 28px', fontSize: 13 }}
+              style={{ background: 'var(--pp-blue)', color: '#fff', padding: '8px 24px', fontSize: 14, cursor: 'default' }}
             >
               {page.dayPlanPill1}
             </span>
             <span
               className="pp-btn"
-              style={{ background: 'var(--pp-orange)', color: '#fff', padding: '12px 28px', fontSize: 13 }}
+              style={{ background: 'var(--pp-orange)', color: '#fff', padding: '8px 24px', fontSize: 14, cursor: 'default' }}
             >
               {page.dayPlanPill2}
             </span>
           </div>
 
           {/* Day grid */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))',
-              gap: 24,
-            }}
-          >
+          <div className="pp-grid-day">
             {page.dayPlanItems.map((day: PgDayItem) => (
               <div
                 key={day.id}
-                className="pp-card"
+                className="pp-card-sm"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 24,
-                  padding: '24px',
+                  gap: 16,
+                  padding: 16,
                 }}
               >
                 <div
@@ -518,11 +495,14 @@ export default function ProgramPage() {
                   {day.number}
                 </div>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                  <p style={{ fontWeight: 700, fontSize: 16, color: 'var(--pp-navy-dark)' }}>
+                  <p style={{ fontWeight: 600, fontSize: 16, color: 'var(--pp-navy-dark)' }}>
                     {day.title}
                   </p>
                   {day.isProject && (
-                    <span className="pp-badge pp-badge-orange" style={{ fontSize: 10, flexShrink: 0 }}>
+                    <span
+                      className="pp-badge pp-badge-orange"
+                      style={{ fontSize: 10, flexShrink: 0, borderRadius: 4, padding: '2px 8px', border: 'none' }}
+                    >
                       Project
                     </span>
                   )}
@@ -536,37 +516,19 @@ export default function ProgramPage() {
       {/* ── 7. Classroom gallery ─────────────────────────────────────── */}
       <section className="pp-section">
         <div ref={rClassroom} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(22px, 3.5vw, 40px)', textAlign: 'center', marginBottom: 48 }}
-          >
-            {page.classroomTitle}
-          </h2>
+          <h2 className="pp-h2">{page.classroomTitle}</h2>
 
           {page.classroomImages.length > 0 && (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                gridTemplateRows: 'auto auto',
-                gap: 24,
-              }}
-            >
+            <div className="pp-grid-classroom">
               {page.classroomImages.map((img) => (
                 <div
                   key={img.id}
-                  style={{ gridColumn: img.isWide ? '1 / 3' : undefined }}
+                  className={img.isWide ? 'pp-classroom-wide-cell' : undefined}
                 >
                   <Img
                     src={img.url}
                     alt={img.alt}
-                    style={{
-                      width: '100%',
-                      height: img.isWide ? 480 : 224,
-                      objectFit: 'cover',
-                      borderRadius: 20,
-                      display: 'block',
-                    }}
+                    className={`pp-classroom-img${img.isWide ? ' pp-classroom-img-wide' : ''}`}
                   />
                 </div>
               ))}
@@ -576,47 +538,36 @@ export default function ProgramPage() {
       </section>
 
       {/* ── 8. Designed for Every Learner ───────────────────────────── */}
-      <section style={{ background: '#fff', padding: '96px 24px' }}>
+      <section style={{ background: '#fff', padding: '80px 24px' }}>
         <div ref={rLearners} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(22px, 3.5vw, 40px)', textAlign: 'center', marginBottom: 48 }}
-          >
-            {page.learnerSectionTitle}
-          </h2>
+          <h2 className="pp-h2">{page.learnerSectionTitle}</h2>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-              gap: 32,
-            }}
-          >
+          <div className="pp-grid-learners">
             {page.learnerCards.map((card: PgLearnerCard) => (
               <div
                 key={card.id}
                 className="pp-card"
                 style={{
-                  padding: '32px',
+                  padding: 24,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   textAlign: 'center',
                 }}
               >
-                <Avatar src={card.image} alt={card.title} size={144} />
+                <Avatar src={card.image} alt={card.title} size={128} />
                 <h3
                   style={{
                     fontFamily: 'var(--pp-font-head)',
-                    fontWeight: 700,
-                    fontSize: 20,
+                    fontWeight: 600,
+                    fontSize: 18,
                     color: 'var(--pp-navy-dark)',
                     margin: '24px 0 12px',
                   }}
                 >
                   {card.title}
                 </h3>
-                <p style={{ color: 'var(--pp-muted)', fontSize: 15 }}>{card.desc}</p>
+                <p style={{ color: 'var(--pp-muted)', fontSize: 16 }}>{card.desc}</p>
               </div>
             ))}
           </div>
@@ -626,57 +577,46 @@ export default function ProgramPage() {
       {/* ── 9. Meet Your Mentors ────────────────────────────────────── */}
       <section id="mentors" className="pp-section">
         <div ref={rMentors} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(22px, 3.5vw, 40px)', textAlign: 'center', marginBottom: 48 }}
-          >
-            {page.mentorSectionTitle}
-          </h2>
+          <h2 className="pp-h2">{page.mentorSectionTitle}</h2>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-              gap: 32,
-            }}
-          >
+          <div className="pp-grid-mentors">
             {page.mentors.map((mentor: PgMentor) => (
               <div
                 key={mentor.id}
                 className="pp-card"
                 style={{
-                  padding: '40px',
+                  padding: 32,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   textAlign: 'center',
                 }}
               >
-                <Avatar src={mentor.image} alt={mentor.name} size={144} />
+                <Avatar src={mentor.image} alt={mentor.name} size={128} />
                 <h3
                   style={{
                     fontFamily: 'var(--pp-font-head)',
-                    fontWeight: 700,
-                    fontSize: 22,
+                    fontWeight: 600,
+                    fontSize: 18,
                     color: 'var(--pp-navy-dark)',
-                    margin: '24px 0 6px',
+                    margin: '24px 0 4px',
                   }}
                 >
                   {mentor.name}
                 </h3>
                 <p
                   style={{
-                    color: 'var(--pp-orange)',
-                    fontWeight: 700,
-                    fontSize: 12,
+                    color: 'var(--pp-primary)',
+                    fontWeight: 600,
+                    fontSize: 14,
                     textTransform: 'uppercase',
-                    letterSpacing: '0.08em',
+                    letterSpacing: '0.05em',
                     marginBottom: 12,
                   }}
                 >
                   {mentor.role}
                 </p>
-                <p style={{ color: 'var(--pp-muted)', fontSize: 15, lineHeight: 1.6 }}>{mentor.bio}</p>
+                <p style={{ color: 'var(--pp-muted)', fontSize: 16, lineHeight: 1.6 }}>{mentor.bio}</p>
               </div>
             ))}
           </div>
@@ -684,29 +624,18 @@ export default function ProgramPage() {
       </section>
 
       {/* ── 10. Pick Your Batch ─────────────────────────────────────── */}
-      <section id="batches" style={{ background: '#EEF2F8', padding: '96px 24px' }}>
+      <section id="batches" style={{ background: '#F1F4F8', padding: '80px 24px' }}>
         <div ref={rBatches} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(22px, 3.5vw, 40px)', textAlign: 'center', marginBottom: 48 }}
-          >
-            {page.batchSectionTitle}
-          </h2>
+          <h2 className="pp-h2">{page.batchSectionTitle}</h2>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-              gap: 24,
-            }}
-          >
+          <div className="pp-grid-batches">
             {page.batches.map((batch: PgBatch) => (
               <div
                 key={batch.id}
-                className="pp-card"
+                className="pp-card-sm"
                 style={{
-                  padding: '32px',
-                  opacity: batch.status === 'Closed' ? 0.7 : 1,
+                  padding: 24,
+                  opacity: batch.status === 'Closed' ? 0.75 : 1,
                 }}
               >
                 <div
@@ -714,7 +643,7 @@ export default function ProgramPage() {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'flex-start',
-                    marginBottom: 20,
+                    marginBottom: 16,
                     gap: 12,
                   }}
                 >
@@ -722,22 +651,22 @@ export default function ProgramPage() {
                     <h4
                       style={{
                         fontWeight: 700,
-                        fontSize: 20,
+                        fontSize: 18,
                         color: 'var(--pp-navy-dark)',
                         marginBottom: 4,
                       }}
                     >
                       {batch.name}
                     </h4>
-                    <p style={{ color: 'var(--pp-muted)', fontSize: 15 }}>{batch.datetime}</p>
+                    <p style={{ color: 'var(--pp-muted)', fontSize: 14 }}>{batch.datetime}</p>
                   </div>
                   <BatchBadge status={batch.status} />
                 </div>
                 <p
                   style={{
-                    fontWeight: 700,
+                    fontWeight: 500,
                     color: batch.status === 'Closed' ? 'var(--pp-muted)' : 'var(--pp-navy)',
-                    fontSize: 15,
+                    fontSize: 14,
                   }}
                 >
                   {batch.seatsText}
@@ -749,40 +678,29 @@ export default function ProgramPage() {
       </section>
 
       {/* ── 11. Testimonials ────────────────────────────────────────── */}
-      <section style={{ background: '#fff', padding: '96px 24px' }}>
+      <section style={{ background: '#fff', padding: '80px 24px' }}>
         <div ref={rTestimonials} className="pp-reveal pp-container">
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(22px, 3.5vw, 40px)', textAlign: 'center', marginBottom: 48 }}
-          >
-            {page.testimonialSectionTitle}
-          </h2>
+          <h2 className="pp-h2">{page.testimonialSectionTitle}</h2>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))',
-              gap: 32,
-            }}
-          >
+          <div className="pp-grid-testis">
             {page.testimonials.map((t: PgTestimonial) => (
               <div
                 key={t.id}
                 className="pp-card"
                 style={{
-                  padding: '40px',
+                  padding: 32,
                   display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   textAlign: 'center',
                 }}
               >
-                <Avatar src={t.image} alt={t.name} size={112} />
+                <Avatar src={t.image} alt={t.name} size={96} />
                 <p
                   style={{
                     fontStyle: 'italic',
                     color: 'var(--pp-muted)',
-                    fontSize: 17,
+                    fontSize: 18,
                     lineHeight: 1.6,
                     margin: '24px 0',
                     flex: 1,
@@ -790,10 +708,10 @@ export default function ProgramPage() {
                 >
                   "{t.quote}"
                 </p>
-                <h4 style={{ fontWeight: 700, fontSize: 17, color: 'var(--pp-navy-dark)', marginBottom: 4 }}>
+                <h4 style={{ fontWeight: 700, fontSize: 16, color: 'var(--pp-navy-dark)', marginBottom: 4 }}>
                   {t.name}
                 </h4>
-                <p style={{ color: 'var(--pp-orange)', fontWeight: 700, fontSize: 13 }}>{t.meta}</p>
+                <p style={{ color: 'var(--pp-primary)', fontWeight: 500, fontSize: 14 }}>{t.meta}</p>
               </div>
             ))}
           </div>
@@ -801,29 +719,20 @@ export default function ProgramPage() {
       </section>
 
       {/* ── 12. Pricing ─────────────────────────────────────────────── */}
-      <section id="pricing" className="pp-dark-band" style={{ padding: '96px 24px' }}>
+      <section id="pricing" className="pp-dark-band" style={{ padding: '80px 24px' }}>
         <div ref={rPricing} className="pp-reveal pp-container">
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: 64,
-              alignItems: 'center',
-              maxWidth: 900,
-              margin: '0 auto',
-            }}
-          >
+          <div className="pp-grid-pricing">
             {/* Pricing card */}
-            <div className="pp-card" style={{ padding: '48px 56px' }}>
+            <div className="pp-card pp-pricing-card">
               <div style={{ marginBottom: 32 }}>
-                <span style={{ color: '#94A3B8', textDecoration: 'line-through', fontSize: 28 }}>
+                <span style={{ color: '#94A3B8', textDecoration: 'line-through', fontSize: 24 }}>
                   {page.pricingStrikePrice}
                 </span>
                 <div
                   style={{
                     fontFamily: 'var(--pp-font-head)',
                     fontWeight: 700,
-                    fontSize: 80,
+                    fontSize: 64,
                     color: 'var(--pp-navy-dark)',
                     lineHeight: 1,
                     marginTop: 4,
@@ -832,15 +741,15 @@ export default function ProgramPage() {
                   {page.pricingActualPrice}
                 </div>
                 {page.pricingBadge && (
-                  <p style={{ color: 'var(--pp-green)', fontWeight: 700, fontSize: 17, marginTop: 12 }}>
+                  <p style={{ color: 'var(--pp-green)', fontWeight: 600, fontSize: 16, marginTop: 8 }}>
                     {page.pricingBadge}
                   </p>
                 )}
               </div>
 
-              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 40px 0', display: 'flex', flexDirection: 'column', gap: 20 }}>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 40px 0', display: 'flex', flexDirection: 'column', gap: 16 }}>
                 {page.pricingFeatures.map((f) => (
-                  <li key={f.id} style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 17 }}>
+                  <li key={f.id} style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 16 }}>
                     <span style={{ color: 'var(--pp-green)', fontWeight: 700, fontSize: 22, flexShrink: 0 }}>✓</span>
                     <span style={{ color: 'var(--pp-navy-dark)' }}>{f.text}</span>
                   </li>
@@ -851,33 +760,35 @@ export default function ProgramPage() {
                 type="button"
                 onClick={scrollToEnroll}
                 className="pp-btn pp-btn-primary"
-                style={{ width: '100%', padding: '24px', fontSize: 22, fontWeight: 700 }}
+                style={{ width: '100%', padding: 20, fontSize: 20 }}
               >
                 {page.pricingCtaText}
               </button>
             </div>
 
-            {/* Certificate image */}
+            {/* Certificate image - original: hidden md:block */}
             {page.pricingCertImage ? (
-              <div style={{ transform: 'rotate(3deg)', transition: 'transform 0.5s', borderRadius: 20, overflow: 'hidden' }}
+              <div className="pp-pricing-cert" style={{ transform: 'rotate(3deg)', transition: 'transform 0.5s', borderRadius: 20, overflow: 'hidden' }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
                 onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(3deg)')}
               >
                 <img src={page.pricingCertImage} alt="Certificate" style={{ width: '100%', borderRadius: 20 }} />
               </div>
             ) : (
-              <div
-                className="pp-img-placeholder"
-                style={{
-                  height: 320,
-                  borderRadius: 20,
-                  fontSize: 14,
-                  color: 'rgba(255,255,255,0.4)',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.08)',
-                }}
-              >
-                <span>Add certificate image URL in admin</span>
+              <div className="pp-pricing-cert">
+                <div
+                  className="pp-img-placeholder"
+                  style={{
+                    height: 420,
+                    borderRadius: 20,
+                    fontSize: 14,
+                    color: 'rgba(255,255,255,0.4)',
+                    background: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                  }}
+                >
+                  <span>Add certificate image URL in admin</span>
+                </div>
               </div>
             )}
           </div>
@@ -887,10 +798,10 @@ export default function ProgramPage() {
       {/* ── 13. Enrollment form ──────────────────────────────────────── */}
       <section id="enroll" className="pp-section" style={{ background: '#EEF2F8' }}>
         <div ref={rEnroll} className="pp-reveal" style={{ maxWidth: 520, margin: '0 auto' }}>
-          <div className="pp-card" style={{ padding: '40px' }}>
+          <div className="pp-card pp-form-card">
             <h2
               className="pp-headline"
-              style={{ textAlign: 'center', marginBottom: 36, fontSize: 28 }}
+              style={{ textAlign: 'center', marginBottom: 32, fontSize: 28, fontWeight: 700 }}
             >
               {page.formTitle}
             </h2>
@@ -984,12 +895,7 @@ export default function ProgramPage() {
       {/* ── 14. FAQ ─────────────────────────────────────────────────── */}
       <section id="faq" className="pp-section" style={{ background: '#fff' }}>
         <div ref={rFaq} className="pp-reveal" style={{ maxWidth: 768, margin: '0 auto' }}>
-          <h2
-            className="pp-headline"
-            style={{ fontSize: 'clamp(22px, 3.5vw, 40px)', textAlign: 'center', marginBottom: 64 }}
-          >
-            {page.faqSectionTitle}
-          </h2>
+          <h2 className="pp-h2">{page.faqSectionTitle}</h2>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
             {page.faqs.map((faq: PgFaq) => (
@@ -1035,7 +941,7 @@ export default function ProgramPage() {
       </section>
 
       {/* ── 16. Footer ──────────────────────────────────────────────── */}
-      <footer style={{ background: 'var(--pp-navy)', color: '#fff', padding: '96px 24px 32px' }}>
+      <footer style={{ background: 'var(--pp-navy)', color: '#fff', padding: '80px 24px 32px' }}>
         <div className="pp-container">
           <div
             style={{
@@ -1165,7 +1071,7 @@ export default function ProgramPage() {
         </button>
       </div>
 
-      {/* Desktop nav hidden below md — use CSS to manage */}
+      {/* Desktop nav hidden below md - use CSS to manage */}
       <style>{`
         @media (max-width: 767px) {
           .pp-desktop-nav { display: none !important; }
