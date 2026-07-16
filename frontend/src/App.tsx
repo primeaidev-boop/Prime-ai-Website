@@ -108,7 +108,7 @@ export default function App() {
         <Route path="/programs/10-day-ai-launchpad" element={<AiLaunchpad />} />
       </Route>
 
-      {/* Standalone light-theme program landing pages — no site Navbar/Footer */}
+      {/* Standalone light-theme program landing pages - no site Navbar/Footer */}
       <Route path="/program/:slug" element={
         <Suspense fallback={<PageLoader />}>
           <ProgramPage />

@@ -1,4 +1,4 @@
-// Program pages data — admin-managed, localStorage key: primAI_programPages
+// Program pages data - admin-managed, localStorage key: primAI_programPages
 // Each ProgramPage is a standalone light-theme landing page reachable at /program/:slug.
 
 const STORAGE_KEY = 'primAI_programPages';
@@ -19,7 +19,7 @@ export interface PgNavLink {
 
 export interface PgBuildCard {
   id: string;
-  image: string;       // URL — admin-editable
+  image: string;       // URL - admin-editable
   title: string;
 }
 
