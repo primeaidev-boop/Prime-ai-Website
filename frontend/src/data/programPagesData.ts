@@ -9,6 +9,18 @@ export function pgId(): string {
   return Math.random().toString(36).slice(2, 10);
 }
 
+// Same options as the Tutorial Leads "Who are you?" field, so program
+// enrollments and tutorial leads stay comparable in the admin.
+export const PROGRAM_ENROLLMENT_PROFILE_OPTIONS = [
+  'School Student',
+  'College Student',
+  'Working Professional',
+  'Business Owner',
+  'Freelancer',
+  'Job Seeker',
+  'Other',
+];
+
 // ── Sub-types ─────────────────────────────────────────────────────────────────
 
 export interface PgNavLink {
@@ -170,6 +182,17 @@ export interface ProgramPage {
   formSubmitText: string;
   whatsappNumber: string;        // e.g. "917573055191" (no + or spaces)
   whatsappMessageTemplate: string;
+
+  // Optional predefined fields - toggle per program without code changes.
+  // Submissions only store whatever fields were active at submit time.
+  showCityField: boolean;
+  formCityLabel: string;
+  formCityPlaceholder: string;
+  showEmailField: boolean;
+  formEmailLabel: string;
+  formEmailPlaceholder: string;
+  showUserTypeField: boolean;
+  formUserTypeLabel: string;
 
   // ── FAQ
   faqSectionTitle: string;
@@ -343,6 +366,15 @@ const DEFAULT_10DAY: ProgramPage = {
   whatsappNumber: '917573055191',
   whatsappMessageTemplate:
     'Hi! I want to enroll in the 10-Day AI Program (₹399). Name: {name}, Phone: {phone}, Batch: {batch}. Please share enrollment details.',
+
+  showCityField: true,
+  formCityLabel: 'City',
+  formCityPlaceholder: 'Enter your city',
+  showEmailField: false,
+  formEmailLabel: 'Email',
+  formEmailPlaceholder: 'Enter your email',
+  showUserTypeField: false,
+  formUserTypeLabel: 'Who are you?',
 
   // FAQ
   faqSectionTitle: 'Frequently Asked Questions',

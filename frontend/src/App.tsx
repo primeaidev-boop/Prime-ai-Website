@@ -31,6 +31,7 @@ const TutorialListing = lazy(() => import('@/pages/TutorialListing'));
 const TutorialPage = lazy(() => import('@/pages/TutorialPage'));
 const TutorialsAdmin = lazy(() => import('@/pages/admin/TutorialsAdmin'));
 const TutorialLeads = lazy(() => import('@/pages/admin/TutorialLeads'));
+const ProgramEnrollments = lazy(() => import('@/pages/admin/ProgramEnrollments'));
 const UserDashboard = lazy(() => import('@/pages/Dashboard'));
 const Projects = lazy(() => import('@/pages/Projects'));
 const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
@@ -134,6 +135,7 @@ export default function App() {
         <Route path="courses" element={<CoursesAdmin />} />
         <Route path="tutorials" element={<TutorialsAdmin />} />
         <Route path="tutorial-leads" element={<TutorialLeads />} />
+        <Route path="program-enrollments" element={<ProgramEnrollments />} />
         <Route path="projects" element={<ProjectsAdmin />} />
         <Route path="blog" element={<BlogPosts />} />
         <Route path="blog/new" element={<BlogPostEditor />} />

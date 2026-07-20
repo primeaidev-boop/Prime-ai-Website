@@ -10,6 +10,7 @@ const links = [
   { to: '/admin/courses', icon: '📚', label: 'Courses Page' },
   { to: '/admin/tutorials', icon: '🎓', label: 'Tutorials' },
   { to: '/admin/tutorial-leads', icon: '🎯', label: 'Tutorial Leads' },
+  { to: '/admin/program-enrollments', icon: '📝', label: 'Program Enrollments' },
   { to: '/admin/projects', icon: '🚀', label: 'Projects' },
   { to: '/admin/blog', icon: '✍️', label: 'Blog Posts' },
   { to: '/admin/program-pages', icon: '📄', label: 'Program Pages' },

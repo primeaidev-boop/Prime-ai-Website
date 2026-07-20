@@ -347,3 +347,43 @@ model TutorialLead {
 
   @@map("tutorial_leads")
 }
+
+// ─── Program Enrollments (standalone /program/:slug landing pages) ─────────────
+// Separate from TutorialLead/DemoBooking/Enquiry by design - own admin section.
+
+enum EnrollmentStatus {
+  NEW
+  CONTACTED
+  CONFIRMED
+  CANCELLED
+}
+
+model ProgramEnrollment {
+  id             String           @id @default(cuid())
+  fullName       String
+  whatsappNumber String
+  // Optional fields - a program's admin-configured form may or may not ask
+  // for these (see PgFormFieldsConfig on the frontend); null when not asked.
+  city           String?
+  email          String?
+  userType       String?
+  // Which program page this came from. programTitle is a snapshot (not a
+  // join) so the admin table stays readable even if a page is renamed/deleted.
+  programSlug    String
+  programTitle   String
+  // Text snapshot of the batch they picked at submission time - protects
+  // enrollment history from later edits/deletion of the batch in the CMS.
+  batchName      String
+  status         EnrollmentStatus @default(NEW)
+  notes          String?
+  // Repeat interest within the dedup window (see service) increments this
+  // instead of creating a duplicate row.
+  submissionCount Int             @default(1)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([whatsappNumber, programSlug])
+  @@index([programSlug])
+  @@index([status])
+  @@map("program_enrollments")
+}

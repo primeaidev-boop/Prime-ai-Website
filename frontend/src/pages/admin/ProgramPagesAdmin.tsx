@@ -856,6 +856,57 @@ function ProgramEditor({
           <Textarea value={p.whatsappMessageTemplate} onChange={(v) => set('whatsappMessageTemplate', v)} rows={3} />
         </Field>
 
+        <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '32px 0 4px' }}>Optional Fields</p>
+        <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 16 }}>
+          Toggle extra questions on the form. Enrollment submissions only record whatever fields are switched on here.
+        </p>
+
+        <div style={{ ...S.card, marginBottom: 16 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showCityField} onChange={(e) => set('showCityField', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Ask for City</span>
+          </label>
+          {p.showCityField && (
+            <div style={S.row}>
+              <Field label="City Field Label">
+                <Input value={p.formCityLabel} onChange={(v) => set('formCityLabel', v)} />
+              </Field>
+              <Field label="City Field Placeholder">
+                <Input value={p.formCityPlaceholder} onChange={(v) => set('formCityPlaceholder', v)} />
+              </Field>
+            </div>
+          )}
+        </div>
+
+        <div style={{ ...S.card, marginBottom: 16 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showEmailField} onChange={(e) => set('showEmailField', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Ask for Email</span>
+          </label>
+          {p.showEmailField && (
+            <div style={S.row}>
+              <Field label="Email Field Label">
+                <Input value={p.formEmailLabel} onChange={(v) => set('formEmailLabel', v)} />
+              </Field>
+              <Field label="Email Field Placeholder">
+                <Input value={p.formEmailPlaceholder} onChange={(v) => set('formEmailPlaceholder', v)} />
+              </Field>
+            </div>
+          )}
+        </div>
+
+        <div style={{ ...S.card, marginBottom: 16 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showUserTypeField} onChange={(e) => set('showUserTypeField', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Ask "Who are you?" (same options as Tutorial Leads)</span>
+          </label>
+          {p.showUserTypeField && (
+            <Field label='"Who are you?" Field Label'>
+              <Input value={p.formUserTypeLabel} onChange={(v) => set('formUserTypeLabel', v)} />
+            </Field>
+          )}
+        </div>
+
         <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '32px 0 12px' }}>Footer</p>
         <div style={S.row}>
           <Field label="Brand Tagline">

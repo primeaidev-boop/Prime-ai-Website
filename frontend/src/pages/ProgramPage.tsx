@@ -4,9 +4,15 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { loadProgramPagesData, saveProgramPagesData } from '@/data/programPagesData';
+import {
+  loadProgramPagesData,
+  saveProgramPagesData,
+  PROGRAM_ENROLLMENT_PROFILE_OPTIONS,
+} from '@/data/programPagesData';
 import { getPageContent } from '@/api/content';
 import { convertImageUrl } from '@/lib/imageUrl';
+import { submitProgramEnrollment } from '@/api/programEnrollments';
+import { queueFailedEnrollment, flushQueuedEnrollments } from '@/lib/enrollmentQueue';
 import type { ProgramPage as ProgramPageData } from '@/data/programPagesData';
 import type {
   PgBatch,
@@ -19,6 +25,14 @@ import type {
   PgTestimonial,
 } from '@/data/programPagesData';
 import '@/styles/program-page.css';
+
+const formLabelStyle: React.CSSProperties = {
+  display: 'block',
+  fontWeight: 700,
+  color: 'var(--pp-navy)',
+  marginBottom: 10,
+  fontSize: 15,
+};
 
 // ── Scroll-reveal hook ────────────────────────────────────────────────────────
 
@@ -152,6 +166,15 @@ export default function ProgramPage() {
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('');
   const [formBatch, setFormBatch] = useState('');
+  const [formCity, setFormCity] = useState('');
+  const [formEmail, setFormEmail] = useState('');
+  const [formUserType, setFormUserType] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Best-effort retry of any enrollment that failed to reach the backend on
+  // a previous visit - the visitor never sees this, WhatsApp already opened.
+  useEffect(() => { void flushQueuedEnrollments(); }, []);
 
   // Reveal refs
   const rBuild        = useReveal();
@@ -186,17 +209,61 @@ export default function ProgramPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // WhatsApp submission
-  function handleFormSubmit(e: React.FormEvent) {
+  // Capture-first submission: record the enrollment in our DB, then open
+  // WhatsApp. The WhatsApp redirect happens regardless of whether the
+  // capture succeeded - conversions must never be lost to a backend hiccup.
+  async function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!page) return;
+
+    const phoneValid = /^[6-9]\d{9}$/.test(formPhone.trim());
+    if (!phoneValid) {
+      alert('Enter a valid 10-digit WhatsApp number.');
+      return;
+    }
+
     const batchLabel = formBatch || (page.batches[0]?.name ?? '');
     const msg = page.whatsappMessageTemplate
       .replace('{name}', formName)
       .replace('{phone}', formPhone)
       .replace('{batch}', batchLabel);
-    const url = `https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank', 'noopener,noreferrer');
+    const waUrl = `https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+
+    // Open the tab synchronously, inside this click handler, so the browser
+    // still treats it as user-initiated once we cross the await below -
+    // opening it only after the POST resolves would get blocked as a popup
+    // on most mobile browsers. We redirect this tab once the capture settles.
+    const waWindow = window.open('', '_blank');
+
+    setSubmitting(true);
+    const payload = {
+      fullName: formName.trim(),
+      whatsappNumber: formPhone.trim(),
+      ...(page.showCityField && formCity.trim() ? { city: formCity.trim() } : {}),
+      ...(page.showEmailField && formEmail.trim() ? { email: formEmail.trim() } : {}),
+      ...(page.showUserTypeField && formUserType ? { userType: formUserType } : {}),
+      programSlug: page.slug,
+      programTitle: page.pageTitle,
+      batchName: batchLabel,
+    };
+
+    try {
+      await submitProgramEnrollment(payload);
+    } catch {
+      // Backend capture failed - never block the visitor. Queue it for a
+      // best-effort retry on their next visit and keep going to WhatsApp.
+      queueFailedEnrollment(payload);
+    } finally {
+      setSubmitting(false);
+      setSubmitted(true);
+    }
+
+    if (waWindow) {
+      waWindow.location.href = waUrl;
+    } else {
+      // Pre-open was itself blocked (some desktop browsers) - last resort.
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    }
   }
 
   // Scroll to enroll section
@@ -824,19 +891,27 @@ export default function ProgramPage() {
               {page.formTitle}
             </h2>
 
+            {submitted && (
+              <div
+                style={{
+                  background: 'rgba(16,185,129,0.1)',
+                  border: '1px solid rgba(16,185,129,0.3)',
+                  borderRadius: 12,
+                  padding: '14px 18px',
+                  marginBottom: 24,
+                  color: 'var(--pp-green)',
+                  fontWeight: 700,
+                  fontSize: 14,
+                  textAlign: 'center',
+                }}
+              >
+                ✓ Got it! Opening WhatsApp to confirm your seat…
+              </div>
+            )}
+
             <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
               <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontWeight: 700,
-                    color: 'var(--pp-navy)',
-                    marginBottom: 10,
-                    fontSize: 15,
-                  }}
-                >
-                  {page.formNameLabel}
-                </label>
+                <label style={formLabelStyle}>{page.formNameLabel}</label>
                 <input
                   className="pp-input"
                   type="text"
@@ -848,17 +923,7 @@ export default function ProgramPage() {
               </div>
 
               <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontWeight: 700,
-                    color: 'var(--pp-navy)',
-                    marginBottom: 10,
-                    fontSize: 15,
-                  }}
-                >
-                  {page.formPhoneLabel}
-                </label>
+                <label style={formLabelStyle}>{page.formPhoneLabel}</label>
                 <input
                   className="pp-input"
                   type="tel"
@@ -869,18 +934,51 @@ export default function ProgramPage() {
                 />
               </div>
 
+              {page.showCityField && (
+                <div>
+                  <label style={formLabelStyle}>{page.formCityLabel}</label>
+                  <input
+                    className="pp-input"
+                    type="text"
+                    placeholder={page.formCityPlaceholder}
+                    value={formCity}
+                    onChange={(e) => setFormCity(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+
+              {page.showEmailField && (
+                <div>
+                  <label style={formLabelStyle}>{page.formEmailLabel}</label>
+                  <input
+                    className="pp-input"
+                    type="email"
+                    placeholder={page.formEmailPlaceholder}
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
+                  />
+                </div>
+              )}
+
+              {page.showUserTypeField && (
+                <div>
+                  <label style={formLabelStyle}>{page.formUserTypeLabel}</label>
+                  <select
+                    className="pp-input"
+                    value={formUserType}
+                    onChange={(e) => setFormUserType(e.target.value)}
+                  >
+                    <option value="">Select…</option>
+                    {PROGRAM_ENROLLMENT_PROFILE_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div>
-                <label
-                  style={{
-                    display: 'block',
-                    fontWeight: 700,
-                    color: 'var(--pp-navy)',
-                    marginBottom: 10,
-                    fontSize: 15,
-                  }}
-                >
-                  {page.formBatchLabel}
-                </label>
+                <label style={formLabelStyle}>{page.formBatchLabel}</label>
                 <select
                   className="pp-input"
                   value={formBatch}
@@ -901,9 +999,10 @@ export default function ProgramPage() {
               <button
                 type="submit"
                 className="pp-btn pp-btn-green"
-                style={{ width: '100%', padding: '20px', fontSize: 18 }}
+                disabled={submitting}
+                style={{ width: '100%', padding: '20px', fontSize: 18, opacity: submitting ? 0.7 : 1 }}
               >
-                💬 {page.formSubmitText}
+                {submitting ? 'Submitting…' : `💬 ${page.formSubmitText}`}
               </button>
             </form>
           </div>
