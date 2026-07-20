@@ -9,6 +9,7 @@ import {
   pgId,
 } from '@/data/programPagesData';
 import { getPageContent, putPageContent } from '@/api/content';
+import { fetchMediaFromUrl } from '@/api/blog';
 import { convertImageUrl } from '@/lib/imageUrl';
 import type {
   ProgramPage,
@@ -64,6 +65,83 @@ function Input({
       placeholder={placeholder}
       onChange={(e) => onChange(e.target.value)}
     />
+  );
+}
+
+// Image URL field with a "Fetch & Host" action: pasted URLs (Google Drive
+// share links especially) are fetched server-side once and replaced with a
+// permanent URL on our own domain. Drive/Photos links are not a CDN and can
+// fail intermittently per-visitor even when correctly shared - hosting the
+// bytes ourselves removes that dependency entirely.
+function ImageUrlInput({
+  value,
+  onChange,
+  placeholder,
+  variant = 'content',
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  variant?: 'cover' | 'content' | 'avatar';
+}) {
+  const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState('');
+  const isDriveUrl = /drive\.google\.com/.test(value);
+
+  async function handleFetchHost() {
+    if (!value.trim()) return;
+    setFetching(true);
+    setError('');
+    try {
+      const result = await fetchMediaFromUrl(value, variant);
+      onChange(result.url);
+    } catch (err) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg || 'Fetch failed - check the URL is public and try again');
+    } finally {
+      setFetching(false);
+    }
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <input
+          style={{ ...S.input, flex: 1 }}
+          value={value}
+          placeholder={placeholder}
+          onChange={(e) => { onChange(e.target.value); setError(''); }}
+        />
+        <button
+          type="button"
+          onClick={handleFetchHost}
+          disabled={fetching || !value.trim()}
+          title="Download this image once and host it on our own server (recommended for Google Drive links)"
+          style={{
+            padding: '10px 14px',
+            borderRadius: 8,
+            border: '1px solid var(--border)',
+            background: isDriveUrl ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.06)',
+            color: isDriveUrl ? 'var(--electric)' : 'var(--muted)',
+            fontSize: 12,
+            fontWeight: 600,
+            whiteSpace: 'nowrap',
+            cursor: fetching || !value.trim() ? 'default' : 'pointer',
+            opacity: fetching || !value.trim() ? 0.6 : 1,
+          }}
+        >
+          {fetching ? 'Fetching…' : '⬇ Fetch & Host'}
+        </button>
+      </div>
+      {isDriveUrl && !error && (
+        <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 6 }}>
+          ⚠ Google Drive links can break for visitors intermittently - click "Fetch &amp; Host" to make this permanent.
+        </p>
+      )}
+      {error && (
+        <p style={{ fontSize: 11, color: '#f87171', marginTop: 6 }}>{error}</p>
+      )}
+    </div>
   );
 }
 
@@ -368,7 +446,7 @@ function ProgramEditor({
           </Field>
         </div>
         <Field label="Hero Image URL">
-          <Input value={p.heroImage} onChange={(v) => set('heroImage', v)} placeholder="https://..." />
+          <ImageUrlInput value={p.heroImage} onChange={(v) => set('heroImage', v)} placeholder="https://..." variant="cover" />
         </Field>
         <Field label='Floating Badge Text (e.g. "5 Real Projects · 10 Days")'>
           <Input value={p.heroFloatingBadge} onChange={(v) => set('heroFloatingBadge', v)} />
@@ -402,7 +480,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Image URL</label>
-                  <input style={S.input} value={card.image} placeholder="https://..." onChange={(e) => buildCardUpdater(idx, 'image', e.target.value)} />
+                  <ImageUrlInput value={card.image} placeholder="https://..." onChange={(v) => buildCardUpdater(idx, 'image', v)} variant="cover" />
                 </div>
                 <div>
                   <label style={S.label}>Title</label>
@@ -492,7 +570,9 @@ function ProgramEditor({
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 8 }}>
           {p.classroomImages.map((img, idx) => (
             <div key={img.id} style={{ ...S.card, display: 'flex', gap: 10, alignItems: 'center' }}>
-              <input style={{ ...S.input, flex: 3 }} value={img.url} placeholder="Image URL" onChange={(e) => galleryUpdater(idx, 'url', e.target.value)} />
+              <div style={{ flex: 3 }}>
+                <ImageUrlInput value={img.url} placeholder="Image URL" onChange={(v) => galleryUpdater(idx, 'url', v)} variant="cover" />
+              </div>
               <input style={{ ...S.input, flex: 2 }} value={img.alt} placeholder="Alt text" onChange={(e) => galleryUpdater(idx, 'alt', e.target.value)} />
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted)', fontSize: 13, flexShrink: 0 }}>
                 <input type="checkbox" checked={img.isWide} onChange={(e) => galleryUpdater(idx, 'isWide', e.target.checked)} />
@@ -520,7 +600,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Photo URL</label>
-                  <input style={S.input} value={card.image} placeholder="https://..." onChange={(e) => learnerUpdater(idx, 'image', e.target.value)} />
+                  <ImageUrlInput value={card.image} placeholder="https://..." onChange={(v) => learnerUpdater(idx, 'image', v)} variant="avatar" />
                 </div>
                 <div>
                   <label style={S.label}>Title</label>
@@ -553,7 +633,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Photo URL</label>
-                  <input style={S.input} value={mentor.image} placeholder="https://..." onChange={(e) => mentorUpdater(idx, 'image', e.target.value)} />
+                  <ImageUrlInput value={mentor.image} placeholder="https://..." onChange={(v) => mentorUpdater(idx, 'image', v)} variant="avatar" />
                   <label style={{ ...S.label, marginTop: 8 }}>Name</label>
                   <input style={S.input} value={mentor.name} onChange={(e) => mentorUpdater(idx, 'name', e.target.value)} />
                 </div>
@@ -625,7 +705,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 3fr 1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Photo URL</label>
-                  <input style={S.input} value={t.image} placeholder="https://..." onChange={(e) => testimonialUpdater(idx, 'image', e.target.value)} />
+                  <ImageUrlInput value={t.image} placeholder="https://..." onChange={(v) => testimonialUpdater(idx, 'image', v)} variant="avatar" />
                   <label style={{ ...S.label, marginTop: 8 }}>Name</label>
                   <input style={S.input} value={t.name} onChange={(e) => testimonialUpdater(idx, 'name', e.target.value)} />
                 </div>
@@ -673,7 +753,7 @@ function ProgramEditor({
           </Field>
         </div>
         <Field label="Certificate Image URL (shown to the right of pricing card)">
-          <Input value={p.pricingCertImage} onChange={(v) => set('pricingCertImage', v)} placeholder="https://..." />
+          <ImageUrlInput value={p.pricingCertImage} onChange={(v) => set('pricingCertImage', v)} placeholder="https://..." variant="content" />
         </Field>
 
         <Field label="Pricing Features (checklist)">
@@ -787,7 +867,7 @@ function ProgramEditor({
         </div>
         <div style={S.row}>
           <Field label="Certificate Image URL">
-            <Input value={p.footerCertImage} onChange={(v) => set('footerCertImage', v)} placeholder="https://..." />
+            <ImageUrlInput value={p.footerCertImage} onChange={(v) => set('footerCertImage', v)} placeholder="https://..." variant="content" />
           </Field>
           <Field label="Copyright Text">
             <Input value={p.footerCopyright} onChange={(v) => set('footerCopyright', v)} />

@@ -169,3 +169,16 @@ export function uploadMedia(
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then((r) => r.data);
 }
+
+/**
+ * Fetches an external image URL (Google Drive share link, etc.) server-side
+ * and re-hosts it under our own domain, returning the new permanent URL.
+ * Use this instead of saving a Drive/Photos URL directly - those are not a
+ * CDN and can fail intermittently per-visitor even when correctly shared.
+ */
+export function fetchMediaFromUrl(
+  url: string,
+  variant: 'cover' | 'content' | 'avatar' = 'content',
+): Promise<{ url: string; originalSizeKb: number; convertedSizeKb: number; width: number; height: number }> {
+  return api.post('/admin/media/fetch-url', { url, variant }).then((r) => r.data);
+}
