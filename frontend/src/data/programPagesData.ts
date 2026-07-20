@@ -183,6 +183,13 @@ export interface ProgramPage {
   whatsappNumber: string;        // e.g. "917573055191" (no + or spaces)
   whatsappMessageTemplate: string;
 
+  // ── Thank You page (shown after a confirmed enrollment capture, before
+  // the WhatsApp redirect) - see pages/ThankYouPage.tsx
+  thankYouHeading: string;
+  thankYouSubtext: string;
+  thankYouCountdownSeconds: number;
+  thankYouWhatsappMessageTemplate: string;  // placeholders: {name} {program} {batch}
+
   // Optional predefined fields - toggle per program without code changes.
   // Submissions only store whatever fields were active at submit time.
   showCityField: boolean;
@@ -366,6 +373,12 @@ const DEFAULT_10DAY: ProgramPage = {
   whatsappNumber: '917573055191',
   whatsappMessageTemplate:
     'Hi! I want to enroll in the 10-Day AI Program (₹399). Name: {name}, Phone: {phone}, Batch: {batch}. Please share enrollment details.',
+
+  thankYouHeading: 'Thank You! Your Seat Request is Received 🎉',
+  thankYouSubtext: 'Our team will confirm your enrollment on WhatsApp shortly.',
+  thankYouCountdownSeconds: 3,
+  thankYouWhatsappMessageTemplate:
+    "Hi, I'm {name}. I just booked my seat for {program} – {batch}. Please confirm my enrollment.",
 
   showCityField: true,
   formCityLabel: 'City',

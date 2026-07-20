@@ -3,7 +3,7 @@
 // Styling lives in styles/program-page.css (scoped .pp-root).
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   loadProgramPagesData,
   saveProgramPagesData,
@@ -144,6 +144,7 @@ function FaqRow({ faq }: { faq: PgFaq }) {
 
 export default function ProgramPage() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   // Paint immediately from the local cache/bundled defaults, then replace with
   // the published server content so every visitor sees the admin's real edits.
   const [pages, setPages] = useState<ProgramPageData[]>(() => loadProgramPagesData());
@@ -170,7 +171,8 @@ export default function ProgramPage() {
   const [formEmail, setFormEmail] = useState('');
   const [formUserType, setFormUserType] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [captureFailed, setCaptureFailed] = useState(false);
+  const [failedWaUrl, setFailedWaUrl] = useState('');
 
   // Best-effort retry of any enrollment that failed to reach the backend on
   // a previous visit - the visitor never sees this, WhatsApp already opened.
@@ -209,9 +211,12 @@ export default function ProgramPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Capture-first submission: record the enrollment in our DB, then open
-  // WhatsApp. The WhatsApp redirect happens regardless of whether the
-  // capture succeeded - conversions must never be lost to a backend hiccup.
+  // Capture-first submission: record the enrollment in our DB, then hand off
+  // to the Thank You page, which owns the WhatsApp redirect (countdown +
+  // always-visible manual button). The page is only reached on a CONFIRMED
+  // capture - if the API call fails we fall back to the old direct-WhatsApp
+  // safety net instead, since we can't show a "thank you" for a submission
+  // we don't know reached the backend.
   async function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!page) return;
@@ -222,22 +227,11 @@ export default function ProgramPage() {
       return;
     }
 
+    setCaptureFailed(false);
     const batchLabel = formBatch || (page.batches[0]?.name ?? '');
-    const msg = page.whatsappMessageTemplate
-      .replace('{name}', formName)
-      .replace('{phone}', formPhone)
-      .replace('{batch}', batchLabel);
-    const waUrl = `https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent(msg)}`;
-
-    // Open the tab synchronously, inside this click handler, so the browser
-    // still treats it as user-initiated once we cross the await below -
-    // opening it only after the POST resolves would get blocked as a popup
-    // on most mobile browsers. We redirect this tab once the capture settles.
-    const waWindow = window.open('', '_blank');
-
-    setSubmitting(true);
+    const fullName = formName.trim();
     const payload = {
-      fullName: formName.trim(),
+      fullName,
       whatsappNumber: formPhone.trim(),
       ...(page.showCityField && formCity.trim() ? { city: formCity.trim() } : {}),
       ...(page.showEmailField && formEmail.trim() ? { email: formEmail.trim() } : {}),
@@ -247,22 +241,29 @@ export default function ProgramPage() {
       batchName: batchLabel,
     };
 
+    setSubmitting(true);
     try {
       await submitProgramEnrollment(payload);
+      navigate(`/program/${page.slug}/thank-you`, {
+        state: { fullName, batchName: batchLabel, programTitle: page.pageTitle },
+      });
     } catch {
       // Backend capture failed - never block the visitor. Queue it for a
-      // best-effort retry on their next visit and keep going to WhatsApp.
+      // best-effort retry on their next visit, attempt WhatsApp directly as
+      // before, and also surface a manual link in case the auto-attempt gets
+      // blocked (we've crossed an await, so the browser may no longer treat
+      // this as a user-gesture-triggered open).
       queueFailedEnrollment(payload);
+      const msg = page.whatsappMessageTemplate
+        .replace('{name}', fullName)
+        .replace('{phone}', formPhone)
+        .replace('{batch}', batchLabel);
+      const waUrl = `https://wa.me/${page.whatsappNumber}?text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      setFailedWaUrl(waUrl);
+      setCaptureFailed(true);
     } finally {
       setSubmitting(false);
-      setSubmitted(true);
-    }
-
-    if (waWindow) {
-      waWindow.location.href = waUrl;
-    } else {
-      // Pre-open was itself blocked (some desktop browsers) - last resort.
-      window.open(waUrl, '_blank', 'noopener,noreferrer');
     }
   }
 
@@ -891,21 +892,24 @@ export default function ProgramPage() {
               {page.formTitle}
             </h2>
 
-            {submitted && (
+            {captureFailed && (
               <div
                 style={{
-                  background: 'rgba(16,185,129,0.1)',
-                  border: '1px solid rgba(16,185,129,0.3)',
+                  background: 'rgba(249,115,22,0.1)',
+                  border: '1px solid rgba(249,115,22,0.3)',
                   borderRadius: 12,
                   padding: '14px 18px',
                   marginBottom: 24,
-                  color: 'var(--pp-green)',
-                  fontWeight: 700,
-                  fontSize: 14,
+                  color: 'var(--pp-orange)',
+                  fontWeight: 600,
+                  fontSize: 13,
                   textAlign: 'center',
                 }}
               >
-                ✓ Got it! Opening WhatsApp to confirm your seat…
+                We tried opening WhatsApp for you - your seat request is saved either way.{' '}
+                <a href={failedWaUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--pp-orange)', fontWeight: 700 }}>
+                  Didn't open? Tap here.
+                </a>
               </div>
             )}
 

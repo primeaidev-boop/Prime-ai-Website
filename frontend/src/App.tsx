@@ -38,6 +38,7 @@ const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
 const ProjectsAdmin = lazy(() => import('@/pages/admin/ProjectsAdmin'));
 const AiLaunchpad = lazy(() => import('@/pages/AiLaunchpad'));
 const ProgramPage = lazy(() => import('@/pages/ProgramPage'));
+const ThankYouPage = lazy(() => import('@/pages/ThankYouPage'));
 const ProgramPagesAdmin = lazy(() => import('@/pages/admin/ProgramPagesAdmin'));
 
 function PublicLayout() {
@@ -113,6 +114,11 @@ export default function App() {
       <Route path="/program/:slug" element={
         <Suspense fallback={<PageLoader />}>
           <ProgramPage />
+        </Suspense>
+      } />
+      <Route path="/program/:slug/thank-you" element={
+        <Suspense fallback={<PageLoader />}>
+          <ThankYouPage />
         </Suspense>
       } />
 

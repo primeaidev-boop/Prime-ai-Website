@@ -856,6 +856,29 @@ function ProgramEditor({
           <Textarea value={p.whatsappMessageTemplate} onChange={(v) => set('whatsappMessageTemplate', v)} rows={3} />
         </Field>
 
+        <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '32px 0 4px' }}>Thank You Page</p>
+        <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 16 }}>
+          Shown right after a confirmed enrollment, before the countdown redirects to WhatsApp.
+        </p>
+        <Field label="Heading">
+          <Input value={p.thankYouHeading} onChange={(v) => set('thankYouHeading', v)} />
+        </Field>
+        <Field label="Reassurance Line">
+          <Input value={p.thankYouSubtext} onChange={(v) => set('thankYouSubtext', v)} />
+        </Field>
+        <div style={S.row}>
+          <Field label="Countdown Duration (seconds)">
+            <Input
+              type="number"
+              value={String(p.thankYouCountdownSeconds)}
+              onChange={(v) => set('thankYouCountdownSeconds', Math.max(0, parseInt(v, 10) || 0))}
+            />
+          </Field>
+        </div>
+        <Field label='WhatsApp Message Template (use {name}, {program}, {batch} as placeholders)'>
+          <Textarea value={p.thankYouWhatsappMessageTemplate} onChange={(v) => set('thankYouWhatsappMessageTemplate', v)} rows={3} />
+        </Field>
+
         <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '32px 0 4px' }}>Optional Fields</p>
         <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 16 }}>
           Toggle extra questions on the form. Enrollment submissions only record whatever fields are switched on here.
