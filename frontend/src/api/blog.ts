@@ -170,6 +170,17 @@ export function uploadMedia(
   }).then((r) => r.data);
 }
 
+/** Uploads a short looping video (mp4/webm, 15 MB server cap) for program-page
+ *  media slots. Stored as-is (no re-encode) and served from /uploads/*. */
+export function uploadVideo(file: File): Promise<{ url: string; sizeKb: number }> {
+  const form = new FormData();
+  form.append('file', file);
+  return api.post('/admin/media/upload', form, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+    timeout: 120_000,
+  }).then((r) => r.data);
+}
+
 /**
  * Fetches an external image URL (Google Drive share link, etc.) server-side
  * and re-hosts it under our own domain, returning the new permanent URL.

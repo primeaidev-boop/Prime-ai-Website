@@ -21,6 +21,34 @@ export const PROGRAM_ENROLLMENT_PROFILE_OPTIONS = [
   'Other',
 ];
 
+// ── Media values ──────────────────────────────────────────────────────────────
+// Every image slot accepts either a plain URL string (all previously saved
+// content) or a media object that can carry a looping video. Strings are
+// normalized to image objects at read time via toMedia() - old content keeps
+// rendering with zero migration. Image-only slots continue to be saved as
+// plain strings; the object form is written only when a video is attached.
+
+export interface PgMedia {
+  type: 'image' | 'video';
+  imageUrl: string;    // always required - poster + fallback for video slots
+  videoUrl?: string;   // set only when type === 'video'
+}
+
+export type PgMediaValue = string | PgMedia;
+
+export function toMedia(v: PgMediaValue | undefined | null): PgMedia {
+  if (!v) return { type: 'image', imageUrl: '' };
+  if (typeof v === 'string') return { type: 'image', imageUrl: v };
+  if (v.type === 'video' && v.videoUrl) return v;
+  return { type: 'image', imageUrl: v.imageUrl ?? '' };
+}
+
+/** True when the slot has anything to show (poster image or video). */
+export function hasMedia(v: PgMediaValue | undefined | null): boolean {
+  const m = toMedia(v);
+  return Boolean(m.imageUrl || (m.type === 'video' && m.videoUrl));
+}
+
 // ── Sub-types ─────────────────────────────────────────────────────────────────
 
 export interface PgNavLink {
@@ -31,7 +59,7 @@ export interface PgNavLink {
 
 export interface PgBuildCard {
   id: string;
-  image: string;       // URL - admin-editable
+  image: PgMediaValue; // URL string or media object - admin-editable
   title: string;
 }
 
@@ -45,21 +73,21 @@ export interface PgDayItem {
 
 export interface PgClassroomImage {
   id: string;
-  url: string;
+  url: PgMediaValue;
   alt: string;
   isWide: boolean;     // the first/big image spans 2 cols on desktop
 }
 
 export interface PgLearnerCard {
   id: string;
-  image: string;
+  image: PgMediaValue;
   title: string;
   desc: string;
 }
 
 export interface PgMentor {
   id: string;
-  image: string;
+  image: PgMediaValue;
   name: string;
   role: string;
   bio: string;
@@ -77,7 +105,7 @@ export interface PgBatch {
 
 export interface PgTestimonial {
   id: string;
-  image: string;
+  image: PgMediaValue;
   quote: string;
   name: string;
   meta: string;         // "Homemaker · Ahmedabad · Batch 5"
@@ -131,7 +159,7 @@ export interface ProgramPage {
   heroCtaText: string;
   showHeroSocialProof: boolean;  // small rating line under the CTA button
   heroSocialProofText: string;
-  heroImage: string;
+  heroImage: PgMediaValue;
   heroFloatingBadge: string;
 
   // ── Stat band (dark section below hero)
@@ -174,7 +202,7 @@ export interface ProgramPage {
   pricingBadge: string;
   pricingFeatures: PgFeature[];
   pricingCtaText: string;
-  pricingCertImage: string;
+  pricingCertImage: PgMediaValue;
 
   // ── Enrollment form
   formTitle: string;
@@ -217,7 +245,7 @@ export interface ProgramPage {
   footerTagline: string;
   footerLinks: PgFooterLink[];
   footerAddress: string;
-  footerCertImage: string;
+  footerCertImage: PgMediaValue;
   footerCopyright: string;
 }
 

@@ -7,10 +7,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   loadProgramPagesData,
   saveProgramPagesData,
+  hasMedia,
   PROGRAM_ENROLLMENT_PROFILE_OPTIONS,
 } from '@/data/programPagesData';
+import { MediaDisplay } from '@/components/shared/MediaDisplay';
+import type { PgMediaValue } from '@/data/programPagesData';
 import { getPageContent } from '@/api/content';
-import { convertImageUrl } from '@/lib/imageUrl';
 import { submitProgramEnrollment } from '@/api/programEnrollments';
 import { queueFailedEnrollment, flushQueuedEnrollments } from '@/lib/enrollmentQueue';
 import type { ProgramPage as ProgramPageData } from '@/data/programPagesData';
@@ -56,7 +58,7 @@ function useReveal() {
   return ref;
 }
 
-// ── Image helper: renders placeholder when URL is empty ───────────────────────
+// ── Image/video helper: renders placeholder when the slot is empty ────────────
 
 function Img({
   src,
@@ -64,19 +66,12 @@ function Img({
   className,
   style,
 }: {
-  src: string;
+  src: PgMediaValue;
   alt: string;
   className?: string;
   style?: React.CSSProperties;
 }) {
-  if (!src) {
-    return (
-      <div className={`pp-img-placeholder ${className ?? ''}`} style={style}>
-        <span>📷 Add image URL in admin</span>
-      </div>
-    );
-  }
-  return <img src={convertImageUrl(src)} alt={alt} className={className} style={style} />;
+  return <MediaDisplay media={src} alt={alt} className={className} style={style} />;
 }
 
 // ── Avatar: circular with placeholder ────────────────────────────────────────
@@ -86,12 +81,12 @@ function Avatar({
   alt,
   size,
 }: {
-  src: string;
+  src: PgMediaValue;
   alt: string;
   size: number;
 }) {
   const sizeStyle: React.CSSProperties = { width: size, height: size, minWidth: size };
-  if (!src) {
+  if (!hasMedia(src)) {
     return (
       <div className="pp-avatar-placeholder" style={sizeStyle} aria-label={alt}>
         👤
@@ -99,8 +94,8 @@ function Avatar({
     );
   }
   return (
-    <img
-      src={convertImageUrl(src)}
+    <MediaDisplay
+      media={src}
       alt={alt}
       className="pp-avatar"
       style={{ ...sizeStyle, objectFit: 'cover' }}
@@ -888,12 +883,12 @@ export default function ProgramPage() {
             </div>
 
             {/* Certificate image - original: hidden md:block */}
-            {page.pricingCertImage ? (
+            {hasMedia(page.pricingCertImage) ? (
               <div className="pp-pricing-cert" style={{ transform: 'rotate(3deg)', transition: 'transform 0.5s', borderRadius: 20, overflow: 'hidden' }}
                 onMouseEnter={(e) => (e.currentTarget.style.transform = 'rotate(0deg)')}
                 onMouseLeave={(e) => (e.currentTarget.style.transform = 'rotate(3deg)')}
               >
-                <img src={page.pricingCertImage} alt="Certificate" style={{ width: '100%', borderRadius: 20 }} />
+                <MediaDisplay media={page.pricingCertImage} alt="Certificate" style={{ width: '100%', borderRadius: 20 }} />
               </div>
             ) : (
               <div className="pp-pricing-cert">
@@ -1165,9 +1160,9 @@ export default function ProgramPage() {
               <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, marginBottom: 20 }}>
                 {page.footerAddress}
               </p>
-              {page.footerCertImage && (
-                <img
-                  src={page.footerCertImage}
+              {hasMedia(page.footerCertImage) && (
+                <MediaDisplay
+                  media={page.footerCertImage}
                   alt="ISO Certified"
                   style={{ width: 120, borderRadius: 10 }}
                 />

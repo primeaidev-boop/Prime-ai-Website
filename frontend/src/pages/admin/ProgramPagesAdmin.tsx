@@ -9,7 +9,7 @@ import {
   pgId,
 } from '@/data/programPagesData';
 import { getPageContent, putPageContent } from '@/api/content';
-import { fetchMediaFromUrl } from '@/api/blog';
+import { fetchMediaFromUrl, uploadVideo } from '@/api/blog';
 import { convertImageUrl } from '@/lib/imageUrl';
 import type {
   ProgramPage,
@@ -24,6 +24,8 @@ import type {
   PgFaq,
   PgFooterLink,
   BatchStatus,
+  PgMedia,
+  PgMediaValue,
 } from '@/data/programPagesData';
 
 // ── Shared admin design tokens (match existing admin pages) ───────────────────
@@ -145,6 +147,155 @@ function ImageUrlInput({
   );
 }
 
+// ── Media field: image (current behavior) or looping video ────────────────────
+// Image mode saves a plain URL string, exactly as before. Video mode saves
+// { type:'video', imageUrl, videoUrl } - the poster image stays mandatory
+// because it is the instant-render fallback on every slow/blocked device.
+
+const subLabel: React.CSSProperties = {
+  display: 'block', fontSize: 11, fontWeight: 600, color: 'var(--muted)',
+  marginBottom: 6, letterSpacing: '0.03em',
+};
+
+function MediaInput({
+  value,
+  onChange,
+  placeholder,
+  variant = 'content',
+}: {
+  value: PgMediaValue;
+  onChange: (v: PgMediaValue) => void;
+  placeholder?: string;
+  variant?: 'cover' | 'content' | 'avatar';
+}) {
+  const raw: PgMedia =
+    typeof value === 'object' && value !== null
+      ? value
+      : { type: 'image', imageUrl: value ?? '' };
+  const isVideo = raw.type === 'video';
+  const [uploading, setUploading] = useState(false);
+  const [uploadErr, setUploadErr] = useState('');
+  const [driveWarn, setDriveWarn] = useState(() => /drive\.google\.com/.test(raw.videoUrl ?? ''));
+
+  const patch = (part: Partial<PgMedia>) =>
+    onChange({ type: 'video', imageUrl: raw.imageUrl, videoUrl: raw.videoUrl, ...part });
+
+  async function handleFile(file: File | undefined) {
+    if (!file) return;
+    if (file.size > 15 * 1024 * 1024) {
+      setUploadErr('File is over the 15 MB cap. Compress to under ~5 MB for fast mobile loading - short loops only, no audio track.');
+      return;
+    }
+    setUploading(true);
+    setUploadErr('');
+    try {
+      const res = await uploadVideo(file);
+      patch({ videoUrl: res.url });
+      setDriveWarn(false);
+    } catch (err) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setUploadErr(msg || 'Upload failed - try again');
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function handleVideoUrl(v: string) {
+    const drive = v.match(/drive\.google\.com\/file\/d\/([^/?#]+)/);
+    const url = drive ? `https://drive.google.com/uc?export=download&id=${drive[1]}` : v;
+    patch({ videoUrl: url });
+    setDriveWarn(/drive\.google\.com/.test(url));
+  }
+
+  const modeBtn = (active: boolean): React.CSSProperties => ({
+    padding: '6px 14px', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+    border: `1px solid ${active ? 'var(--electric)' : 'var(--border)'}`,
+    background: active ? 'rgba(0,212,255,0.12)' : 'rgba(255,255,255,0.04)',
+    color: active ? 'var(--electric)' : 'var(--muted)',
+  });
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+        <button type="button" style={modeBtn(!isVideo)} onClick={() => { onChange(raw.imageUrl); setUploadErr(''); }}>
+          🖼 Image
+        </button>
+        <button type="button" style={modeBtn(isVideo)} onClick={() => patch({})}>
+          🎬 Video
+        </button>
+      </div>
+
+      {!isVideo ? (
+        <ImageUrlInput value={raw.imageUrl} onChange={(v) => onChange(v)} placeholder={placeholder} variant={variant} />
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div>
+            <span style={subLabel}>Poster / fallback image — required</span>
+            <ImageUrlInput value={raw.imageUrl} onChange={(v) => patch({ imageUrl: v })} placeholder="https://..." variant={variant} />
+            {!raw.imageUrl && (
+              <p style={{ fontSize: 11, color: '#f87171', marginTop: 6 }}>
+                Required - the page cannot be saved with a video slot that has no poster image.
+              </p>
+            )}
+          </div>
+
+          <div>
+            <span style={subLabel}>Video source (.mp4 / .webm)</span>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <label
+                style={{
+                  padding: '10px 14px', borderRadius: 8, border: '1px solid var(--border)',
+                  background: 'rgba(0,212,255,0.12)', color: 'var(--electric)', fontSize: 12,
+                  fontWeight: 600, whiteSpace: 'nowrap', cursor: uploading ? 'default' : 'pointer',
+                  opacity: uploading ? 0.6 : 1,
+                }}
+              >
+                {uploading ? 'Uploading…' : '⬆ Upload video'}
+                <input
+                  type="file"
+                  accept=".mp4,.webm,video/mp4,video/webm"
+                  disabled={uploading}
+                  style={{ display: 'none' }}
+                  onChange={(e) => { void handleFile(e.target.files?.[0]); e.target.value = ''; }}
+                />
+              </label>
+              <input
+                style={{ ...S.input, flex: 1 }}
+                value={raw.videoUrl ?? ''}
+                placeholder="…or paste a direct video URL"
+                onChange={(e) => handleVideoUrl(e.target.value)}
+              />
+            </div>
+            <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 6 }}>
+              Compress to under ~5 MB for fast mobile loading - short loops only, no audio track. Hard cap 15 MB.
+            </p>
+            {driveWarn && (
+              <p style={{ fontSize: 11, color: '#fb923c', marginTop: 4 }}>
+                ⚠ Google Drive is unreliable for live traffic (throttling/quota) - use server upload for production.
+              </p>
+            )}
+            {uploadErr && (
+              <p style={{ fontSize: 11, color: '#f87171', marginTop: 4 }}>{uploadErr}</p>
+            )}
+          </div>
+
+          {raw.videoUrl && (
+            <video
+              key={raw.videoUrl}
+              src={raw.videoUrl}
+              controls
+              muted
+              loop
+              playsInline
+              style={{ width: '100%', maxHeight: 200, borderRadius: 8, background: '#000' }}
+            />
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Textarea({
   value,
   onChange,
@@ -164,6 +315,28 @@ function Textarea({
       onChange={(e) => onChange(e.target.value)}
     />
   );
+}
+
+// ── Save-time media validation ────────────────────────────────────────────────
+// A video slot with no poster image must not be saveable: the poster is the
+// instant-render fallback for slow connections, Save-Data, reduced-motion,
+// and video errors, so a missing one means a broken box for those visitors.
+
+function needsPoster(v: PgMediaValue): boolean {
+  return typeof v === 'object' && v !== null && v.type === 'video' && Boolean(v.videoUrl) && !v.imageUrl;
+}
+
+function mediaPosterErrors(p: ProgramPage): string[] {
+  const errs: string[] = [];
+  if (needsPoster(p.heroImage)) errs.push('Hero image');
+  p.buildCards.forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Build card ${i + 1}`); });
+  p.classroomImages.forEach((c, i) => { if (needsPoster(c.url)) errs.push(`Classroom image ${i + 1}`); });
+  p.learnerCards.forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Learner card ${i + 1}`); });
+  p.mentors.forEach((m, i) => { if (needsPoster(m.image)) errs.push(`Mentor ${i + 1}`); });
+  p.testimonials.forEach((t, i) => { if (needsPoster(t.image)) errs.push(`Testimonial ${i + 1}`); });
+  if (needsPoster(p.pricingCertImage)) errs.push('Pricing certificate image');
+  if (needsPoster(p.footerCertImage)) errs.push('Footer certificate image');
+  return errs;
 }
 
 // ── Generic list item controls (up / down / delete) ───────────────────────────
@@ -284,7 +457,7 @@ function ProgramEditor({
     set('navLinks', updated);
   }
 
-  function buildCardUpdater(idx: number, field: keyof PgBuildCard, val: string) {
+  function buildCardUpdater<K extends keyof PgBuildCard>(idx: number, field: K, val: PgBuildCard[K]) {
     const updated = p.buildCards.map((c, i) => (i === idx ? { ...c, [field]: val } : c));
     set('buildCards', updated);
   }
@@ -294,17 +467,17 @@ function ProgramEditor({
     set('dayPlanItems', updated);
   }
 
-  function galleryUpdater(idx: number, field: keyof PgClassroomImage, val: string | boolean) {
+  function galleryUpdater<K extends keyof PgClassroomImage>(idx: number, field: K, val: PgClassroomImage[K]) {
     const updated = p.classroomImages.map((img, i) => (i === idx ? { ...img, [field]: val } : img));
     set('classroomImages', updated);
   }
 
-  function learnerUpdater(idx: number, field: keyof PgLearnerCard, val: string) {
+  function learnerUpdater<K extends keyof PgLearnerCard>(idx: number, field: K, val: PgLearnerCard[K]) {
     const updated = p.learnerCards.map((c, i) => (i === idx ? { ...c, [field]: val } : c));
     set('learnerCards', updated);
   }
 
-  function mentorUpdater(idx: number, field: keyof PgMentor, val: string) {
+  function mentorUpdater<K extends keyof PgMentor>(idx: number, field: K, val: PgMentor[K]) {
     const updated = p.mentors.map((m, i) => (i === idx ? { ...m, [field]: val } : m));
     set('mentors', updated);
   }
@@ -314,7 +487,7 @@ function ProgramEditor({
     set('batches', updated);
   }
 
-  function testimonialUpdater(idx: number, field: keyof PgTestimonial, val: string) {
+  function testimonialUpdater<K extends keyof PgTestimonial>(idx: number, field: K, val: PgTestimonial[K]) {
     const updated = p.testimonials.map((t, i) => (i === idx ? { ...t, [field]: val } : t));
     set('testimonials', updated);
   }
@@ -471,7 +644,7 @@ function ProgramEditor({
         </div>
 
         <Field label="Hero Image URL">
-          <ImageUrlInput value={p.heroImage} onChange={(v) => set('heroImage', v)} placeholder="https://..." variant="cover" />
+          <MediaInput value={p.heroImage} onChange={(v) => set('heroImage', v)} placeholder="https://..." variant="cover" />
         </Field>
         <Field label='Floating Badge Text (e.g. "5 Real Projects · 10 Days")'>
           <Input value={p.heroFloatingBadge} onChange={(v) => set('heroFloatingBadge', v)} />
@@ -505,7 +678,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Image URL</label>
-                  <ImageUrlInput value={card.image} placeholder="https://..." onChange={(v) => buildCardUpdater(idx, 'image', v)} variant="cover" />
+                  <MediaInput value={card.image} placeholder="https://..." onChange={(v) => buildCardUpdater(idx, 'image', v)} variant="cover" />
                 </div>
                 <div>
                   <label style={S.label}>Title</label>
@@ -596,7 +769,7 @@ function ProgramEditor({
           {p.classroomImages.map((img, idx) => (
             <div key={img.id} style={{ ...S.card, display: 'flex', gap: 10, alignItems: 'center' }}>
               <div style={{ flex: 3 }}>
-                <ImageUrlInput value={img.url} placeholder="Image URL" onChange={(v) => galleryUpdater(idx, 'url', v)} variant="cover" />
+                <MediaInput value={img.url} placeholder="Image URL" onChange={(v) => galleryUpdater(idx, 'url', v)} variant="cover" />
               </div>
               <input style={{ ...S.input, flex: 2 }} value={img.alt} placeholder="Alt text" onChange={(e) => galleryUpdater(idx, 'alt', e.target.value)} />
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted)', fontSize: 13, flexShrink: 0 }}>
@@ -625,7 +798,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Photo URL</label>
-                  <ImageUrlInput value={card.image} placeholder="https://..." onChange={(v) => learnerUpdater(idx, 'image', v)} variant="avatar" />
+                  <MediaInput value={card.image} placeholder="https://..." onChange={(v) => learnerUpdater(idx, 'image', v)} variant="avatar" />
                 </div>
                 <div>
                   <label style={S.label}>Title</label>
@@ -658,7 +831,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Photo URL</label>
-                  <ImageUrlInput value={mentor.image} placeholder="https://..." onChange={(v) => mentorUpdater(idx, 'image', v)} variant="avatar" />
+                  <MediaInput value={mentor.image} placeholder="https://..." onChange={(v) => mentorUpdater(idx, 'image', v)} variant="avatar" />
                   <label style={{ ...S.label, marginTop: 8 }}>Name</label>
                   <input style={S.input} value={mentor.name} onChange={(e) => mentorUpdater(idx, 'name', e.target.value)} />
                 </div>
@@ -730,7 +903,7 @@ function ProgramEditor({
               <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 3fr 1fr 1fr', gap: 10 }}>
                 <div>
                   <label style={S.label}>Photo URL</label>
-                  <ImageUrlInput value={t.image} placeholder="https://..." onChange={(v) => testimonialUpdater(idx, 'image', v)} variant="avatar" />
+                  <MediaInput value={t.image} placeholder="https://..." onChange={(v) => testimonialUpdater(idx, 'image', v)} variant="avatar" />
                   <label style={{ ...S.label, marginTop: 8 }}>Name</label>
                   <input style={S.input} value={t.name} onChange={(e) => testimonialUpdater(idx, 'name', e.target.value)} />
                 </div>
@@ -778,7 +951,7 @@ function ProgramEditor({
           </Field>
         </div>
         <Field label="Certificate Image URL (shown to the right of pricing card)">
-          <ImageUrlInput value={p.pricingCertImage} onChange={(v) => set('pricingCertImage', v)} placeholder="https://..." variant="content" />
+          <MediaInput value={p.pricingCertImage} onChange={(v) => set('pricingCertImage', v)} placeholder="https://..." variant="content" />
         </Field>
 
         <Field label="Pricing Features (checklist)">
@@ -966,7 +1139,7 @@ function ProgramEditor({
         </div>
         <div style={S.row}>
           <Field label="Certificate Image URL">
-            <ImageUrlInput value={p.footerCertImage} onChange={(v) => set('footerCertImage', v)} placeholder="https://..." variant="content" />
+            <MediaInput value={p.footerCertImage} onChange={(v) => set('footerCertImage', v)} placeholder="https://..." variant="content" />
           </Field>
           <Field label="Copyright Text">
             <Input value={p.footerCopyright} onChange={(v) => set('footerCopyright', v)} />
@@ -1042,7 +1215,14 @@ function ProgramEditor({
           <div style={{ display: 'flex', gap: 10 }}>
             <button
               type="button"
-              onClick={() => onSave(p)}
+              onClick={() => {
+                const errs = mediaPosterErrors(p);
+                if (errs.length > 0) {
+                  alert(`These video slots need a poster / fallback image before saving:\n\n- ${errs.join('\n- ')}`);
+                  return;
+                }
+                onSave(p);
+              }}
               style={{
                 padding: '10px 24px',
                 borderRadius: 8,
@@ -1194,18 +1374,25 @@ export default function ProgramPagesAdmin() {
   }, []);
 
   // Google Drive share links return HTML, not image bytes - normalize every
-  // image field once, at the single save choke-point.
+  // image field once, at the single save choke-point. For media objects only
+  // the poster imageUrl is converted; videoUrl is left exactly as entered.
+  function convertMediaUrl(v: PgMediaValue): PgMediaValue {
+    return typeof v === 'string'
+      ? convertImageUrl(v)
+      : { ...v, imageUrl: convertImageUrl(v.imageUrl) };
+  }
+
   function normalizeImages(p: ProgramPage): ProgramPage {
     return {
       ...p,
-      heroImage: convertImageUrl(p.heroImage),
-      pricingCertImage: convertImageUrl(p.pricingCertImage),
-      footerCertImage: convertImageUrl(p.footerCertImage),
-      buildCards: p.buildCards.map((c) => ({ ...c, image: convertImageUrl(c.image) })),
-      classroomImages: p.classroomImages.map((c) => ({ ...c, url: convertImageUrl(c.url) })),
-      learnerCards: p.learnerCards.map((c) => ({ ...c, image: convertImageUrl(c.image) })),
-      mentors: p.mentors.map((m) => ({ ...m, image: convertImageUrl(m.image) })),
-      testimonials: p.testimonials.map((t) => ({ ...t, image: convertImageUrl(t.image) })),
+      heroImage: convertMediaUrl(p.heroImage),
+      pricingCertImage: convertMediaUrl(p.pricingCertImage),
+      footerCertImage: convertMediaUrl(p.footerCertImage),
+      buildCards: p.buildCards.map((c) => ({ ...c, image: convertMediaUrl(c.image) })),
+      classroomImages: p.classroomImages.map((c) => ({ ...c, url: convertMediaUrl(c.url) })),
+      learnerCards: p.learnerCards.map((c) => ({ ...c, image: convertMediaUrl(c.image) })),
+      mentors: p.mentors.map((m) => ({ ...m, image: convertMediaUrl(m.image) })),
+      testimonials: p.testimonials.map((t) => ({ ...t, image: convertMediaUrl(t.image) })),
     };
   }
 

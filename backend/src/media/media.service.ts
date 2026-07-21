@@ -158,6 +158,62 @@ export class MediaService {
     }
   }
 
+  validateVideoMimeType(mimetype: string): void {
+    if (!['video/mp4', 'video/webm'].includes(mimetype)) {
+      throw new BadRequestException(
+        `Unsupported video type: ${mimetype}. Allowed: mp4, webm`,
+      );
+    }
+  }
+
+  /**
+   * Stores a short looping video for program-page media slots. Unlike images
+   * there is no sharp re-encode - the file is stored byte-for-byte (with a
+   * sanitized name), so what the admin previews is exactly what visitors
+   * stream. Nginx serves /uploads/* statically, which gives correct
+   * Content-Type by extension and HTTP range-request support out of the box.
+   */
+  async uploadVideo(
+    buffer: Buffer,
+    originalName: string,
+    mimetype: string,
+  ): Promise<{ url: string; sizeKb: number }> {
+    const MAX_BYTES = 15 * 1024 * 1024;
+    if (buffer.length > MAX_BYTES) {
+      throw new BadRequestException('Videos are capped at 15 MB');
+    }
+    const ext = mimetype === 'video/webm' ? 'webm' : 'mp4';
+    const base = originalName
+      .replace(/\.[^.]+$/, '')
+      .replace(/[^a-z0-9]/gi, '-')
+      .toLowerCase()
+      .slice(0, 60);
+    const key = `program/video/${Date.now()}-${base}.${ext}`;
+
+    let url: string;
+    if (this.spacesConfigured) {
+      const s3 = this.getS3();
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+          Body: buffer,
+          ContentType: mimetype,
+          ACL: 'public-read' as never,
+          CacheControl: 'public, max-age=31536000, immutable',
+        }),
+      );
+      url = `${this.cdnUrl.replace(/\/$/, '')}/${key}`;
+    } else {
+      const destPath = path.join(this.uploadDir, key);
+      fs.mkdirSync(path.dirname(destPath), { recursive: true });
+      fs.writeFileSync(destPath, buffer);
+      url = `${this.publicUrl.replace(/\/$/, '')}/uploads/${key}`;
+    }
+
+    return { url, sizeKb: Math.round(buffer.length / 1024) };
+  }
+
   /**
    * Convert a Google Drive share link to its thumbnail-redirect form.
    * Kept in sync by hand with frontend/src/lib/imageUrl.ts (separate build,

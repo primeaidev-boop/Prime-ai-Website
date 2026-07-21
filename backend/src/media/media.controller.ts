@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Post,
@@ -23,7 +24,10 @@ class FetchUrlDto {
   variant?: MediaVariant;
 }
 
-const MAX_FILE_SIZE_BYTES = 8 * 1024 * 1024; // 8 MB
+const MAX_IMAGE_SIZE_BYTES = 8 * 1024 * 1024; // 8 MB
+// Videos skip the sharp pipeline and are stored as-is, so they get a higher
+// cap - the admin UI still tells editors to aim for ~5 MB loops.
+const MAX_VIDEO_SIZE_BYTES = 15 * 1024 * 1024; // 15 MB
 
 @ApiTags('media')
 @Controller()
@@ -37,7 +41,7 @@ export class MediaController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: memoryStorage(),
-      limits: { fileSize: MAX_FILE_SIZE_BYTES },
+      limits: { fileSize: MAX_VIDEO_SIZE_BYTES },
     }),
   )
   async upload(
@@ -46,6 +50,17 @@ export class MediaController {
   ) {
     if (!file) {
       return { error: 'No file uploaded' };
+    }
+    if (file.mimetype.startsWith('video/')) {
+      this.mediaService.validateVideoMimeType(file.mimetype);
+      return this.mediaService.uploadVideo(
+        file.buffer,
+        file.originalname,
+        file.mimetype,
+      );
+    }
+    if (file.buffer.length > MAX_IMAGE_SIZE_BYTES) {
+      throw new BadRequestException('Images are capped at 8 MB');
     }
     this.mediaService.validateMimeType(file.mimetype);
     return this.mediaService.upload(file.buffer, file.originalname, variant);
