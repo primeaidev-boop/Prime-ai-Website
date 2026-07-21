@@ -425,6 +425,18 @@ function ProgramEditor({
             <Input value={p.heroHeadingGradient} onChange={(v) => set('heroHeadingGradient', v)} />
           </Field>
         </div>
+        <div style={{ ...S.card, marginBottom: 20 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showHeroGuarantee} onChange={(e) => set('showHeroGuarantee', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Show Trust Strip Below Title</span>
+          </label>
+          {p.showHeroGuarantee && (
+            <Field label='Trust Strip Text (e.g. "100% Money-Back Guarantee")'>
+              <Input value={p.heroGuaranteeText} onChange={(v) => set('heroGuaranteeText', v)} />
+            </Field>
+          )}
+        </div>
+
         <Field label="Hero Subtext">
           <Textarea value={p.heroSubtext} onChange={(v) => set('heroSubtext', v)} />
         </Field>

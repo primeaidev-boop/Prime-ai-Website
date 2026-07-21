@@ -122,6 +122,8 @@ export interface ProgramPage {
   // ── Hero
   heroHeading: string;
   heroHeadingGradient: string;   // the gradient-coloured phrase
+  showHeroGuarantee: boolean;    // trust strip directly below the title
+  heroGuaranteeText: string;
   heroSubtext: string;
   heroPrice: string;
   heroStrikePrice: string;
@@ -245,6 +247,8 @@ const DEFAULT_10DAY: ProgramPage = {
   // Hero
   heroHeading: '10 Days to Go From',
   heroHeadingGradient: 'AI-Curious to AI-Capable',
+  showHeroGuarantee: true,
+  heroGuaranteeText: '100% Money-Back Guarantee',
   heroSubtext:
     'Master ChatGPT, Claude, and Gemini through practical daily projects. No coding required. Build real-world skills that make you indispensable.',
   heroPrice: '₹399',

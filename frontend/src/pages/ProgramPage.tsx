@@ -390,6 +390,26 @@ export default function ProgramPage() {
               <span className="pp-gradient-text">{page.heroHeadingGradient}</span>
             </h1>
 
+            {page.showHeroGuarantee && page.heroGuaranteeText && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  background: 'rgba(16,185,129,0.1)',
+                  border: '1px solid rgba(16,185,129,0.3)',
+                  borderRadius: 999,
+                  padding: '8px 18px',
+                  marginBottom: 24,
+                }}
+              >
+                <span style={{ fontSize: 16, lineHeight: 1 }} aria-hidden="true">🛡️</span>
+                <span style={{ color: 'var(--pp-green)', fontWeight: 700, fontSize: 14, whiteSpace: 'nowrap' }}>
+                  {page.heroGuaranteeText}
+                </span>
+              </div>
+            )}
+
             <p style={{ color: 'var(--pp-muted)', fontSize: 18, lineHeight: 1.6, marginBottom: 32, maxWidth: 520 }}>
               {page.heroSubtext}
             </p>
