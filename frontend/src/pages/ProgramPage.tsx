@@ -326,16 +326,17 @@ export default function ProgramPage() {
           }}
         >
           {/* Brand */}
-          <div
+          <img
+            src="/Asset%208.svg"
+            alt={page.brandName}
             style={{
-              fontFamily: 'var(--pp-font-head)',
-              fontWeight: 700,
-              fontSize: 22,
-              color: 'var(--pp-navy-dark)',
+              height: 'clamp(26px, 6vw, 36px)',
+              width: 'auto',
+              maxWidth: '55vw',
+              flexShrink: 0,
+              display: 'block',
             }}
-          >
-            {page.brandName}
-          </div>
+          />
 
           {/* Desktop nav */}
           <nav style={{ display: 'flex', gap: 32, alignItems: 'center' }} className="pp-desktop-nav">
