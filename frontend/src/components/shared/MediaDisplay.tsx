@@ -52,6 +52,21 @@ export function MediaDisplay({
   const showVideo =
     m.type === 'video' && Boolean(m.videoUrl) && !failed && !VIDEO_DISABLED;
 
+  // React sets `muted` only as a DOM property, never as an HTML attribute
+  // (long-standing React quirk). Mobile browsers evaluate their autoplay
+  // policy against the attribute/state at load time, so a video with an
+  // audio track gets silently blocked on phones unless we force-mute it
+  // imperatively before the source loads. This is why "works on desktop,
+  // poster only on mobile" happens.
+  const attachVideoRef = (el: HTMLVideoElement | null) => {
+    videoRef.current = el;
+    if (el) {
+      el.muted = true;
+      el.defaultMuted = true;
+      el.setAttribute('muted', '');
+    }
+  };
+
   useEffect(() => {
     if (!showVideo) return;
     const el = wrapRef.current;
@@ -70,6 +85,25 @@ export function MediaDisplay({
     obs.observe(el);
     return () => obs.disconnect();
   }, [showVideo]);
+
+  // Once the source is attached (near just flipped), kick playback
+  // explicitly - the observer's play() call above raced the src render on
+  // the very first intersection. Also registers a one-time gesture retry:
+  // iOS Low Power Mode and some strict policies reject programmatic play
+  // until the first user interaction anywhere on the page.
+  useEffect(() => {
+    if (!near) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.play().catch(() => {});
+    const retry = () => { videoRef.current?.play().catch(() => {}); };
+    document.addEventListener('touchstart', retry, { once: true, passive: true });
+    document.addEventListener('click', retry, { once: true });
+    return () => {
+      document.removeEventListener('touchstart', retry);
+      document.removeEventListener('click', retry);
+    };
+  }, [near]);
 
   if (!showVideo) {
     if (!m.imageUrl) {
@@ -110,7 +144,7 @@ export function MediaDisplay({
         <img src={convertImageUrl(m.imageUrl)} alt={alt} style={fillStyle} />
       )}
       <video
-        ref={videoRef}
+        ref={attachVideoRef}
         src={near ? m.videoUrl : undefined}
         poster={m.imageUrl ? convertImageUrl(m.imageUrl) : undefined}
         autoPlay
@@ -120,6 +154,7 @@ export function MediaDisplay({
         preload="none"
         aria-hidden="true"
         onCanPlay={() => setReady(true)}
+        onPlaying={() => setReady(true)}
         onError={() => setFailed(true)}
         style={{ ...fillStyle, opacity: ready ? 1 : 0, transition: 'opacity 0.5s ease' }}
       />
