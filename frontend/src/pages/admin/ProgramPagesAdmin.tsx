@@ -457,6 +457,19 @@ function ProgramEditor({
             <Input value={p.heroCtaText} onChange={(v) => set('heroCtaText', v)} />
           </Field>
         </div>
+
+        <div style={{ ...S.card, marginBottom: 20 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showHeroSocialProof} onChange={(e) => set('showHeroSocialProof', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Show Social Proof Below CTA Button</span>
+          </label>
+          {p.showHeroSocialProof && (
+            <Field label='Social Proof Text (e.g. "⭐⭐⭐⭐⭐ Rated by 5,000+ Learners")'>
+              <Input value={p.heroSocialProofText} onChange={(v) => set('heroSocialProofText', v)} />
+            </Field>
+          )}
+        </div>
+
         <Field label="Hero Image URL">
           <ImageUrlInput value={p.heroImage} onChange={(v) => set('heroImage', v)} placeholder="https://..." variant="cover" />
         </Field>

@@ -129,6 +129,8 @@ export interface ProgramPage {
   heroStrikePrice: string;
   heroPriceBadge: string;
   heroCtaText: string;
+  showHeroSocialProof: boolean;  // small rating line under the CTA button
+  heroSocialProofText: string;
   heroImage: string;
   heroFloatingBadge: string;
 
@@ -255,6 +257,8 @@ const DEFAULT_10DAY: ProgramPage = {
   heroStrikePrice: '₹2,999',
   heroPriceBadge: 'Launch batch price',
   heroCtaText: 'Book My Seat - ₹399',
+  showHeroSocialProof: true,
+  heroSocialProofText: '⭐⭐⭐⭐⭐ Rated by 5,000+ Learners',
   heroImage: '',
   heroFloatingBadge: '5 Real Projects · 10 Days',
 

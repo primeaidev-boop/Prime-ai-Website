@@ -449,6 +449,20 @@ export default function ProgramPage() {
             >
               {page.heroCtaText}
             </a>
+
+            {page.showHeroSocialProof && page.heroSocialProofText && (
+              <p
+                style={{
+                  marginTop: 14,
+                  color: 'var(--pp-muted)',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  letterSpacing: '0.01em',
+                }}
+              >
+                {page.heroSocialProofText}
+              </p>
+            )}
           </div>
 
           {/* Right - hero image */}
