@@ -51,6 +51,13 @@ export function hasMedia(v: PgMediaValue | undefined | null): boolean {
 
 // ── Sub-types ─────────────────────────────────────────────────────────────────
 
+/** A named logo entry - used by the hero tools marquee and the trust bar. */
+export interface PgLogoItem {
+  id: string;
+  name: string;
+  logo: string;        // image URL (bundled /logos/* by default, admin-replaceable)
+}
+
 export interface PgNavLink {
   id: string;
   label: string;
@@ -162,6 +169,16 @@ export interface ProgramPage {
   heroImage: PgMediaValue;
   heroFloatingBadge: string;
 
+  // ── Hero tools marquee ("TOOLS YOU'LL MASTER", below the subtitle)
+  heroToolsLabel: string;
+  heroTools: PgLogoItem[];       // empty array hides the marquee
+
+  // ── Trust bar (full-width strip below the hero)
+  showTrustBar: boolean;
+  trustBarLabel: string;
+  trustBarCompanies: PgLogoItem[];
+  trustBarTrailing: string;      // e.g. "and 500+ more"
+
   // ── Stat band (dark section below hero)
   statNumber: string;
   statText: string;
@@ -249,6 +266,31 @@ export interface ProgramPage {
   footerCopyright: string;
 }
 
+// ── Default logo lists ────────────────────────────────────────────────────────
+// Real brand assets bundled in frontend/public/logos/. Exported so renderers
+// can fall back to them when older saved content predates these fields.
+
+export const DEFAULT_HERO_TOOLS: PgLogoItem[] = [
+  { id: pgId(), name: 'ChatGPT',    logo: '/logos/chatgpt.png' },
+  { id: pgId(), name: 'Claude',     logo: '/logos/claude.png' },
+  { id: pgId(), name: 'Gemini',     logo: '/logos/gemini.png' },
+  { id: pgId(), name: 'NotebookLM', logo: '/logos/notebooklm.png' },
+  { id: pgId(), name: 'Midjourney', logo: '/logos/midjourney.png' },
+  { id: pgId(), name: 'n8n',        logo: '/logos/n8n.png' },
+  { id: pgId(), name: 'HeyGen',     logo: '/logos/heygen.png' },
+  { id: pgId(), name: 'Perplexity', logo: '/logos/perplexity.png' },
+  { id: pgId(), name: 'Gamma',      logo: '/logos/gamma.png' },
+];
+
+export const DEFAULT_TRUST_COMPANIES: PgLogoItem[] = [
+  { id: pgId(), name: 'Google',    logo: '/logos/google.svg' },
+  { id: pgId(), name: 'Microsoft', logo: '/logos/microsoft.svg' },
+  { id: pgId(), name: 'Deloitte',  logo: '/logos/deloitte.svg' },
+  { id: pgId(), name: 'Amazon',    logo: '/logos/amazon.svg' },
+  { id: pgId(), name: 'Infosys',   logo: '/logos/infosys.svg' },
+  { id: pgId(), name: 'TCS',       logo: '/logos/tcs.svg' },
+];
+
 // ── Default data (seeded from the 10-Day Hands-On AI Program HTML) ────────────
 
 const DEFAULT_10DAY: ProgramPage = {
@@ -289,6 +331,14 @@ const DEFAULT_10DAY: ProgramPage = {
   heroSocialProofText: '⭐⭐⭐⭐⭐ Rated by 5,000+ Learners',
   heroImage: '',
   heroFloatingBadge: '5 Real Projects · 10 Days',
+
+  heroToolsLabel: "Tools You'll Master",
+  heroTools: DEFAULT_HERO_TOOLS,
+
+  showTrustBar: true,
+  trustBarLabel: 'Trusted by learners from',
+  trustBarCompanies: DEFAULT_TRUST_COMPANIES,
+  trustBarTrailing: 'and 500+ more',
 
   // Stat band
   statNumber: '82%',

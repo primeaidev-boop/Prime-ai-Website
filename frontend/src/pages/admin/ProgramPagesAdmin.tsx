@@ -7,6 +7,8 @@ import {
   saveProgramPagesData,
   emptyProgramPage,
   pgId,
+  DEFAULT_HERO_TOOLS,
+  DEFAULT_TRUST_COMPANIES,
 } from '@/data/programPagesData';
 import { getPageContent, putPageContent } from '@/api/content';
 import { fetchMediaFromUrl, uploadVideo } from '@/api/blog';
@@ -26,6 +28,7 @@ import type {
   BatchStatus,
   PgMedia,
   PgMediaValue,
+  PgLogoItem,
 } from '@/data/programPagesData';
 
 // ── Shared admin design tokens (match existing admin pages) ───────────────────
@@ -441,7 +444,17 @@ function ProgramEditor({
   onSave: (p: ProgramPage) => void;
   onClose: () => void;
 }) {
-  const [p, setP] = useState<ProgramPage>(page);
+  // Older saved documents predate the tools-marquee / trust-bar fields -
+  // fill them from the seeded defaults so the CRUD lists are never blank.
+  const [p, setP] = useState<ProgramPage>(() => ({
+    ...page,
+    heroToolsLabel: page.heroToolsLabel ?? "Tools You'll Master",
+    heroTools: page.heroTools ?? DEFAULT_HERO_TOOLS,
+    showTrustBar: page.showTrustBar ?? true,
+    trustBarLabel: page.trustBarLabel ?? 'Trusted by learners from',
+    trustBarCompanies: page.trustBarCompanies ?? DEFAULT_TRUST_COMPANIES,
+    trustBarTrailing: page.trustBarTrailing ?? 'and 500+ more',
+  }));
   const [tab, setTab] = useState<EditorTab>('meta');
 
   const set = useCallback(
@@ -465,6 +478,16 @@ function ProgramEditor({
   function dayItemUpdater<K extends keyof PgDayItem>(idx: number, field: K, val: PgDayItem[K]) {
     const updated = p.dayPlanItems.map((d, i) => (i === idx ? { ...d, [field]: val } : d));
     set('dayPlanItems', updated);
+  }
+
+  function heroToolUpdater(idx: number, field: 'name' | 'logo', val: string) {
+    const updated = p.heroTools.map((t, i) => (i === idx ? { ...t, [field]: val } : t));
+    set('heroTools', updated);
+  }
+
+  function trustCompanyUpdater(idx: number, field: 'name' | 'logo', val: string) {
+    const updated = p.trustBarCompanies.map((t, i) => (i === idx ? { ...t, [field]: val } : t));
+    set('trustBarCompanies', updated);
   }
 
   function galleryUpdater<K extends keyof PgClassroomImage>(idx: number, field: K, val: PgClassroomImage[K]) {
@@ -649,6 +672,78 @@ function ProgramEditor({
         <Field label='Floating Badge Text (e.g. "5 Real Projects · 10 Days")'>
           <Input value={p.heroFloatingBadge} onChange={(v) => set('heroFloatingBadge', v)} />
         </Field>
+
+        <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '24px 0 4px' }}>Tools Marquee</p>
+        <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 16 }}>
+          Auto-scrolling tool logos below the hero subtitle. Remove all tools to hide the marquee.
+        </p>
+        <Field label="Marquee Label">
+          <Input value={p.heroToolsLabel} onChange={(v) => set('heroToolsLabel', v)} />
+        </Field>
+        <Field label="Tools (logo + name)">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+            {p.heroTools.map((tool, idx) => (
+              <div key={tool.id} style={{ ...S.card, padding: 12 }}>
+                <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                  {tool.logo && (
+                    <img src={tool.logo} alt="" style={{ width: 30, height: 30, objectFit: 'contain', background: '#fff', borderRadius: 7, padding: 2, flexShrink: 0 }} />
+                  )}
+                  <input style={{ ...S.input, flex: 1 }} value={tool.name} placeholder="Tool name" onChange={(e) => heroToolUpdater(idx, 'name', e.target.value)} />
+                  <ListControls
+                    idx={idx} total={p.heroTools.length}
+                    onUp={() => set('heroTools', move(p.heroTools, idx, idx - 1))}
+                    onDown={() => set('heroTools', move(p.heroTools, idx, idx + 1))}
+                    onDelete={() => set('heroTools', removeAt(p.heroTools, idx))}
+                  />
+                </div>
+                <ImageUrlInput value={tool.logo} onChange={(v) => heroToolUpdater(idx, 'logo', v)} placeholder="/logos/… or https://…" variant="avatar" />
+              </div>
+            ))}
+          </div>
+          <AddBtn label="Add Tool" onClick={() => set('heroTools', [...p.heroTools, { id: pgId(), name: '', logo: '' } as PgLogoItem])} />
+        </Field>
+
+        <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '24px 0 16px' }}>Trust Bar</p>
+        <div style={{ ...S.card, marginBottom: 20 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showTrustBar} onChange={(e) => set('showTrustBar', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Show "Trusted by" bar below the hero</span>
+          </label>
+          {p.showTrustBar && (
+            <>
+              <div style={S.row}>
+                <Field label="Label Text">
+                  <Input value={p.trustBarLabel} onChange={(v) => set('trustBarLabel', v)} />
+                </Field>
+                <Field label='Trailing Text (e.g. "and 500+ more")'>
+                  <Input value={p.trustBarTrailing} onChange={(v) => set('trustBarTrailing', v)} />
+                </Field>
+              </div>
+              <Field label="Companies (logo + name)">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+                  {p.trustBarCompanies.map((company, idx) => (
+                    <div key={company.id} style={{ ...S.card, padding: 12 }}>
+                      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                        {company.logo && (
+                          <img src={company.logo} alt="" style={{ height: 22, maxWidth: 90, objectFit: 'contain', background: '#fff', borderRadius: 6, padding: '2px 6px', flexShrink: 0 }} />
+                        )}
+                        <input style={{ ...S.input, flex: 1 }} value={company.name} placeholder="Company name" onChange={(e) => trustCompanyUpdater(idx, 'name', e.target.value)} />
+                        <ListControls
+                          idx={idx} total={p.trustBarCompanies.length}
+                          onUp={() => set('trustBarCompanies', move(p.trustBarCompanies, idx, idx - 1))}
+                          onDown={() => set('trustBarCompanies', move(p.trustBarCompanies, idx, idx + 1))}
+                          onDelete={() => set('trustBarCompanies', removeAt(p.trustBarCompanies, idx))}
+                        />
+                      </div>
+                      <ImageUrlInput value={company.logo} onChange={(v) => trustCompanyUpdater(idx, 'logo', v)} placeholder="/logos/… or https://…" variant="content" />
+                    </div>
+                  ))}
+                </div>
+                <AddBtn label="Add Company" onClick={() => set('trustBarCompanies', [...p.trustBarCompanies, { id: pgId(), name: '', logo: '' } as PgLogoItem])} />
+              </Field>
+            </>
+          )}
+        </div>
 
         <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '24px 0 16px' }}>Dark Stat Band</p>
         <div style={S.row}>
@@ -1393,6 +1488,8 @@ export default function ProgramPagesAdmin() {
       learnerCards: p.learnerCards.map((c) => ({ ...c, image: convertMediaUrl(c.image) })),
       mentors: p.mentors.map((m) => ({ ...m, image: convertMediaUrl(m.image) })),
       testimonials: p.testimonials.map((t) => ({ ...t, image: convertMediaUrl(t.image) })),
+      heroTools: (p.heroTools ?? []).map((t) => ({ ...t, logo: convertImageUrl(t.logo) })),
+      trustBarCompanies: (p.trustBarCompanies ?? []).map((t) => ({ ...t, logo: convertImageUrl(t.logo) })),
     };
   }
 

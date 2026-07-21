@@ -508,3 +508,88 @@
   margin-left: auto;
   margin-right: auto;
 }
+
+/* ── Hero tools marquee ──────────────────────────────────────────────────── */
+/* Track holds the tile list twice; -50% translate wraps seamlessly because
+   tiles use margin-right (not gap), so both halves are pixel-identical. */
+
+.pp-marquee {
+  overflow-x: auto;                 /* manual swipe on touch devices */
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 24px, #000 calc(100% - 24px), transparent);
+}
+.pp-marquee::-webkit-scrollbar { display: none; }
+
+.pp-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: pp-marquee 30s linear infinite;
+}
+.pp-marquee:hover .pp-marquee-track,
+.pp-marquee:active .pp-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes pp-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pp-marquee-track { animation: none; }   /* static, still swipe/scrollable */
+}
+
+.pp-tool-tile {
+  width: 78px;
+  margin-right: 12px;
+  background: #fff;
+  border: 1px solid var(--pp-border);
+  border-radius: 12px;
+  padding: 10px 6px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  flex-shrink: 0;
+}
+.pp-tool-tile img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+.pp-tool-tile span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--pp-navy-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+@media (max-width: 640px) {
+  .pp-tool-tile { width: 64px; margin-right: 10px; }
+  .pp-tool-tile img { width: 28px; height: 28px; }
+  .pp-tool-tile span { font-size: 10px; }
+}
+
+/* ── Trust bar ───────────────────────────────────────────────────────────── */
+
+.pp-trustbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px 40px;
+}
+.pp-trustbar img {
+  height: 28px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  .pp-trustbar { gap: 14px 24px; }
+  .pp-trustbar img { height: 22px; max-width: 96px; }
+}

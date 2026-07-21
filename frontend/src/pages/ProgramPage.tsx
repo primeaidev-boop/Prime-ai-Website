@@ -9,7 +9,10 @@ import {
   saveProgramPagesData,
   hasMedia,
   PROGRAM_ENROLLMENT_PROFILE_OPTIONS,
+  DEFAULT_HERO_TOOLS,
+  DEFAULT_TRUST_COMPANIES,
 } from '@/data/programPagesData';
+import { convertImageUrl } from '@/lib/imageUrl';
 import { MediaDisplay } from '@/components/shared/MediaDisplay';
 import type { PgMediaValue } from '@/data/programPagesData';
 import { getPageContent } from '@/api/content';
@@ -290,6 +293,13 @@ export default function ProgramPage() {
   // Visible (non-closed) batches for the form dropdown
   const activeBatches = page.batches.filter((b) => b.status !== 'Closed');
 
+  // Older saved content predates these lists - fall back to the bundled
+  // defaults so the sections are never empty. An admin-saved empty array
+  // (deliberate) still hides the section.
+  const heroTools = page.heroTools ?? DEFAULT_HERO_TOOLS;
+  const trustCompanies = page.trustBarCompanies ?? DEFAULT_TRUST_COMPANIES;
+  const showTrustBar = (page.showTrustBar ?? true) && trustCompanies.length > 0;
+
   return (
     <div className="pp-root pp-body-mobile-pad" style={{ paddingBottom: 80 }}>
 
@@ -409,6 +419,38 @@ export default function ProgramPage() {
               {page.heroSubtext}
             </p>
 
+            {/* Tools marquee */}
+            {heroTools.length > 0 && (
+              <div style={{ marginBottom: 32, maxWidth: 520 }}>
+                <p
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 700,
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    color: 'var(--pp-muted)',
+                    marginBottom: 12,
+                  }}
+                >
+                  {page.heroToolsLabel ?? "Tools You'll Master"}
+                </p>
+                <div className="pp-marquee">
+                  <div className="pp-marquee-track">
+                    {[...heroTools, ...heroTools].map((tool, i) => (
+                      <div
+                        key={`${tool.id}-${i}`}
+                        className="pp-tool-tile"
+                        aria-hidden={i >= heroTools.length}
+                      >
+                        <img src={convertImageUrl(tool.logo)} alt={tool.name} loading="lazy" />
+                        <span>{tool.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Price row - original: strike stacked ABOVE price (flex-col) */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 32 }}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -506,6 +548,43 @@ export default function ProgramPage() {
           </div>
         </div>
       </section>
+
+      {/* ── 3b. Trust bar ───────────────────────────────────────────── */}
+      {showTrustBar && (
+        <section
+          style={{
+            background: '#fff',
+            borderTop: '1px solid var(--pp-border)',
+            borderBottom: '1px solid var(--pp-border)',
+            padding: '28px 24px',
+          }}
+        >
+          <div
+            className="pp-container"
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '16px 40px',
+            }}
+          >
+            <span style={{ color: 'var(--pp-muted)', fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>
+              {page.trustBarLabel ?? 'Trusted by learners from'}
+            </span>
+            <div className="pp-trustbar">
+              {trustCompanies.map((c) => (
+                <img key={c.id} src={convertImageUrl(c.logo)} alt={c.name} title={c.name} loading="lazy" />
+              ))}
+              {(page.trustBarTrailing ?? 'and 500+ more') && (
+                <span style={{ color: 'var(--pp-muted)', fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>
+                  {page.trustBarTrailing ?? 'and 500+ more'}
+                </span>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── 4. Stat band ────────────────────────────────────────────── */}
       <section className="pp-dark-band" style={{ padding: '64px 24px' }}>
