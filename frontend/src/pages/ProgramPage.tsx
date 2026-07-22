@@ -11,6 +11,7 @@ import {
   PROGRAM_ENROLLMENT_PROFILE_OPTIONS,
   DEFAULT_HERO_TOOLS,
   DEFAULT_TRUST_COMPANIES,
+  DEFAULT_BENEFITS,
 } from '@/data/programPagesData';
 import { convertImageUrl } from '@/lib/imageUrl';
 import { MediaDisplay } from '@/components/shared/MediaDisplay';
@@ -374,7 +375,11 @@ export default function ProgramPage() {
   const liveMedia = hasMedia(page.classroomMedia)
     ? page.classroomMedia
     : (page.classroomImages?.[0]?.url ?? '');
-  const liveBenefits = page.classroomBenefits ?? [];
+  // Fall back to the seeded defaults only when the field is ABSENT (older saved
+  // content) - an admin who deliberately clears the list keeps an empty one.
+  const liveBenefits = page.classroomBenefits ?? DEFAULT_BENEFITS;
+  const liveSubtitle =
+    page.classroomSubtitle ?? 'Learn live, interact in real-time, and grow with expert guidance.';
 
   return (
     <div className="pp-root pp-body-mobile-pad" style={{ paddingBottom: 80 }}>
@@ -760,8 +765,8 @@ export default function ProgramPage() {
       <section className="pp-section">
         <div ref={rClassroom} className="pp-reveal pp-container">
           <h2 className="pp-h2" style={{ marginBottom: 12 }}>{page.classroomTitle}</h2>
-          {page.classroomSubtitle && (
-            <p className="pp-section-sub">{page.classroomSubtitle}</p>
+          {liveSubtitle && (
+            <p className="pp-section-sub">{liveSubtitle}</p>
           )}
 
           <div className="pp-grid-live">
