@@ -777,3 +777,14 @@
   .pp-benefit-card { padding: 14px; gap: 11px; }
   .pp-benefit-icon { width: 40px; height: 40px; min-width: 40px; }
 }
+
+/* Trust bar: on mobile the label sits on its own line above the logos with a
+   little breathing room so it never reads as mixed into the logo row. */
+@media (max-width: 640px) {
+  .pp-trust-label {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+}

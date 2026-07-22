@@ -650,7 +650,7 @@ export default function ProgramPage() {
               gap: '16px 40px',
             }}
           >
-            <span style={{ color: 'var(--pp-muted)', fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>
+            <span className="pp-trust-label" style={{ color: 'var(--pp-muted)', fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>
               {page.trustBarLabel ?? 'Trusted by learners from'}
             </span>
             <div className="pp-trustbar">
