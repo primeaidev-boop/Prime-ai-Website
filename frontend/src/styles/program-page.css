@@ -677,3 +677,103 @@
   border-radius: 5px;
   flex-shrink: 0;
 }
+
+/* ── "Live Interactive Online Training" (media + benefits) ───────────────── */
+
+.pp-section-sub {
+  text-align: center;
+  color: var(--pp-muted);
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto 48px;
+}
+
+.pp-grid-live {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (min-width: 768px) {
+  .pp-grid-live {
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+}
+
+/* 16:9 YouTube-style frame - fills its column, never cropped by a fixed height */
+.pp-live-media-frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+  box-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.22);
+}
+
+.pp-benefit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pp-benefit-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+  border: 1px solid var(--pp-border);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
+  padding: 16px 18px;
+}
+
+.pp-benefit-icon {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: 50%;
+  background: rgba(99, 153, 255, 0.16);
+  color: var(--pp-blue-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pp-benefit-icon svg { width: 22px; height: 22px; }
+
+.pp-benefit-body { flex: 1; min-width: 0; }
+.pp-benefit-title {
+  font-family: var(--pp-font-head);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--pp-blue-dark);
+  margin: 0 0 3px;
+  line-height: 1.3;
+}
+.pp-benefit-desc {
+  color: var(--pp-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pp-benefit-check {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 50%;
+  background: var(--pp-blue-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pp-benefit-check svg { width: 15px; height: 15px; }
+
+@media (max-width: 400px) {
+  .pp-benefit-card { padding: 14px; gap: 11px; }
+  .pp-benefit-icon { width: 40px; height: 40px; min-width: 40px; }
+}

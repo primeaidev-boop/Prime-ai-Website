@@ -9,6 +9,7 @@ import {
   pgId,
   DEFAULT_HERO_TOOLS,
   DEFAULT_TRUST_COMPANIES,
+  DEFAULT_BENEFITS,
 } from '@/data/programPagesData';
 import { getPageContent, putPageContent } from '@/api/content';
 import { fetchMediaFromUrl, uploadVideo } from '@/api/blog';
@@ -18,7 +19,6 @@ import type {
   PgNavLink,
   PgBuildCard,
   PgDayItem,
-  PgClassroomImage,
   PgLearnerCard,
   PgMentor,
   PgBatch,
@@ -29,7 +29,9 @@ import type {
   PgMedia,
   PgMediaValue,
   PgLogoItem,
+  PgBenefitItem,
 } from '@/data/programPagesData';
+import { BENEFIT_ICON_NAMES, BenefitIcon } from '@/components/shared/benefitIcons';
 
 // ── Shared admin design tokens (match existing admin pages) ───────────────────
 
@@ -333,7 +335,7 @@ function mediaPosterErrors(p: ProgramPage): string[] {
   const errs: string[] = [];
   if (needsPoster(p.heroImage)) errs.push('Hero image');
   p.buildCards.forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Build card ${i + 1}`); });
-  p.classroomImages.forEach((c, i) => { if (needsPoster(c.url)) errs.push(`Classroom image ${i + 1}`); });
+  if (needsPoster(p.classroomMedia)) errs.push('Live Training media');
   p.learnerCards.forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Learner card ${i + 1}`); });
   p.mentors.forEach((m, i) => { if (needsPoster(m.image)) errs.push(`Mentor ${i + 1}`); });
   p.testimonials.forEach((t, i) => { if (needsPoster(t.image)) errs.push(`Testimonial ${i + 1}`); });
@@ -454,6 +456,14 @@ function ProgramEditor({
     trustBarLabel: page.trustBarLabel ?? 'Trusted by learners from',
     trustBarCompanies: page.trustBarCompanies ?? DEFAULT_TRUST_COMPANIES,
     trustBarTrailing: page.trustBarTrailing ?? 'and 500+ more',
+    classroomSubtitle: page.classroomSubtitle ?? 'Learn live, interact in real-time, and grow with expert guidance.',
+    // Migrate the old gallery's main image into the single media slot so the
+    // admin keeps their existing photo without re-uploading.
+    classroomMedia:
+      (page.classroomMedia && (typeof page.classroomMedia !== 'string' || page.classroomMedia))
+        ? page.classroomMedia
+        : (page.classroomImages?.[0]?.url ?? ''),
+    classroomBenefits: page.classroomBenefits ?? DEFAULT_BENEFITS,
   }));
   const [tab, setTab] = useState<EditorTab>('meta');
 
@@ -500,9 +510,9 @@ function ProgramEditor({
     set('trustBarCompanies', updated);
   }
 
-  function galleryUpdater<K extends keyof PgClassroomImage>(idx: number, field: K, val: PgClassroomImage[K]) {
-    const updated = p.classroomImages.map((img, i) => (i === idx ? { ...img, [field]: val } : img));
-    set('classroomImages', updated);
+  function benefitUpdater(idx: number, field: 'icon' | 'title' | 'description', val: string) {
+    const updated = (p.classroomBenefits ?? []).map((b, i) => (i === idx ? { ...b, [field]: val } : b));
+    set('classroomBenefits', updated);
   }
 
   function learnerUpdater<K extends keyof PgLearnerCard>(idx: number, field: K, val: PgLearnerCard[K]) {
@@ -910,32 +920,52 @@ function ProgramEditor({
   function renderPeople() {
     return (
       <div>
-        {/* Classroom Gallery */}
-        <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Classroom Gallery</p>
-        <Field label="Section Title">
-          <Input value={p.classroomTitle} onChange={(v) => set('classroomTitle', v)} />
-        </Field>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 8 }}>
-          {p.classroomImages.map((img, idx) => (
-            <div key={img.id} style={{ ...S.card, display: 'flex', gap: 10, alignItems: 'center' }}>
-              <div style={{ flex: 3 }}>
-                <MediaInput value={img.url} placeholder="Image URL" onChange={(v) => galleryUpdater(idx, 'url', v)} variant="cover" />
-              </div>
-              <input style={{ ...S.input, flex: 2 }} value={img.alt} placeholder="Alt text" onChange={(e) => galleryUpdater(idx, 'alt', e.target.value)} />
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted)', fontSize: 13, flexShrink: 0 }}>
-                <input type="checkbox" checked={img.isWide} onChange={(e) => galleryUpdater(idx, 'isWide', e.target.checked)} />
-                Wide (2-col)
-              </label>
-              <ListControls
-                idx={idx} total={p.classroomImages.length}
-                onUp={() => set('classroomImages', move(p.classroomImages, idx, idx - 1))}
-                onDown={() => set('classroomImages', move(p.classroomImages, idx, idx + 1))}
-                onDelete={() => set('classroomImages', removeAt(p.classroomImages, idx))}
-              />
-            </div>
-          ))}
+        {/* Live Interactive Online Training */}
+        <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Live Interactive Online Training</p>
+        <div style={S.row}>
+          <Field label="Section Title">
+            <Input value={p.classroomTitle} onChange={(v) => set('classroomTitle', v)} />
+          </Field>
+          <Field label="Subtitle">
+            <Input value={p.classroomSubtitle} onChange={(v) => set('classroomSubtitle', v)} />
+          </Field>
         </div>
-        <AddBtn label="Add Gallery Image" onClick={() => set('classroomImages', [...p.classroomImages, { id: pgId(), url: '', alt: '', isWide: false }])} />
+        <Field label="Left Media (16:9 image or video)">
+          <MediaInput value={p.classroomMedia} onChange={(v) => set('classroomMedia', v)} placeholder="https://..." variant="cover" />
+        </Field>
+
+        <Field label="Benefits (icon + title + description)">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+            {(p.classroomBenefits ?? []).map((b, idx) => (
+              <div key={b.id} style={{ ...S.card, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                <div style={{ width: 34, height: 34, minWidth: 34, borderRadius: '50%', background: 'rgba(0,212,255,0.14)', color: 'var(--electric)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ width: 18, height: 18, display: 'inline-flex' }}><BenefitIcon name={b.icon} /></span>
+                </div>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    <select
+                      style={{ ...S.input, width: 130, flexShrink: 0 }}
+                      value={b.icon}
+                      onChange={(e) => benefitUpdater(idx, 'icon', e.target.value)}
+                      title="Icon"
+                    >
+                      {BENEFIT_ICON_NAMES.map((n) => <option key={n} value={n}>{n}</option>)}
+                    </select>
+                    <input style={{ ...S.input, flex: 1 }} value={b.title} placeholder="Benefit title" onChange={(e) => benefitUpdater(idx, 'title', e.target.value)} />
+                  </div>
+                  <input style={{ ...S.input, width: '100%' }} value={b.description} placeholder="1-2 line description" onChange={(e) => benefitUpdater(idx, 'description', e.target.value)} />
+                </div>
+                <ListControls
+                  idx={idx} total={(p.classroomBenefits ?? []).length}
+                  onUp={() => set('classroomBenefits', move(p.classroomBenefits ?? [], idx, idx - 1))}
+                  onDown={() => set('classroomBenefits', move(p.classroomBenefits ?? [], idx, idx + 1))}
+                  onDelete={() => set('classroomBenefits', removeAt(p.classroomBenefits ?? [], idx))}
+                />
+              </div>
+            ))}
+          </div>
+          <AddBtn label="Add Benefit" onClick={() => set('classroomBenefits', [...(p.classroomBenefits ?? []), { id: pgId(), icon: 'star', title: '', description: '' } as PgBenefitItem])} />
+        </Field>
 
         {/* Learner Cards */}
         <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '32px 0 12px' }}>Learner Type Cards</p>
@@ -1539,6 +1569,7 @@ export default function ProgramPagesAdmin() {
       pricingCertImage: convertMediaUrl(p.pricingCertImage),
       footerCertImage: convertMediaUrl(p.footerCertImage),
       buildCards: p.buildCards.map((c) => ({ ...c, image: convertMediaUrl(c.image) })),
+      classroomMedia: convertMediaUrl(p.classroomMedia),
       classroomImages: p.classroomImages.map((c) => ({ ...c, url: convertMediaUrl(c.url) })),
       learnerCards: p.learnerCards.map((c) => ({ ...c, image: convertMediaUrl(c.image) })),
       mentors: p.mentors.map((m) => ({ ...m, image: convertMediaUrl(m.image) })),

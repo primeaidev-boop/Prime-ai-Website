@@ -89,6 +89,14 @@ export interface PgClassroomImage {
   isWide: boolean;     // the first/big image spans 2 cols on desktop
 }
 
+/** A benefit row in the "Live Interactive Online Training" section. */
+export interface PgBenefitItem {
+  id: string;
+  icon: string;        // key into BENEFIT_ICONS (components/shared/benefitIcons)
+  title: string;
+  description: string;
+}
+
 export interface PgLearnerCard {
   id: string;
   image: PgMediaValue;
@@ -198,8 +206,14 @@ export interface ProgramPage {
   dayPlanItems: PgDayItem[];
 
   // ── Classroom gallery
+  // ── "Live Interactive Online Training" (was the classroom gallery)
+  // classroomImages is retained for older saved content but no longer rendered;
+  // classroomMedia is the single 16:9 media slot, classroomBenefits the list.
   classroomTitle: string;
-  classroomImages: PgClassroomImage[];   // first item should have isWide: true
+  classroomSubtitle: string;
+  classroomMedia: PgMediaValue;
+  classroomBenefits: PgBenefitItem[];
+  classroomImages: PgClassroomImage[];   // legacy - kept for non-destructive reads
 
   // ── "Designed for Every Learner"
   learnerSectionTitle: string;
@@ -284,6 +298,15 @@ export const DEFAULT_HERO_TOOLS: PgLogoItem[] = [
   { id: pgId(), name: 'HeyGen',     logo: '/logos/heygen.png' },
   { id: pgId(), name: 'Perplexity', logo: '/logos/perplexity.png' },
   { id: pgId(), name: 'Gamma',      logo: '/logos/gamma.png' },
+];
+
+export const DEFAULT_BENEFITS: PgBenefitItem[] = [
+  { id: pgId(), icon: 'live',   title: '100% Live Instructor-Led Classes', description: 'Learn directly from experienced mentors in real time.' },
+  { id: pgId(), icon: 'chat',   title: 'Instant Doubt Solving',            description: 'Ask questions and get answers immediately during class.' },
+  { id: pgId(), icon: 'code',   title: 'Hands-On Practical Learning',      description: 'Practice on real-world projects with live guidance.' },
+  { id: pgId(), icon: 'play',   title: 'Class Recording Access',           description: 'Revise every topic anytime after the session.' },
+  { id: pgId(), icon: 'people', title: 'Personal Mentorship',              description: 'Receive individual guidance throughout your learning journey.' },
+  { id: pgId(), icon: 'target', title: 'Career-Focused Training',          description: 'Build job-ready skills with industry-relevant projects.' },
 ];
 
 export const DEFAULT_TRUST_COMPANIES: PgLogoItem[] = [
@@ -377,7 +400,10 @@ const DEFAULT_10DAY: ProgramPage = {
   ],
 
   // Classroom gallery
-  classroomTitle: 'Real Classroom. Real Hands-On Learning.',
+  classroomTitle: 'Live Interactive Online Training',
+  classroomSubtitle: 'Learn live, interact in real-time, and grow with expert guidance.',
+  classroomMedia: '',
+  classroomBenefits: DEFAULT_BENEFITS,
   classroomImages: [
     { id: pgId(), url: '', alt: 'Instructor teaching AI',         isWide: true  },
     { id: pgId(), url: '', alt: 'Hands typing on AI interface',   isWide: false },

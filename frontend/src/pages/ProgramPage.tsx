@@ -14,6 +14,7 @@ import {
 } from '@/data/programPagesData';
 import { convertImageUrl } from '@/lib/imageUrl';
 import { MediaDisplay } from '@/components/shared/MediaDisplay';
+import { BenefitIcon, BenefitCheck } from '@/components/shared/benefitIcons';
 import type { PgMediaValue } from '@/data/programPagesData';
 import { getPageContent } from '@/api/content';
 import { submitProgramEnrollment } from '@/api/programEnrollments';
@@ -367,6 +368,13 @@ export default function ProgramPage() {
   const heroTools = page.heroTools ?? DEFAULT_HERO_TOOLS;
   const trustCompanies = page.trustBarCompanies ?? DEFAULT_TRUST_COMPANIES;
   const showTrustBar = (page.showTrustBar ?? true) && trustCompanies.length > 0;
+
+  // Live-training section: single media falls back to the old gallery's first
+  // image so existing saved content surfaces its main photo with no re-entry.
+  const liveMedia = hasMedia(page.classroomMedia)
+    ? page.classroomMedia
+    : (page.classroomImages?.[0]?.url ?? '');
+  const liveBenefits = page.classroomBenefits ?? [];
 
   return (
     <div className="pp-root pp-body-mobile-pad" style={{ paddingBottom: 80 }}>
@@ -748,27 +756,42 @@ export default function ProgramPage() {
         </div>
       </section>
 
-      {/* ── 7. Classroom gallery ─────────────────────────────────────── */}
+      {/* ── 7. Live Interactive Online Training ──────────────────────── */}
       <section className="pp-section">
         <div ref={rClassroom} className="pp-reveal pp-container">
-          <h2 className="pp-h2">{page.classroomTitle}</h2>
-
-          {page.classroomImages.length > 0 && (
-            <div className="pp-grid-classroom">
-              {page.classroomImages.map((img) => (
-                <div
-                  key={img.id}
-                  className={img.isWide ? 'pp-classroom-wide-cell' : undefined}
-                >
-                  <Img
-                    src={img.url}
-                    alt={img.alt}
-                    className={`pp-classroom-img${img.isWide ? ' pp-classroom-img-wide' : ''}`}
-                  />
-                </div>
-              ))}
-            </div>
+          <h2 className="pp-h2" style={{ marginBottom: 12 }}>{page.classroomTitle}</h2>
+          {page.classroomSubtitle && (
+            <p className="pp-section-sub">{page.classroomSubtitle}</p>
           )}
+
+          <div className="pp-grid-live">
+            {/* Left: single 16:9 media (media-first on mobile via source order) */}
+            <MediaDisplay
+              media={liveMedia}
+              alt={page.classroomTitle}
+              className="pp-live-media-frame"
+            />
+
+            {/* Right: benefits list */}
+            {liveBenefits.length > 0 && (
+              <div className="pp-benefit-list">
+                {liveBenefits.map((b) => (
+                  <div key={b.id} className="pp-benefit-card">
+                    <div className="pp-benefit-icon">
+                      <BenefitIcon name={b.icon} />
+                    </div>
+                    <div className="pp-benefit-body">
+                      <h3 className="pp-benefit-title">{b.title}</h3>
+                      {b.description && <p className="pp-benefit-desc">{b.description}</p>}
+                    </div>
+                    <div className="pp-benefit-check">
+                      <BenefitCheck />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
