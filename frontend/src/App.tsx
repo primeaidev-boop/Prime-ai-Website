@@ -1,6 +1,6 @@
 // App router - public routes with Navbar/Footer, admin routes with sidebar layout
 
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
@@ -8,38 +8,40 @@ import { Sidebar } from '@/components/admin/Sidebar';
 import { useAuthStore } from '@/store/authStore';
 import { ScrollToTop } from '@/components/shared/ScrollToTop';
 import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
-const Home = lazy(() => import('@/pages/Home'));
-const About = lazy(() => import('@/pages/About'));
-const Courses = lazy(() => import('@/pages/Courses'));
-const CoursePage = lazy(() => import('@/pages/CoursePage'));
-const Contact = lazy(() => import('@/pages/Contact'));
-const BlogListing = lazy(() => import('@/pages/BlogListing'));
-const BlogPost = lazy(() => import('@/pages/BlogPost'));
-const AdminLogin = lazy(() => import('@/pages/admin/Login'));
-const Dashboard = lazy(() => import('@/pages/admin/Dashboard'));
-const Bookings = lazy(() => import('@/pages/admin/Bookings'));
-const Enquiries = lazy(() => import('@/pages/admin/Enquiries'));
-const Settings = lazy(() => import('@/pages/admin/Settings'));
-const CoursesAdmin = lazy(() => import('@/pages/admin/CoursesAdmin'));
-const PrivacyPolicy = lazy(() => import('@/pages/PrivacyPolicy'));
-const TermsConditions = lazy(() => import('@/pages/TermsConditions'));
-const RefundPolicy = lazy(() => import('@/pages/RefundPolicy'));
-const BlogPosts = lazy(() => import('@/pages/admin/BlogPosts'));
-const BlogPostEditor = lazy(() => import('@/pages/admin/BlogPostEditor'));
-const TutorialListing = lazy(() => import('@/pages/TutorialListing'));
-const TutorialPage = lazy(() => import('@/pages/TutorialPage'));
-const TutorialsAdmin = lazy(() => import('@/pages/admin/TutorialsAdmin'));
-const TutorialLeads = lazy(() => import('@/pages/admin/TutorialLeads'));
-const ProgramEnrollments = lazy(() => import('@/pages/admin/ProgramEnrollments'));
-const UserDashboard = lazy(() => import('@/pages/Dashboard'));
-const Projects = lazy(() => import('@/pages/Projects'));
-const ProjectDetail = lazy(() => import('@/pages/ProjectDetail'));
-const ProjectsAdmin = lazy(() => import('@/pages/admin/ProjectsAdmin'));
-const AiLaunchpad = lazy(() => import('@/pages/AiLaunchpad'));
-const ProgramPage = lazy(() => import('@/pages/ProgramPage'));
-const ThankYouPage = lazy(() => import('@/pages/ThankYouPage'));
-const ProgramPagesAdmin = lazy(() => import('@/pages/admin/ProgramPagesAdmin'));
+const Home = lazyWithRetry(() => import('@/pages/Home'));
+const About = lazyWithRetry(() => import('@/pages/About'));
+const Courses = lazyWithRetry(() => import('@/pages/Courses'));
+const CoursePage = lazyWithRetry(() => import('@/pages/CoursePage'));
+const Contact = lazyWithRetry(() => import('@/pages/Contact'));
+const BlogListing = lazyWithRetry(() => import('@/pages/BlogListing'));
+const BlogPost = lazyWithRetry(() => import('@/pages/BlogPost'));
+const AdminLogin = lazyWithRetry(() => import('@/pages/admin/Login'));
+const Dashboard = lazyWithRetry(() => import('@/pages/admin/Dashboard'));
+const Bookings = lazyWithRetry(() => import('@/pages/admin/Bookings'));
+const Enquiries = lazyWithRetry(() => import('@/pages/admin/Enquiries'));
+const Settings = lazyWithRetry(() => import('@/pages/admin/Settings'));
+const CoursesAdmin = lazyWithRetry(() => import('@/pages/admin/CoursesAdmin'));
+const PrivacyPolicy = lazyWithRetry(() => import('@/pages/PrivacyPolicy'));
+const TermsConditions = lazyWithRetry(() => import('@/pages/TermsConditions'));
+const RefundPolicy = lazyWithRetry(() => import('@/pages/RefundPolicy'));
+const BlogPosts = lazyWithRetry(() => import('@/pages/admin/BlogPosts'));
+const BlogPostEditor = lazyWithRetry(() => import('@/pages/admin/BlogPostEditor'));
+const TutorialListing = lazyWithRetry(() => import('@/pages/TutorialListing'));
+const TutorialPage = lazyWithRetry(() => import('@/pages/TutorialPage'));
+const TutorialsAdmin = lazyWithRetry(() => import('@/pages/admin/TutorialsAdmin'));
+const TutorialLeads = lazyWithRetry(() => import('@/pages/admin/TutorialLeads'));
+const ProgramEnrollments = lazyWithRetry(() => import('@/pages/admin/ProgramEnrollments'));
+const UserDashboard = lazyWithRetry(() => import('@/pages/Dashboard'));
+const Projects = lazyWithRetry(() => import('@/pages/Projects'));
+const ProjectDetail = lazyWithRetry(() => import('@/pages/ProjectDetail'));
+const ProjectsAdmin = lazyWithRetry(() => import('@/pages/admin/ProjectsAdmin'));
+const AiLaunchpad = lazyWithRetry(() => import('@/pages/AiLaunchpad'));
+const ProgramPage = lazyWithRetry(() => import('@/pages/ProgramPage'));
+const ThankYouPage = lazyWithRetry(() => import('@/pages/ThankYouPage'));
+const ProgramPagesAdmin = lazyWithRetry(() => import('@/pages/admin/ProgramPagesAdmin'));
 
 function PublicLayout() {
   return (
@@ -84,7 +86,7 @@ function PageLoader() {
 
 export default function App() {
   return (
-    <>
+    <ErrorBoundary>
     <ScrollToTop />
     <WhatsAppFloat />
     <Routes>
@@ -149,6 +151,6 @@ export default function App() {
         <Route path="program-pages" element={<ProgramPagesAdmin />} />
       </Route>
     </Routes>
-    </>
+    </ErrorBoundary>
   );
 }
