@@ -233,7 +233,7 @@ function MediaInput({
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div>
-            <span style={subLabel}>Poster / fallback image — required</span>
+            <span style={subLabel}>Poster / fallback image - required</span>
             <ImageUrlInput value={raw.imageUrl} onChange={(v) => patch({ imageUrl: v })} placeholder="https://..." variant={variant} />
             {!raw.imageUrl && (
               <p style={{ fontSize: 11, color: '#f87171', marginTop: 6 }}>
@@ -478,6 +478,16 @@ function ProgramEditor({
   function dayItemUpdater<K extends keyof PgDayItem>(idx: number, field: K, val: PgDayItem[K]) {
     const updated = p.dayPlanItems.map((d, i) => (i === idx ? { ...d, [field]: val } : d));
     set('dayPlanItems', updated);
+  }
+
+  function dayToolsUpdater(dayIdx: number, tools: PgLogoItem[]) {
+    const updated = p.dayPlanItems.map((d, i) => (i === dayIdx ? { ...d, tools } : d));
+    set('dayPlanItems', updated);
+  }
+
+  function dayToolFieldUpdater(dayIdx: number, toolIdx: number, field: 'name' | 'logo', val: string) {
+    const tools = (p.dayPlanItems[dayIdx].tools ?? []).map((t, i) => (i === toolIdx ? { ...t, [field]: val } : t));
+    dayToolsUpdater(dayIdx, tools);
   }
 
   function heroToolUpdater(idx: number, field: 'name' | 'logo', val: string) {
@@ -807,47 +817,92 @@ function ProgramEditor({
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
           {p.dayPlanItems.map((day, idx) => (
-            <div key={day.id} style={{ ...S.card, display: 'flex', gap: 10, alignItems: 'center' }}>
-              <input
-                style={{ ...S.input, width: 50, textAlign: 'center', flexShrink: 0 }}
-                type="number"
-                value={day.number}
-                onChange={(e) => dayItemUpdater(idx, 'number', Number(e.target.value))}
-                title="Day number"
-              />
-              <input
-                style={{ ...S.input, flex: 1 }}
-                value={day.title}
-                placeholder="Day title"
-                onChange={(e) => dayItemUpdater(idx, 'title', e.target.value)}
-              />
-              <select
-                style={{ ...S.input, width: 120, flexShrink: 0 }}
-                value={day.phase}
-                onChange={(e) => dayItemUpdater(idx, 'phase', e.target.value as PgDayItem['phase'])}
-                title="Phase"
-              >
-                <option value="toolkit">Blue</option>
-                <option value="project">Orange</option>
-              </select>
-              <label style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted)', fontSize: 13, flexShrink: 0 }}>
+            <div key={day.id} style={{ ...S.card, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                 <input
-                  type="checkbox"
-                  checked={day.isProject}
-                  onChange={(e) => dayItemUpdater(idx, 'isProject', e.target.checked)}
+                  style={{ ...S.input, width: 50, textAlign: 'center', flexShrink: 0 }}
+                  type="number"
+                  value={day.number}
+                  onChange={(e) => dayItemUpdater(idx, 'number', Number(e.target.value))}
+                  title="Day number"
                 />
-                Project badge
-              </label>
-              <ListControls
-                idx={idx} total={p.dayPlanItems.length}
-                onUp={() => set('dayPlanItems', move(p.dayPlanItems, idx, idx - 1))}
-                onDown={() => set('dayPlanItems', move(p.dayPlanItems, idx, idx + 1))}
-                onDelete={() => set('dayPlanItems', removeAt(p.dayPlanItems, idx))}
-              />
+                <input
+                  style={{ ...S.input, flex: 1 }}
+                  value={day.title}
+                  placeholder="Day title"
+                  onChange={(e) => dayItemUpdater(idx, 'title', e.target.value)}
+                />
+                <select
+                  style={{ ...S.input, width: 120, flexShrink: 0 }}
+                  value={day.phase}
+                  onChange={(e) => dayItemUpdater(idx, 'phase', e.target.value as PgDayItem['phase'])}
+                  title="Phase"
+                >
+                  <option value="toolkit">Blue</option>
+                  <option value="project">Orange</option>
+                </select>
+                <label style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted)', fontSize: 13, flexShrink: 0 }}>
+                  <input
+                    type="checkbox"
+                    checked={day.isProject}
+                    onChange={(e) => dayItemUpdater(idx, 'isProject', e.target.checked)}
+                  />
+                  Project badge
+                </label>
+                <ListControls
+                  idx={idx} total={p.dayPlanItems.length}
+                  onUp={() => set('dayPlanItems', move(p.dayPlanItems, idx, idx - 1))}
+                  onDown={() => set('dayPlanItems', move(p.dayPlanItems, idx, idx + 1))}
+                  onDelete={() => set('dayPlanItems', removeAt(p.dayPlanItems, idx))}
+                />
+              </div>
+
+              {/* Expandable detail: description + tool pills (optional per day) */}
+              <div style={{ paddingLeft: 60 }}>
+                <textarea
+                  style={{ ...S.textarea, minHeight: 52 }}
+                  value={day.description ?? ''}
+                  placeholder="Optional expand description (1-2 lines). Leave empty to hide the expand toggle for this day."
+                  onChange={(e) => dayItemUpdater(idx, 'description', e.target.value)}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                  {(day.tools ?? []).map((tool, tIdx) => (
+                    <div key={tool.id} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                      {tool.logo && (
+                        <img src={tool.logo} alt="" style={{ width: 26, height: 26, objectFit: 'contain', background: '#fff', borderRadius: 6, padding: 2, flexShrink: 0 }} />
+                      )}
+                      <input
+                        style={{ ...S.input, flex: 1 }}
+                        value={tool.name}
+                        placeholder="Tool name"
+                        onChange={(e) => dayToolFieldUpdater(idx, tIdx, 'name', e.target.value)}
+                      />
+                      <div style={{ flex: 2 }}>
+                        <ImageUrlInput
+                          value={tool.logo}
+                          onChange={(v) => dayToolFieldUpdater(idx, tIdx, 'logo', v)}
+                          placeholder="/logos/… or https://…"
+                          variant="avatar"
+                        />
+                      </div>
+                      <ListControls
+                        idx={tIdx} total={(day.tools ?? []).length}
+                        onUp={() => dayToolsUpdater(idx, move(day.tools ?? [], tIdx, tIdx - 1))}
+                        onDown={() => dayToolsUpdater(idx, move(day.tools ?? [], tIdx, tIdx + 1))}
+                        onDelete={() => dayToolsUpdater(idx, removeAt(day.tools ?? [], tIdx))}
+                      />
+                    </div>
+                  ))}
+                  <AddBtn
+                    label="Add Tool"
+                    onClick={() => dayToolsUpdater(idx, [...(day.tools ?? []), { id: pgId(), name: '', logo: '' } as PgLogoItem])}
+                  />
+                </div>
+              </div>
             </div>
           ))}
         </div>
-        <AddBtn label="Add Day" onClick={() => set('dayPlanItems', [...p.dayPlanItems, { id: pgId(), number: p.dayPlanItems.length + 1, title: 'New Day', isProject: false, phase: 'toolkit' }])} />
+        <AddBtn label="Add Day" onClick={() => set('dayPlanItems', [...p.dayPlanItems, { id: pgId(), number: p.dayPlanItems.length + 1, title: 'New Day', isProject: false, phase: 'toolkit', description: '', tools: [] }])} />
       </div>
     );
   }
@@ -1490,6 +1545,10 @@ export default function ProgramPagesAdmin() {
       testimonials: p.testimonials.map((t) => ({ ...t, image: convertMediaUrl(t.image) })),
       heroTools: (p.heroTools ?? []).map((t) => ({ ...t, logo: convertImageUrl(t.logo) })),
       trustBarCompanies: (p.trustBarCompanies ?? []).map((t) => ({ ...t, logo: convertImageUrl(t.logo) })),
+      dayPlanItems: p.dayPlanItems.map((d) => ({
+        ...d,
+        tools: (d.tools ?? []).map((t) => ({ ...t, logo: convertImageUrl(t.logo) })),
+      })),
     };
   }
 

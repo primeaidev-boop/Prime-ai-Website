@@ -138,6 +138,74 @@ function FaqRow({ faq }: { faq: PgFaq }) {
   );
 }
 
+// ── 10-Day Plan row (collapsed = identical to the original static row; the
+// +→× toggle + panel appear only when the day has a description or tools) ─────
+
+function DayRow({ day }: { day: PgDayItem }) {
+  const [open, setOpen] = useState(false);
+  const tools = day.tools ?? [];
+  const hasDescription = Boolean(day.description?.trim());
+  const hasExpandable = hasDescription || tools.length > 0;
+
+  return (
+    <div className="pp-card-sm" style={{ padding: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <div className={`pp-day-circle ${day.phase === 'project' ? 'pp-day-circle-orange' : 'pp-day-circle-blue'}`}>
+          {day.number}
+        </div>
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+          <p style={{ fontWeight: 600, fontSize: 16, color: 'var(--pp-navy-dark)' }}>
+            {day.title}
+          </p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+            {day.isProject && (
+              <span
+                className="pp-badge pp-badge-orange"
+                style={{ fontSize: 10, borderRadius: 4, padding: '2px 8px', border: 'none' }}
+              >
+                Project
+              </span>
+            )}
+            {hasExpandable && (
+              <button
+                type="button"
+                className="pp-day-toggle"
+                onClick={() => setOpen((v) => !v)}
+                aria-expanded={open}
+                aria-label={open ? 'Hide day details' : 'Show day details'}
+              >
+                <span className={`pp-day-toggle-icon${open ? ' open' : ''}`}>+</span>
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {hasExpandable && (
+        <div className={`pp-day-panel${open ? ' open' : ''}`}>
+          <div className="pp-day-panel-inner">
+            {hasDescription && (
+              <p style={{ color: 'var(--pp-muted)', fontSize: 14, lineHeight: 1.55 }}>
+                {day.description}
+              </p>
+            )}
+            {tools.length > 0 && (
+              <div className="pp-pill-row">
+                {tools.map((tool) => (
+                  <span key={tool.id} className="pp-pill">
+                    {tool.logo && <img src={convertImageUrl(tool.logo)} alt={tool.name} loading="lazy" />}
+                    <span>{tool.name}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────────
 
 export default function ProgramPage() {
@@ -674,35 +742,7 @@ export default function ProgramPage() {
           {/* Day grid */}
           <div className="pp-grid-day">
             {page.dayPlanItems.map((day: PgDayItem) => (
-              <div
-                key={day.id}
-                className="pp-card-sm"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 16,
-                  padding: 16,
-                }}
-              >
-                <div
-                  className={`pp-day-circle ${day.phase === 'project' ? 'pp-day-circle-orange' : 'pp-day-circle-blue'}`}
-                >
-                  {day.number}
-                </div>
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
-                  <p style={{ fontWeight: 600, fontSize: 16, color: 'var(--pp-navy-dark)' }}>
-                    {day.title}
-                  </p>
-                  {day.isProject && (
-                    <span
-                      className="pp-badge pp-badge-orange"
-                      style={{ fontSize: 10, flexShrink: 0, borderRadius: 4, padding: '2px 8px', border: 'none' }}
-                    >
-                      Project
-                    </span>
-                  )}
-                </div>
-              </div>
+              <DayRow key={day.id} day={day} />
             ))}
           </div>
         </div>

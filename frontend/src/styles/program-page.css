@@ -233,7 +233,7 @@
 
 .pp-grid-hero      { display: grid; grid-template-columns: 1fr; gap: 48px; align-items: center; }
 .pp-grid-build     { display: grid; grid-template-columns: 1fr; gap: 32px; }
-.pp-grid-day       { display: grid; grid-template-columns: 1fr; gap: 24px; }
+.pp-grid-day       { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: start; }
 .pp-grid-classroom { display: grid; grid-template-columns: 1fr; gap: 24px; }
 .pp-grid-learners  { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: stretch; }
 .pp-grid-mentors   { display: grid; grid-template-columns: 1fr; gap: 32px; align-items: stretch; }
@@ -592,4 +592,88 @@
 @media (max-width: 640px) {
   .pp-trustbar { gap: 14px 24px; }
   .pp-trustbar img { height: 22px; max-width: 96px; }
+}
+
+/* ── 10-Day Plan: expandable row detail ──────────────────────────────────── */
+/* Same +→× rotate affordance as .pp-faq-icon so the two expand patterns on
+   the page feel identical. Collapsed rows are visually unchanged: the toggle
+   sits inline and the panel is max-height:0 (contributes no height/gap). */
+
+.pp-day-toggle {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+  border: 1px solid var(--pp-border);
+  color: var(--pp-muted);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+.pp-day-toggle-icon {
+  transition: transform 0.3s;
+  line-height: 1;
+}
+.pp-day-toggle-icon.open {
+  transform: rotate(45deg);
+}
+.pp-day-toggle:hover {
+  border-color: var(--pp-orange);
+  color: var(--pp-orange);
+}
+
+.pp-day-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.32s ease;
+}
+.pp-day-panel.open {
+  max-height: 500px;   /* generous cap for a 1-2 line blurb + a pill row */
+}
+.pp-day-panel-inner {
+  padding-top: 14px;
+  margin-top: 14px;
+  border-top: 1px solid var(--pp-border);
+  padding-left: 64px;  /* align under the title, past the 48px badge + 16px gap */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (max-width: 480px) {
+  .pp-day-panel-inner { padding-left: 0; }
+}
+
+/* ── Logo pills (day detail + reusable) ──────────────────────────────────── */
+
+.pp-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fff;
+  border: 1px solid var(--pp-border);
+  border-radius: 999px;
+  padding: 5px 13px 5px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pp-navy-dark);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+}
+.pp-pill img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 5px;
+  flex-shrink: 0;
 }

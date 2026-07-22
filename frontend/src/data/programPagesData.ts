@@ -76,6 +76,10 @@ export interface PgDayItem {
   title: string;
   isProject: boolean;
   phase: 'toolkit' | 'project';  // 'toolkit' → blue circle, 'project' → orange circle
+  // Optional expandable detail - absent on older saved content, which simply
+  // renders no expand affordance. Tools reuse the shared PgLogoItem shape.
+  description?: string;
+  tools?: PgLogoItem[];
 }
 
 export interface PgClassroomImage {
