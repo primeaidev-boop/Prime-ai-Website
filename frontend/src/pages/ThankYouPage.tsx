@@ -70,11 +70,19 @@ export default function ThankYouPage() {
 
   const programName = state.programTitle || page?.pageTitle || '';
   const hasSummary = Boolean(state.fullName && state.batchName);
+  // Fall back to the seeded defaults for every thank-you field: content saved
+  // before the thank-you feature existed has none of them, and calling
+  // .replace() on an undefined template would crash the whole page.
+  const heading = page?.thankYouHeading || 'Thank You! Your Seat Request is Received 🎉';
+  const subtext = page?.thankYouSubtext || 'Our team will confirm your enrollment on WhatsApp shortly.';
+  const template =
+    page?.thankYouWhatsappMessageTemplate ||
+    "Hi, I'm {name}. I just booked my seat for {program} – {batch}. Please confirm my enrollment.";
   // A direct/refreshed visit has no name or batch to fill the template with -
   // fall back to a generic enquiry message rather than render blank slots.
   const message = page
     ? hasSummary
-      ? page.thankYouWhatsappMessageTemplate
+      ? template
           .replace('{name}', state.fullName!)
           .replace('{program}', programName)
           .replace('{batch}', state.batchName!)
@@ -118,11 +126,11 @@ export default function ThankYouPage() {
         <div style={{ fontSize: 56, marginBottom: 8, lineHeight: 1 }} aria-hidden="true">🎉</div>
 
         <h1 className="pp-headline" style={{ fontSize: 'clamp(22px, 5vw, 26px)', fontWeight: 700, marginBottom: 12 }}>
-          {page.thankYouHeading}
+          {heading}
         </h1>
 
         <p style={{ color: 'var(--pp-muted)', fontSize: 16, lineHeight: 1.6, marginBottom: 28 }}>
-          {page.thankYouSubtext}
+          {subtext}
         </p>
 
         {hasSummary && (
