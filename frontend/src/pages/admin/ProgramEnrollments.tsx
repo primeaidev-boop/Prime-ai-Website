@@ -378,7 +378,7 @@ export default function ProgramEnrollments() {
                       {row.whatsappNumber}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
-                      {row.city || '—'}
+                      {row.city || '-'}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--white)' }}>
                       {row.programTitle}
