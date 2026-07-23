@@ -788,3 +788,136 @@
     margin-bottom: 6px;
   }
 }
+
+/* ── "Bonuses Worth ₹20,000+" (dark band) ────────────────────────────────── */
+
+.pp-bonus-eyebrow {
+  color: var(--pp-orange);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.pp-bonus-heading {
+  font-family: var(--pp-font-head);
+  font-weight: 800;
+  color: #fff;
+  font-size: clamp(30px, 5.5vw, 52px);
+  line-height: 1.1;
+  margin: 0 0 16px;
+}
+.pp-bonus-sub {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 16px;
+  line-height: 1.6;
+  max-width: 620px;
+  margin: 0 0 40px;
+}
+
+.pp-grid-bonus {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+@media (min-width: 768px)  { .pp-grid-bonus { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 1024px) { .pp-grid-bonus { grid-template-columns: repeat(3, 1fr); } }
+
+.pp-bonus-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  overflow: hidden;
+  height: 100%;
+}
+.pp-bonus-img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+.pp-bonus-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 20px 22px 22px;
+  gap: 10px;
+}
+.pp-bonus-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pp-bonus-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 9px;
+  background: rgba(249, 115, 22, 0.14);
+  color: var(--pp-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.pp-bonus-icon svg { width: 20px; height: 20px; }
+.pp-bonus-title {
+  font-family: var(--pp-font-head);
+  font-weight: 700;
+  font-size: 18px;
+  color: #fff;
+  margin: 0;
+}
+.pp-bonus-desc {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 0;
+}
+.pp-bonus-value {
+  color: var(--pp-orange);
+  font-weight: 700;
+  font-size: 14px;
+  margin: auto 0 0;      /* pin to the bottom so rows align */
+  padding-top: 4px;
+}
+
+/* Total-value footer bar */
+.pp-bonus-total {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-top: 40px;
+  padding: 22px 28px;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  border-radius: 16px;
+  background: rgba(249, 115, 22, 0.06);
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+}
+.pp-bonus-total-icon {
+  color: var(--pp-orange);
+  display: flex;
+  flex-shrink: 0;
+}
+.pp-bonus-total-icon svg { width: 40px; height: 40px; }
+.pp-bonus-total-label {
+  font-family: var(--pp-font-head);
+  font-weight: 800;
+  font-size: clamp(22px, 3.5vw, 32px);
+  color: var(--pp-orange);
+  white-space: nowrap;
+}
+.pp-bonus-total-text {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 420px;
+}
+@media (min-width: 768px) {
+  .pp-bonus-total { flex-wrap: nowrap; justify-content: flex-start; text-align: left; }
+}

@@ -96,6 +96,33 @@ export const BENEFIT_ICONS: Record<string, ReactElement> = {
       <path d="M9 12l2 2 4-4" />
     </>,
   ),
+  phone: svg(
+    <>
+      <rect x="7" y="3" width="10" height="18" rx="2" />
+      <path d="M11 18h2" />
+    </>,
+  ),
+  mail: svg(
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M4 7.5l8 5.5 8-5.5" />
+    </>,
+  ),
+  percent: svg(
+    <>
+      <path d="M19 5L5 19" />
+      <circle cx="7.5" cy="7.5" r="2.4" />
+      <circle cx="16.5" cy="16.5" r="2.4" />
+    </>,
+  ),
+  gift: svg(
+    <>
+      <rect x="3" y="8" width="18" height="4" rx="1" />
+      <path d="M5 12v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8" />
+      <path d="M12 8v13" />
+      <path d="M12 8C11 5 8 4 7 5.5S8 8 12 8zM12 8c1-3 4-4 5-2.5S16 8 12 8z" />
+    </>,
+  ),
 };
 
 export const BENEFIT_ICON_NAMES = Object.keys(BENEFIT_ICONS);

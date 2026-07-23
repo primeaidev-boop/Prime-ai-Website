@@ -12,6 +12,7 @@ import {
   DEFAULT_HERO_TOOLS,
   DEFAULT_TRUST_COMPANIES,
   DEFAULT_BENEFITS,
+  DEFAULT_BONUSES,
 } from '@/data/programPagesData';
 import { convertImageUrl } from '@/lib/imageUrl';
 import { MediaDisplay } from '@/components/shared/MediaDisplay';
@@ -32,6 +33,15 @@ import type {
   PgTestimonial,
 } from '@/data/programPagesData';
 import '@/styles/program-page.css';
+
+// Renders text with every literal "FREE" emphasized in orange (bonuses footer).
+function withFreeHighlight(text: string): React.ReactNode {
+  return text.split(/(FREE)/g).map((part, i) =>
+    part === 'FREE'
+      ? <strong key={i} style={{ color: 'var(--pp-orange)' }}>FREE</strong>
+      : <span key={i}>{part}</span>,
+  );
+}
 
 const formLabelStyle: React.CSSProperties = {
   display: 'block',
@@ -251,6 +261,7 @@ export default function ProgramPage() {
   const rDayPlan      = useReveal();
   const rClassroom    = useReveal();
   const rLearners     = useReveal();
+  const rBonuses      = useReveal();
   const rMentors      = useReveal();
   const rBatches      = useReveal();
   const rTestimonials = useReveal();
@@ -380,6 +391,20 @@ export default function ProgramPage() {
   const liveBenefits = page.classroomBenefits ?? DEFAULT_BENEFITS;
   const liveSubtitle =
     page.classroomSubtitle ?? 'Learn live, interact in real-time, and grow with expert guidance.';
+
+  // Bonuses section: fall back to seeded defaults for content saved before it
+  // existed; the visibility toggle (default on) hides the whole section.
+  const showBonuses = (page.showBonuses ?? true) && (page.bonusCards ?? DEFAULT_BONUSES).length > 0;
+  const bonusCards = page.bonusCards ?? DEFAULT_BONUSES;
+  const bonusEyebrow = page.bonusEyebrow ?? 'Free with enrollment';
+  const bonusHeading = page.bonusHeading ?? 'Bonuses Worth';
+  const bonusHeadingHighlight = page.bonusHeadingHighlight ?? '₹20,000+';
+  const bonusSubtext =
+    page.bonusSubtext ??
+    'Premium tools, templates, and resources to accelerate your AI journey. Included FREE with your enrollment.';
+  const bonusTotalLabel = page.bonusTotalLabel ?? 'Total Value: ₹20,000+';
+  const bonusFooterText =
+    page.bonusFooterText ?? 'All these premium bonuses are yours – FREE with your enrollment today!';
 
   return (
     <div className="pp-root pp-body-mobile-pad" style={{ paddingBottom: 80 }}>
@@ -836,6 +861,46 @@ export default function ProgramPage() {
           </div>
         </div>
       </section>
+
+      {/* ── 8b. Bonuses Worth ₹20,000+ ──────────────────────────────── */}
+      {showBonuses && (
+        <section className="pp-dark-band" style={{ padding: '80px 24px' }}>
+          <div ref={rBonuses} className="pp-reveal pp-container">
+            <p className="pp-bonus-eyebrow">{bonusEyebrow}</p>
+            <h2 className="pp-bonus-heading">
+              {bonusHeading}{bonusHeading && bonusHeadingHighlight ? ' ' : ''}
+              <span style={{ color: 'var(--pp-orange)' }}>{bonusHeadingHighlight}</span>
+            </h2>
+            {bonusSubtext && <p className="pp-bonus-sub">{bonusSubtext}</p>}
+
+            <div className="pp-grid-bonus">
+              {bonusCards.map((card) => (
+                <div key={card.id} className="pp-bonus-card">
+                  <MediaDisplay media={card.image} alt={card.title} className="pp-bonus-img" />
+                  <div className="pp-bonus-body">
+                    <div className="pp-bonus-title-row">
+                      <span className="pp-bonus-icon"><BenefitIcon name={card.icon} /></span>
+                      <h3 className="pp-bonus-title">{card.title}</h3>
+                    </div>
+                    {card.description && <p className="pp-bonus-desc">{card.description}</p>}
+                    {card.value && <p className="pp-bonus-value">Value: {card.value}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {(bonusTotalLabel || bonusFooterText) && (
+              <div className="pp-bonus-total">
+                <span className="pp-bonus-total-icon"><BenefitIcon name="gift" /></span>
+                {bonusTotalLabel && <span className="pp-bonus-total-label">{bonusTotalLabel}</span>}
+                {bonusFooterText && (
+                  <span className="pp-bonus-total-text">{withFreeHighlight(bonusFooterText)}</span>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ── 9. Meet Your Mentors ────────────────────────────────────── */}
       <section id="mentors" className="pp-section">

@@ -97,6 +97,16 @@ export interface PgBenefitItem {
   description: string;
 }
 
+/** A card in the "Bonuses Worth ₹20,000+" section. */
+export interface PgBonusCard {
+  id: string;
+  image: PgMediaValue; // preview image/video at the top of the card
+  icon: string;        // key into BENEFIT_ICONS
+  title: string;
+  description: string;
+  value: string;       // e.g. "₹2,999" or "Priceless" - rendered as "Value: {value}"
+}
+
 export interface PgLearnerCard {
   id: string;
   image: PgMediaValue;
@@ -219,6 +229,16 @@ export interface ProgramPage {
   learnerSectionTitle: string;
   learnerCards: PgLearnerCard[];
 
+  // ── "Bonuses Worth ₹20,000+" (dark band between Learners and Mentors)
+  showBonuses: boolean;
+  bonusEyebrow: string;
+  bonusHeading: string;          // white portion
+  bonusHeadingHighlight: string; // orange portion (e.g. "₹20,000+")
+  bonusSubtext: string;
+  bonusCards: PgBonusCard[];
+  bonusTotalLabel: string;       // e.g. "Total Value: ₹20,000+"
+  bonusFooterText: string;       // supporting line ("FREE" auto-highlighted)
+
   // ── Mentors
   mentorSectionTitle: string;
   mentors: PgMentor[];
@@ -307,6 +327,15 @@ export const DEFAULT_BENEFITS: PgBenefitItem[] = [
   { id: pgId(), icon: 'play',   title: 'Class Recording Access',           description: 'Revise every topic anytime after the session.' },
   { id: pgId(), icon: 'people', title: 'Personal Mentorship',              description: 'Receive individual guidance throughout your learning journey.' },
   { id: pgId(), icon: 'target', title: 'Career-Focused Training',          description: 'Build job-ready skills with industry-relevant projects.' },
+];
+
+export const DEFAULT_BONUSES: PgBonusCard[] = [
+  { id: pgId(), image: '', icon: 'phone',   title: 'Mobile App Access',     description: 'All courses on the app. Download offline. Learn anywhere, anytime.', value: '₹2,999' },
+  { id: pgId(), image: '', icon: 'people',  title: 'Lifetime Community',    description: 'Private AI community forever. 5,000+ learners sharing workflows daily.', value: '₹2,999' },
+  { id: pgId(), image: '', icon: 'mail',    title: 'Lead Gen Hack',         description: 'ChatGPT + outreach email system. Get clients using AI from Day 7.', value: '₹999' },
+  { id: pgId(), image: '', icon: 'chat',    title: 'Prompts Pack',          description: 'Curated prompts for beginners. Plug and play from Day 1.', value: '₹999' },
+  { id: pgId(), image: '', icon: 'book',    title: 'AI Ebook',              description: 'Complete reference guide for all tools covered. Keep it forever.', value: '₹999' },
+  { id: pgId(), image: '', icon: 'percent', title: '30% Affiliate Forever', description: 'Refer once. Earn 30% on every sale. Recurring income forever.', value: 'Priceless' },
 ];
 
 export const DEFAULT_TRUST_COMPANIES: PgLogoItem[] = [
@@ -418,6 +447,16 @@ const DEFAULT_10DAY: ProgramPage = {
     { id: pgId(), image: '', title: 'Homemakers',      desc: 'Empower yourself to restart your career or manage home better.' },
     { id: pgId(), image: '', title: 'Business Owners', desc: 'Scale your business with AI-driven marketing and efficiency.' },
   ],
+
+  // Bonuses
+  showBonuses: true,
+  bonusEyebrow: 'Free with enrollment',
+  bonusHeading: 'Bonuses Worth',
+  bonusHeadingHighlight: '₹20,000+',
+  bonusSubtext: 'Premium tools, templates, and resources to accelerate your AI journey. Included FREE with your enrollment.',
+  bonusCards: DEFAULT_BONUSES,
+  bonusTotalLabel: 'Total Value: ₹20,000+',
+  bonusFooterText: 'All these premium bonuses are yours – FREE with your enrollment today!',
 
   // Mentors
   mentorSectionTitle: 'Meet Your Mentors',

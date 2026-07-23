@@ -10,6 +10,7 @@ import {
   DEFAULT_HERO_TOOLS,
   DEFAULT_TRUST_COMPANIES,
   DEFAULT_BENEFITS,
+  DEFAULT_BONUSES,
 } from '@/data/programPagesData';
 import { getPageContent, putPageContent } from '@/api/content';
 import { fetchMediaFromUrl, uploadVideo } from '@/api/blog';
@@ -30,6 +31,7 @@ import type {
   PgMediaValue,
   PgLogoItem,
   PgBenefitItem,
+  PgBonusCard,
 } from '@/data/programPagesData';
 import { BENEFIT_ICON_NAMES, BenefitIcon } from '@/components/shared/benefitIcons';
 
@@ -336,6 +338,7 @@ function mediaPosterErrors(p: ProgramPage): string[] {
   if (needsPoster(p.heroImage)) errs.push('Hero image');
   p.buildCards.forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Build card ${i + 1}`); });
   if (needsPoster(p.classroomMedia)) errs.push('Live Training media');
+  (p.bonusCards ?? []).forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Bonus card ${i + 1}`); });
   p.learnerCards.forEach((c, i) => { if (needsPoster(c.image)) errs.push(`Learner card ${i + 1}`); });
   p.mentors.forEach((m, i) => { if (needsPoster(m.image)) errs.push(`Mentor ${i + 1}`); });
   p.testimonials.forEach((t, i) => { if (needsPoster(t.image)) errs.push(`Testimonial ${i + 1}`); });
@@ -410,13 +413,14 @@ function AddBtn({ label, onClick }: { label: string; onClick: () => void }) {
 
 // ── Tab system ────────────────────────────────────────────────────────────────
 
-type EditorTab = 'meta' | 'hero' | 'content' | 'people' | 'batches' | 'pricing' | 'form';
+type EditorTab = 'meta' | 'hero' | 'content' | 'people' | 'bonuses' | 'batches' | 'pricing' | 'form';
 
 const EDITOR_TABS: { id: EditorTab; label: string }[] = [
   { id: 'meta',    label: 'Metadata' },
   { id: 'hero',    label: 'Header & Hero' },
   { id: 'content', label: 'Build & Day Plan' },
   { id: 'people',  label: 'Gallery & People' },
+  { id: 'bonuses', label: 'Bonuses' },
   { id: 'batches', label: 'Batches & Reviews' },
   { id: 'pricing', label: 'Pricing & FAQ' },
   { id: 'form',    label: 'Form & Footer' },
@@ -464,6 +468,14 @@ function ProgramEditor({
         ? page.classroomMedia
         : (page.classroomImages?.[0]?.url ?? ''),
     classroomBenefits: page.classroomBenefits ?? DEFAULT_BENEFITS,
+    showBonuses: page.showBonuses ?? true,
+    bonusEyebrow: page.bonusEyebrow ?? 'Free with enrollment',
+    bonusHeading: page.bonusHeading ?? 'Bonuses Worth',
+    bonusHeadingHighlight: page.bonusHeadingHighlight ?? '₹20,000+',
+    bonusSubtext: page.bonusSubtext ?? 'Premium tools, templates, and resources to accelerate your AI journey. Included FREE with your enrollment.',
+    bonusCards: page.bonusCards ?? DEFAULT_BONUSES,
+    bonusTotalLabel: page.bonusTotalLabel ?? 'Total Value: ₹20,000+',
+    bonusFooterText: page.bonusFooterText ?? 'All these premium bonuses are yours – FREE with your enrollment today!',
   }));
   const [tab, setTab] = useState<EditorTab>('meta');
 
@@ -513,6 +525,11 @@ function ProgramEditor({
   function benefitUpdater(idx: number, field: 'icon' | 'title' | 'description', val: string) {
     const updated = (p.classroomBenefits ?? []).map((b, i) => (i === idx ? { ...b, [field]: val } : b));
     set('classroomBenefits', updated);
+  }
+
+  function bonusUpdater<K extends keyof PgBonusCard>(idx: number, field: K, val: PgBonusCard[K]) {
+    const updated = (p.bonusCards ?? []).map((b, i) => (i === idx ? { ...b, [field]: val } : b));
+    set('bonusCards', updated);
   }
 
   function learnerUpdater<K extends keyof PgLearnerCard>(idx: number, field: K, val: PgLearnerCard[K]) {
@@ -913,6 +930,77 @@ function ProgramEditor({
           ))}
         </div>
         <AddBtn label="Add Day" onClick={() => set('dayPlanItems', [...p.dayPlanItems, { id: pgId(), number: p.dayPlanItems.length + 1, title: 'New Day', isProject: false, phase: 'toolkit', description: '', tools: [] }])} />
+      </div>
+    );
+  }
+
+  function renderBonuses() {
+    return (
+      <div>
+        <div style={{ ...S.card, marginBottom: 20 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+            <input type="checkbox" checked={p.showBonuses} onChange={(e) => set('showBonuses', e.target.checked)} />
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Show "Bonuses" section on the page</span>
+          </label>
+        </div>
+
+        <div style={S.row}>
+          <Field label="Eyebrow (small orange label)">
+            <Input value={p.bonusEyebrow} onChange={(v) => set('bonusEyebrow', v)} />
+          </Field>
+          <Field label="Subtext">
+            <Input value={p.bonusSubtext} onChange={(v) => set('bonusSubtext', v)} />
+          </Field>
+        </div>
+        <div style={S.row}>
+          <Field label="Heading (white part)">
+            <Input value={p.bonusHeading} onChange={(v) => set('bonusHeading', v)} />
+          </Field>
+          <Field label="Heading Highlight (orange part, e.g. ₹20,000+)">
+            <Input value={p.bonusHeadingHighlight} onChange={(v) => set('bonusHeadingHighlight', v)} />
+          </Field>
+        </div>
+        <div style={S.row}>
+          <Field label="Total Value Label (orange)">
+            <Input value={p.bonusTotalLabel} onChange={(v) => set('bonusTotalLabel', v)} />
+          </Field>
+          <Field label='Footer Text (the word "FREE" is auto-highlighted)'>
+            <Input value={p.bonusFooterText} onChange={(v) => set('bonusFooterText', v)} />
+          </Field>
+        </div>
+
+        <Field label="Bonus Cards (image + icon + title + description + value)">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 8 }}>
+            {(p.bonusCards ?? []).map((card, idx) => (
+              <div key={card.id} style={{ ...S.card, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ color: 'var(--muted)', fontSize: 12, fontWeight: 700 }}>Bonus {idx + 1}</span>
+                  <ListControls
+                    idx={idx} total={(p.bonusCards ?? []).length}
+                    onUp={() => set('bonusCards', move(p.bonusCards ?? [], idx, idx - 1))}
+                    onDown={() => set('bonusCards', move(p.bonusCards ?? [], idx, idx + 1))}
+                    onDelete={() => set('bonusCards', removeAt(p.bonusCards ?? [], idx))}
+                  />
+                </div>
+                <MediaInput value={card.image} onChange={(v) => bonusUpdater(idx, 'image', v)} placeholder="Preview image URL" variant="cover" />
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <select
+                    style={{ ...S.input, width: 130, flexShrink: 0 }}
+                    value={card.icon}
+                    onChange={(e) => bonusUpdater(idx, 'icon', e.target.value)}
+                    title="Icon"
+                  >
+                    {BENEFIT_ICON_NAMES.map((n) => <option key={n} value={n}>{n}</option>)}
+                  </select>
+                  <input style={{ ...S.input, flex: 1 }} value={card.title} placeholder="Title" onChange={(e) => bonusUpdater(idx, 'title', e.target.value)} />
+                </div>
+                <input style={{ ...S.input, width: '100%' }} value={card.description} placeholder="1-2 line description" onChange={(e) => bonusUpdater(idx, 'description', e.target.value)} />
+                <input style={{ ...S.input, width: 200 }} value={card.value} placeholder="Value (e.g. ₹2,999 or Priceless)" onChange={(e) => bonusUpdater(idx, 'value', e.target.value)} />
+              </div>
+            ))}
+          </div>
+          <AddBtn label="Add Bonus" onClick={() => set('bonusCards', [...(p.bonusCards ?? []), { id: pgId(), image: '', icon: 'star', title: '', description: '', value: '' } as PgBonusCard])} />
+        </Field>
       </div>
     );
   }
@@ -1474,6 +1562,7 @@ function ProgramEditor({
           {tab === 'hero'    && renderHero()}
           {tab === 'content' && renderContent()}
           {tab === 'people'  && renderPeople()}
+          {tab === 'bonuses' && renderBonuses()}
           {tab === 'batches' && renderBatches()}
           {tab === 'pricing' && renderPricing()}
           {tab === 'form'    && renderFormAndFooter()}
@@ -1580,6 +1669,7 @@ export default function ProgramPagesAdmin() {
         ...d,
         tools: (d.tools ?? []).map((t) => ({ ...t, logo: convertImageUrl(t.logo) })),
       })),
+      bonusCards: (p.bonusCards ?? []).map((c) => ({ ...c, image: convertMediaUrl(c.image) })),
     };
   }
 
