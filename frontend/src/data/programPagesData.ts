@@ -284,6 +284,7 @@ export interface ProgramPage {
   formCityLabel: string;
   formCityPlaceholder: string;
   showEmailField: boolean;
+  formEmailRequired: boolean;    // off by default - email is asked but optional
   formEmailLabel: string;
   formEmailPlaceholder: string;
   showUserTypeField: boolean;
@@ -540,11 +541,12 @@ const DEFAULT_10DAY: ProgramPage = {
   showCityField: true,
   formCityLabel: 'City',
   formCityPlaceholder: 'Enter your city',
-  showEmailField: false,
+  showEmailField: true,
+  formEmailRequired: false,
   formEmailLabel: 'Email',
   formEmailPlaceholder: 'Enter your email',
-  showUserTypeField: false,
-  formUserTypeLabel: 'Who are you?',
+  showUserTypeField: true,
+  formUserTypeLabel: 'I am a…',
 
   // FAQ
   faqSectionTitle: 'Frequently Asked Questions',

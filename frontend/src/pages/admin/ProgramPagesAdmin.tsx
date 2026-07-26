@@ -468,6 +468,12 @@ function ProgramEditor({
         ? page.classroomMedia
         : (page.classroomImages?.[0]?.url ?? ''),
     classroomBenefits: page.classroomBenefits ?? DEFAULT_BENEFITS,
+    // Email + user-type are now asked by default; older saved content has
+    // them off/absent, so surface the new defaults in the editor.
+    showEmailField: page.showEmailField ?? true,
+    formEmailRequired: page.formEmailRequired ?? false,
+    showUserTypeField: page.showUserTypeField ?? true,
+    formUserTypeLabel: page.formUserTypeLabel ?? 'I am a…',
     thankYouAutoRedirect: page.thankYouAutoRedirect ?? true,
     thankYouCountdownSeconds: page.thankYouCountdownSeconds ?? 3,
     showBonuses: page.showBonuses ?? true,
@@ -1396,14 +1402,26 @@ function ProgramEditor({
             <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>Ask for Email</span>
           </label>
           {p.showEmailField && (
-            <div style={S.row}>
-              <Field label="Email Field Label">
-                <Input value={p.formEmailLabel} onChange={(v) => set('formEmailLabel', v)} />
-              </Field>
-              <Field label="Email Field Placeholder">
-                <Input value={p.formEmailPlaceholder} onChange={(v) => set('formEmailPlaceholder', v)} />
-              </Field>
-            </div>
+            <>
+              <div style={S.row}>
+                <Field label="Email Field Label">
+                  <Input value={p.formEmailLabel} onChange={(v) => set('formEmailLabel', v)} />
+                </Field>
+                <Field label="Email Field Placeholder">
+                  <Input value={p.formEmailPlaceholder} onChange={(v) => set('formEmailPlaceholder', v)} />
+                </Field>
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+                <input
+                  type="checkbox"
+                  checked={p.formEmailRequired ?? false}
+                  onChange={(e) => set('formEmailRequired', e.target.checked)}
+                />
+                <span style={{ color: 'var(--muted)', fontSize: 13 }}>
+                  Make email required (off = optional, better for conversion)
+                </span>
+              </label>
+            </>
           )}
         </div>
 

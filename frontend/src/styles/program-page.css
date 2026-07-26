@@ -989,3 +989,20 @@
   z-index: 55;
   background: rgba(15, 23, 42, 0.35);
 }
+
+/* ── Native select in the enrollment form ────────────────────────────────── */
+/* iOS Safari draws its own control chrome on selects; appearance:none plus a
+   background chevron gives a consistent look. The extra right padding keeps
+   long option text from running under the arrow. */
+
+.pp-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 48px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M6 9l6 6 6-6'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+  background-size: 18px 18px;
+  cursor: pointer;
+}

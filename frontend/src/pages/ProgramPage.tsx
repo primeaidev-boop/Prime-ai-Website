@@ -320,6 +320,27 @@ export default function ProgramPage() {
       alert('Enter a valid 10-digit WhatsApp number.');
       return;
     }
+    // Email is optional by default; validate the format whenever one is
+    // entered, and enforce presence only when the admin flag is on.
+    const emailTrimmed = formEmail.trim();
+    if (askEmail) {
+      if (emailRequired && !emailTrimmed) {
+        alert('Enter your email address.');
+        return;
+      }
+      if (emailTrimmed && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrimmed)) {
+        alert('Enter a valid email address.');
+        return;
+      }
+    }
+    if (askCity && !formCity.trim()) {
+      alert('Enter your city.');
+      return;
+    }
+    if (askUserType && !formUserType) {
+      alert('Please select what best describes you.');
+      return;
+    }
 
     setCaptureFailed(false);
     const batchLabel = formBatch || (page.batches[0]?.name ?? '');
@@ -327,9 +348,9 @@ export default function ProgramPage() {
     const payload = {
       fullName,
       whatsappNumber: formPhone.trim(),
-      ...(page.showCityField && formCity.trim() ? { city: formCity.trim() } : {}),
-      ...(page.showEmailField && formEmail.trim() ? { email: formEmail.trim() } : {}),
-      ...(page.showUserTypeField && formUserType ? { userType: formUserType } : {}),
+      ...(askCity && formCity.trim() ? { city: formCity.trim() } : {}),
+      ...(askEmail && formEmail.trim() ? { email: formEmail.trim() } : {}),
+      ...(askUserType && formUserType ? { userType: formUserType } : {}),
       programSlug: page.slug,
       programTitle: page.pageTitle,
       batchName: batchLabel,
@@ -413,6 +434,15 @@ export default function ProgramPage() {
     : (page.classroomImages?.[0]?.url ?? '');
   // Fall back to the seeded defaults only when the field is ABSENT (older saved
   // content) - an admin who deliberately clears the list keeps an empty one.
+  // Enrollment form fields: content saved before these flags existed has none
+  // of them, so fall back to the seeded defaults (ask for city/email/profile)
+  // rather than silently dropping the fields from the form.
+  const askCity = page.showCityField ?? true;
+  const askEmail = page.showEmailField ?? true;
+  const emailRequired = page.formEmailRequired ?? false;
+  const askUserType = page.showUserTypeField ?? true;
+  const userTypeLabel = page.formUserTypeLabel || 'I am a…';
+
   const liveBenefits = page.classroomBenefits ?? DEFAULT_BENEFITS;
   const liveSubtitle =
     page.classroomSubtitle ?? 'Learn live, interact in real-time, and grow with expert guidance.';
@@ -1245,6 +1275,25 @@ export default function ProgramPage() {
                 />
               </div>
 
+              {askEmail && (
+                <div>
+                  <label style={formLabelStyle}>
+                    {page.formEmailLabel}
+                    {!emailRequired && (
+                      <span style={{ color: 'var(--pp-muted)', fontWeight: 500 }}> (optional)</span>
+                    )}
+                  </label>
+                  <input
+                    className="pp-input"
+                    type="email"
+                    placeholder={page.formEmailPlaceholder}
+                    value={formEmail}
+                    onChange={(e) => setFormEmail(e.target.value)}
+                    required={emailRequired}
+                  />
+                </div>
+              )}
+
               <div>
                 <label style={formLabelStyle}>{page.formPhoneLabel}</label>
                 <input
@@ -1257,7 +1306,7 @@ export default function ProgramPage() {
                 />
               </div>
 
-              {page.showCityField && (
+              {askCity && (
                 <div>
                   <label style={formLabelStyle}>{page.formCityLabel}</label>
                   <input
@@ -1271,26 +1320,14 @@ export default function ProgramPage() {
                 </div>
               )}
 
-              {page.showEmailField && (
+              {askUserType && (
                 <div>
-                  <label style={formLabelStyle}>{page.formEmailLabel}</label>
-                  <input
-                    className="pp-input"
-                    type="email"
-                    placeholder={page.formEmailPlaceholder}
-                    value={formEmail}
-                    onChange={(e) => setFormEmail(e.target.value)}
-                  />
-                </div>
-              )}
-
-              {page.showUserTypeField && (
-                <div>
-                  <label style={formLabelStyle}>{page.formUserTypeLabel}</label>
+                  <label style={formLabelStyle}>{userTypeLabel}</label>
                   <select
-                    className="pp-input"
+                    className="pp-input pp-select"
                     value={formUserType}
                     onChange={(e) => setFormUserType(e.target.value)}
+                    required
                   >
                     <option value="">Select…</option>
                     {PROGRAM_ENROLLMENT_PROFILE_OPTIONS.map((opt) => (
@@ -1303,7 +1340,7 @@ export default function ProgramPage() {
               <div>
                 <label style={formLabelStyle}>{page.formBatchLabel}</label>
                 <select
-                  className="pp-input"
+                  className="pp-input pp-select"
                   value={formBatch}
                   onChange={(e) => setFormBatch(e.target.value)}
                   required

@@ -8,6 +8,7 @@ interface FindAllQuery {
   search?: string;
   program?: string;
   batch?: string;
+  userType?: string;
   status?: EnrollmentStatus;
   dateFrom?: string;
   dateTo?: string;
@@ -84,6 +85,7 @@ export class ProgramEnrollmentsService {
 
     if (query.program) where.programSlug = query.program;
     if (query.batch) where.batchName = query.batch;
+    if (query.userType) where.userType = query.userType;
     if (query.status) where.status = query.status;
     if (query.dateFrom || query.dateTo) {
       where.createdAt = {

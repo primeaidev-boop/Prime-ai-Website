@@ -8,8 +8,13 @@ import {
   type ProgramEnrollmentStats,
   type EnrollmentStatus,
 } from '@/api/programEnrollments';
+import { PROGRAM_ENROLLMENT_PROFILE_OPTIONS } from '@/data/programPagesData';
 
 const STATUS_OPTIONS: EnrollmentStatus[] = ['NEW', 'CONTACTED', 'CONFIRMED', 'CANCELLED'];
+
+// Same list the enrollment form offers (and the Tutorial Leads "who are you"
+// field), so the filter can never drift from what visitors can pick.
+const USER_TYPE_OPTIONS = PROGRAM_ENROLLMENT_PROFILE_OPTIONS;
 
 const statusColors: Record<EnrollmentStatus, string> = {
   NEW: '#00D4FF',
@@ -44,6 +49,7 @@ export default function ProgramEnrollments() {
   const [search, setSearch] = useState('');
   const [programFilter, setProgramFilter] = useState('');
   const [batchFilter, setBatchFilter] = useState('');
+  const [userTypeFilter, setUserTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<EnrollmentStatus | ''>('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -57,6 +63,7 @@ export default function ProgramEnrollments() {
         search: search || undefined,
         program: programFilter || undefined,
         batch: batchFilter || undefined,
+        userType: userTypeFilter || undefined,
         status: statusFilter || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
@@ -70,7 +77,7 @@ export default function ProgramEnrollments() {
     } finally {
       setLoading(false);
     }
-  }, [search, programFilter, batchFilter, statusFilter, dateFrom, dateTo, page]);
+  }, [search, programFilter, batchFilter, userTypeFilter, statusFilter, dateFrom, dateTo, page]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -94,6 +101,7 @@ export default function ProgramEnrollments() {
     setSearch('');
     setProgramFilter('');
     setBatchFilter('');
+    setUserTypeFilter('');
     setStatusFilter('');
     setDateFrom('');
     setDateTo('');
@@ -287,6 +295,18 @@ export default function ProgramEnrollments() {
             style={{ padding: '8px 12px' }}
           />
         </div>
+        <div className="min-w-44">
+          <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>User Type</label>
+          <select
+            value={userTypeFilter}
+            onChange={(e) => setUserTypeFilter(e.target.value)}
+            className="text-sm"
+            style={{ padding: '8px 12px' }}
+          >
+            <option value="">All profiles</option>
+            {USER_TYPE_OPTIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </div>
         <div className="min-w-40">
           <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>Status</label>
           <select
@@ -331,7 +351,7 @@ export default function ProgramEnrollments() {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
-                {['Name', 'WhatsApp', 'City', 'Program', 'Batch', 'Date', 'Status', 'Notes', 'Action'].map((h) => (
+                {['Name', 'WhatsApp', 'Email', 'City', 'User Type', 'Program', 'Batch', 'Date', 'Status', 'Notes', 'Action'].map((h) => (
                   <th
                     key={h}
                     className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider whitespace-nowrap"
@@ -345,13 +365,13 @@ export default function ProgramEnrollments() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
+                  <td colSpan={11} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
                     Loading…
                   </td>
                 </tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={9} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
+                  <td colSpan={11} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
                     No enrollments found.
                   </td>
                 </tr>
@@ -378,7 +398,22 @@ export default function ProgramEnrollments() {
                       {row.whatsappNumber}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
+                      {row.email || '-'}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--muted)' }}>
                       {row.city || '-'}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      {row.userType ? (
+                        <span
+                          className="text-xs px-2 py-0.5 rounded-full"
+                          style={{ background: 'rgba(0,212,255,0.08)', color: 'var(--electric)', border: '1px solid rgba(0,212,255,0.18)' }}
+                        >
+                          {row.userType}
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--muted)' }}>-</span>
+                      )}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--white)' }}>
                       {row.programTitle}
