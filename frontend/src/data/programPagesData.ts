@@ -274,6 +274,7 @@ export interface ProgramPage {
   // the WhatsApp redirect) - see pages/ThankYouPage.tsx
   thankYouHeading: string;
   thankYouSubtext: string;
+  thankYouAutoRedirect: boolean;   // off => no auto-open and no countdown UI
   thankYouCountdownSeconds: number;
   thankYouWhatsappMessageTemplate: string;  // placeholders: {name} {program} {batch}
 
@@ -531,6 +532,7 @@ const DEFAULT_10DAY: ProgramPage = {
 
   thankYouHeading: 'Thank You! Your Seat Request is Received 🎉',
   thankYouSubtext: 'Our team will confirm your enrollment on WhatsApp shortly.',
+  thankYouAutoRedirect: true,
   thankYouCountdownSeconds: 3,
   thankYouWhatsappMessageTemplate:
     "Hi, I'm {name}. I just booked my seat for {program} – {batch}. Please confirm my enrollment.",

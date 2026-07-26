@@ -49,7 +49,15 @@ export default function ThankYouPage() {
 
   const page = slug ? (pages.find((p) => p.slug === slug && p.visible) ?? null) : null;
 
-  const countdownTotal = page?.thankYouCountdownSeconds ?? 3;
+  // Admin-controlled: auto-redirect on/off and countdown length. Both default
+  // to the previous behavior (on, 3s) when absent from saved content, and an
+  // out-of-range/blank duration falls back to 3 rather than breaking.
+  const autoRedirect = page?.thankYouAutoRedirect ?? true;
+  const rawCountdown = page?.thankYouCountdownSeconds;
+  const countdownTotal =
+    typeof rawCountdown === 'number' && rawCountdown >= 1 && rawCountdown <= 10
+      ? rawCountdown
+      : 3;
   const [secondsLeft, setSecondsLeft] = useState(countdownTotal);
   const autoOpened = useRef(false);
 
@@ -58,10 +66,11 @@ export default function ThankYouPage() {
   useEffect(() => { setSecondsLeft(countdownTotal); }, [countdownTotal]);
 
   useEffect(() => {
+    if (!autoRedirect) return;   // toggle off - no countdown at all
     if (secondsLeft <= 0) return;
     const t = setTimeout(() => setSecondsLeft((s) => s - 1), 1000);
     return () => clearTimeout(t);
-  }, [secondsLeft]);
+  }, [secondsLeft, autoRedirect]);
 
   useEffect(() => {
     if (!page) return;
@@ -96,11 +105,12 @@ export default function ThankYouPage() {
   // button below is always visible and is a real <a> click, which always
   // works regardless of what the browser decided about this attempt.
   useEffect(() => {
+    if (!autoRedirect) return;   // toggle off - never auto-navigate
     if (secondsLeft === 0 && waUrl && !autoOpened.current) {
       autoOpened.current = true;
       window.location.href = waUrl;
     }
-  }, [secondsLeft, waUrl]);
+  }, [secondsLeft, waUrl, autoRedirect]);
 
   if (!page) {
     if (!serverChecked) {
@@ -144,22 +154,24 @@ export default function ThankYouPage() {
           </div>
         )}
 
-        <div
-          style={{
-            background: 'rgba(16,185,129,0.08)',
-            border: '1px solid rgba(16,185,129,0.25)',
-            borderRadius: 12,
-            padding: '14px 18px',
-            marginBottom: 24,
-            color: 'var(--pp-green)',
-            fontWeight: 700,
-            fontSize: 15,
-          }}
-        >
-          {secondsLeft > 0
-            ? `Opening WhatsApp in ${secondsLeft}…`
-            : "Didn't open? Tap the button below."}
-        </div>
+        {autoRedirect && (
+          <div
+            style={{
+              background: 'rgba(16,185,129,0.08)',
+              border: '1px solid rgba(16,185,129,0.25)',
+              borderRadius: 12,
+              padding: '14px 18px',
+              marginBottom: 24,
+              color: 'var(--pp-green)',
+              fontWeight: 700,
+              fontSize: 15,
+            }}
+          >
+            {secondsLeft > 0
+              ? `Opening WhatsApp in ${secondsLeft}…`
+              : "Didn't open? Tap the button below."}
+          </div>
+        )}
 
         <a
           href={waUrl}

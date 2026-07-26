@@ -468,6 +468,8 @@ function ProgramEditor({
         ? page.classroomMedia
         : (page.classroomImages?.[0]?.url ?? ''),
     classroomBenefits: page.classroomBenefits ?? DEFAULT_BENEFITS,
+    thankYouAutoRedirect: page.thankYouAutoRedirect ?? true,
+    thankYouCountdownSeconds: page.thankYouCountdownSeconds ?? 3,
     showBonuses: page.showBonuses ?? true,
     bonusEyebrow: page.bonusEyebrow ?? 'Free with enrollment',
     bonusHeading: page.bonusHeading ?? 'Bonuses Worth',
@@ -1332,14 +1334,35 @@ function ProgramEditor({
         <Field label="Reassurance Line">
           <Input value={p.thankYouSubtext} onChange={(v) => set('thankYouSubtext', v)} />
         </Field>
-        <div style={S.row}>
-          <Field label="Countdown Duration (seconds)">
-            <Input
-              type="number"
-              value={String(p.thankYouCountdownSeconds)}
-              onChange={(v) => set('thankYouCountdownSeconds', Math.max(0, parseInt(v, 10) || 0))}
+        <div style={{ ...S.card, marginBottom: 20 }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+            <input
+              type="checkbox"
+              checked={p.thankYouAutoRedirect ?? true}
+              onChange={(e) => set('thankYouAutoRedirect', e.target.checked)}
             />
-          </Field>
+            <span style={{ color: 'var(--white)', fontWeight: 600, fontSize: 13 }}>
+              Auto-redirect to WhatsApp after the countdown
+            </span>
+          </label>
+          <p style={{ color: 'var(--muted)', fontSize: 12, margin: '8px 0 0 24px' }}>
+            When off, the page shows no countdown and never navigates on its own - visitors
+            still reach WhatsApp via the "Open WhatsApp Now" button, which is always shown.
+          </p>
+          {(p.thankYouAutoRedirect ?? true) && (
+            <div style={{ ...S.row, marginTop: 16 }}>
+              <Field label="Countdown Duration (1-10 seconds, default 3)">
+                <Input
+                  type="number"
+                  value={String(p.thankYouCountdownSeconds ?? 3)}
+                  onChange={(v) => {
+                    const n = parseInt(v, 10);
+                    set('thankYouCountdownSeconds', Number.isNaN(n) ? 3 : Math.min(10, Math.max(1, n)));
+                  }}
+                />
+              </Field>
+            </div>
+          )}
         </div>
         <Field label='WhatsApp Message Template (use {name}, {program}, {batch} as placeholders)'>
           <Textarea value={p.thankYouWhatsappMessageTemplate} onChange={(v) => set('thankYouWhatsappMessageTemplate', v)} rows={3} />
