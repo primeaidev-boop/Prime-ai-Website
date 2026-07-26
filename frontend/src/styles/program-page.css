@@ -1006,3 +1006,41 @@
   background-size: 18px 18px;
   cursor: pointer;
 }
+
+/* ── Input specificity guard ─────────────────────────────────────────────── */
+/* globals.css styles the dark site's inputs with `input[type="text"]` etc.
+   That selector is (0,1,1) and outranks the plain `.pp-input` class (0,1,0),
+   so typed text inherited the dark theme's near-white colour and became
+   invisible on this page's white cards. Scoping under .pp-root raises these
+   to (0,2,0) so the light theme wins on every field type. */
+
+.pp-root .pp-input,
+.pp-root input.pp-input,
+.pp-root select.pp-input,
+.pp-root textarea.pp-input {
+  background: #fff;
+  color: var(--pp-navy-dark);
+  border: 1px solid var(--pp-border);
+  font-size: 16px;             /* >=16px stops iOS zooming on focus */
+  font-family: var(--pp-font-body);
+  -webkit-text-fill-color: var(--pp-navy-dark);   /* iOS autofill/disabled */
+  opacity: 1;
+}
+
+.pp-root .pp-input::placeholder {
+  color: #94A3B8;
+  opacity: 1;                  /* Firefox dims placeholders by default */
+}
+
+.pp-root .pp-input:focus {
+  border-color: var(--pp-orange);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+}
+
+/* Chrome autofill paints its own pale-yellow bg + colour - override both */
+.pp-root .pp-input:-webkit-autofill,
+.pp-root .pp-input:-webkit-autofill:hover,
+.pp-root .pp-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--pp-navy-dark);
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+}

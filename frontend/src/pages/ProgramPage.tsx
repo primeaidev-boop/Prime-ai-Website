@@ -442,6 +442,13 @@ export default function ProgramPage() {
   const emailRequired = page.formEmailRequired ?? false;
   const askUserType = page.showUserTypeField ?? true;
   const userTypeLabel = page.formUserTypeLabel || 'I am a…';
+  // Labels/placeholders for the newer fields are absent from content saved
+  // before they existed - without these the Email label rendered as just
+  // "(optional)" and City had no label at all.
+  const emailLabel = page.formEmailLabel || 'Email';
+  const emailPlaceholder = page.formEmailPlaceholder || 'Enter your email';
+  const cityLabel = page.formCityLabel || 'City';
+  const cityPlaceholder = page.formCityPlaceholder || 'Enter your city';
 
   const liveBenefits = page.classroomBenefits ?? DEFAULT_BENEFITS;
   const liveSubtitle =
@@ -1278,7 +1285,7 @@ export default function ProgramPage() {
               {askEmail && (
                 <div>
                   <label style={formLabelStyle}>
-                    {page.formEmailLabel}
+                    {emailLabel}
                     {!emailRequired && (
                       <span style={{ color: 'var(--pp-muted)', fontWeight: 500 }}> (optional)</span>
                     )}
@@ -1286,7 +1293,7 @@ export default function ProgramPage() {
                   <input
                     className="pp-input"
                     type="email"
-                    placeholder={page.formEmailPlaceholder}
+                    placeholder={emailPlaceholder}
                     value={formEmail}
                     onChange={(e) => setFormEmail(e.target.value)}
                     required={emailRequired}
@@ -1308,11 +1315,11 @@ export default function ProgramPage() {
 
               {askCity && (
                 <div>
-                  <label style={formLabelStyle}>{page.formCityLabel}</label>
+                  <label style={formLabelStyle}>{cityLabel}</label>
                   <input
                     className="pp-input"
                     type="text"
-                    placeholder={page.formCityPlaceholder}
+                    placeholder={cityPlaceholder}
                     value={formCity}
                     onChange={(e) => setFormCity(e.target.value)}
                     required
