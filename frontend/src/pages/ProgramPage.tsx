@@ -242,6 +242,7 @@ export default function ProgramPage() {
     [pages, slug],
   );
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [formName, setFormName] = useState('');
   const [formPhone, setFormPhone] = useState('');
   const [formBatch, setFormBatch] = useState('');
@@ -289,6 +290,20 @@ export default function ProgramPage() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Mobile menu: Escape closes it, and growing past the desktop breakpoint
+  // closes it too so it can never be left open behind the inline nav.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMenuOpen(false); };
+    const onResize = () => { if (window.innerWidth >= 768) setMenuOpen(false); };
+    document.addEventListener('keydown', onKey);
+    window.addEventListener('resize', onResize);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [menuOpen]);
 
   // Capture-first submission: record the enrollment in our DB, then hand off
   // to the Thank You page, which owns the WhatsApp redirect (countdown +
@@ -349,6 +364,16 @@ export default function ProgramPage() {
   // Scroll to enroll section
   function scrollToEnroll() {
     document.getElementById('enroll')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Mobile menu links: close the dropdown, then smooth-scroll. Section
+  // targets carry scroll-margin-top (96px = 80px sticky header + breathing
+  // room) so headings never land under the header.
+  function handleMobileNavClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    if (!href.startsWith('#')) return;   // real URLs navigate normally
+    e.preventDefault();
+    setMenuOpen(false);
+    document.getElementById(href.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   if (!page) {
@@ -425,7 +450,7 @@ export default function ProgramPage() {
       )}
 
       {/* ── 2. Sticky header ────────────────────────────────────────── */}
-      <header className={`pp-header${scrolled ? ' pp-header-scrolled' : ''}`}>
+      <header className={`pp-header${scrolled ? ' pp-header-scrolled' : ''}${menuOpen ? ' pp-header-menu-open' : ''}`}>
         <div
           className="pp-container"
           style={{
@@ -473,13 +498,65 @@ export default function ProgramPage() {
           {/* Desktop CTA */}
           <a
             href="#enroll"
-            className="pp-btn pp-btn-primary"
+            className="pp-btn pp-btn-primary pp-desktop-cta"
             style={{ padding: '12px 28px', fontSize: 15 }}
           >
             {page.headerCtaText}
           </a>
+
+          {/* Mobile menu button - shown only below the desktop-nav breakpoint */}
+          <button
+            type="button"
+            className="pp-menu-btn"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          >
+            {menuOpen ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" aria-hidden="true">
+                <path d="M4 8h16M4 16h16" />
+              </svg>
+            )}
+          </button>
         </div>
+
+        {/* Mobile dropdown */}
+        {menuOpen && (
+          <nav className="pp-mobile-menu">
+            {page.navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={link.href}
+                className="pp-mobile-menu-link"
+                onClick={(e) => handleMobileNavClick(e, link.href)}
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href="#enroll"
+              className="pp-btn pp-btn-primary"
+              style={{ padding: '14px 28px', fontSize: 15, marginTop: 6 }}
+              onClick={(e) => handleMobileNavClick(e, '#enroll')}
+            >
+              {page.headerCtaText}
+            </a>
+          </nav>
+        )}
       </header>
+
+      {/* Tap-outside backdrop (below the dropdown, above page content) */}
+      {menuOpen && (
+        <div
+          className="pp-menu-backdrop"
+          onClick={() => setMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       {/* ── 3. Hero ─────────────────────────────────────────────────── */}
       <section
@@ -1434,11 +1511,14 @@ export default function ProgramPage() {
         </button>
       </div>
 
-      {/* Desktop nav hidden below md - use CSS to manage */}
+      {/* Nav swaps to the hamburger at exactly one breakpoint (767/768) so
+          there is never a width where neither nav is reachable. */}
       <style>{`
+        .pp-menu-btn { display: none; }
         @media (max-width: 767px) {
           .pp-desktop-nav { display: none !important; }
-          .pp-header > div > a:last-child { display: none !important; }
+          .pp-desktop-cta { display: none !important; }
+          .pp-menu-btn { display: inline-flex !important; }
         }
       `}</style>
     </div>
