@@ -280,8 +280,18 @@
 @media (min-width: 768px) { .pp-pricing-card { padding: 48px; } }
 
 /* Enrollment form card - comfortable at 375px */
-.pp-form-card { padding: 24px; }
-@media (min-width: 640px) { .pp-form-card { padding: 40px; } }
+.pp-form-card { padding: 20px; }
+@media (min-width: 640px) { .pp-form-card { padding: 30px; } }
+
+/* Compact field rhythm - the gap between label/input groups was the single
+   biggest space waster on phones. Slightly roomier from 640px up so desktop
+   stays balanced rather than cramped. */
+.pp-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+@media (min-width: 640px) { .pp-form-fields { gap: 18px; } }
 
 /* ── Announcement bar ────────────────────────────────────────────────────── */
 
@@ -1043,4 +1053,21 @@
 .pp-root .pp-input:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--pp-navy-dark);
   -webkit-box-shadow: 0 0 0 1000px #fff inset;
+}
+
+/* ── Compact enrollment form fields ──────────────────────────────────────── */
+/* Trimmed vertical padding so six fields + heading + button fit a phone
+   screen. min-height keeps every control above the 44px touch-target floor.
+   Declared under .pp-root (0,2,0) because globals.css's `input[type="text"]`
+   (0,1,1) would otherwise win and re-impose the dark site's padding. */
+
+.pp-root .pp-input {
+  padding: 12px 16px;
+  min-height: 46px;
+}
+
+/* Must come after the rule above: same specificity, so source order decides -
+   this keeps long option text clear of the chevron. */
+.pp-root .pp-select {
+  padding-right: 46px;
 }

@@ -47,8 +47,8 @@ const formLabelStyle: React.CSSProperties = {
   display: 'block',
   fontWeight: 700,
   color: 'var(--pp-navy)',
-  marginBottom: 10,
-  fontSize: 15,
+  marginBottom: 6,
+  fontSize: 13,
 };
 
 // ── Scroll-reveal hook ────────────────────────────────────────────────────────
@@ -1243,7 +1243,7 @@ export default function ProgramPage() {
           <div className="pp-card pp-form-card">
             <h2
               className="pp-headline"
-              style={{ textAlign: 'center', marginBottom: 32, fontSize: 28, fontWeight: 700 }}
+              style={{ textAlign: 'center', marginBottom: 20, fontSize: 'clamp(22px, 5vw, 26px)', fontWeight: 700 }}
             >
               {page.formTitle}
             </h2>
@@ -1269,7 +1269,7 @@ export default function ProgramPage() {
               </div>
             )}
 
-            <form onSubmit={handleFormSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+            <form onSubmit={handleFormSubmit} className="pp-form-fields">
               <div>
                 <label style={formLabelStyle}>{page.formNameLabel}</label>
                 <input
@@ -1367,7 +1367,7 @@ export default function ProgramPage() {
                 type="submit"
                 className="pp-btn pp-btn-green"
                 disabled={submitting}
-                style={{ width: '100%', padding: '20px', fontSize: 18, opacity: submitting ? 0.7 : 1 }}
+                style={{ width: '100%', padding: '15px 20px', fontSize: 17, opacity: submitting ? 0.7 : 1 }}
               >
                 {submitting ? 'Submitting…' : `💬 ${page.formSubmitText}`}
               </button>
