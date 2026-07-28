@@ -1071,3 +1071,15 @@
 .pp-root .pp-select {
   padding-right: 46px;
 }
+
+/* ── Bottom CTA banner ───────────────────────────────────────────────────── */
+/* On phones the heading wraps to its own line, so space-between left-aligned
+   the button under it. Centre the stack on mobile; restore the side-by-side
+   split from 768px where both fit on one row. */
+
+.pp-cta-banner-row {
+  justify-content: center;
+}
+@media (min-width: 768px) {
+  .pp-cta-banner-row { justify-content: space-between; }
+}

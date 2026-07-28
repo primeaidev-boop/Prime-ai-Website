@@ -20,8 +20,12 @@ export function WhatsAppFloat() {
 
   return (
     <div
-      className="fixed bottom-8 right-8 z-[500] flex flex-col items-end gap-2.5 transition-all duration-400"
+      className="fixed right-8 z-[500] flex flex-col items-end gap-2.5 transition-all duration-400"
       style={{
+        // Pages with their own fixed bottom bar (the program landing page)
+        // publish --pp-fab-bottom so this button clears it. Everywhere else
+        // the variable is unset and this resolves to the original 2rem.
+        bottom: 'var(--pp-fab-bottom, 2rem)',
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(20px)',
         pointerEvents: visible ? 'all' : 'none',

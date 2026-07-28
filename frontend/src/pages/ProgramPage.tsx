@@ -284,6 +284,36 @@ export default function ProgramPage() {
     };
   }, [page]);
 
+  // Publish the sticky bottom bar's real height so the global WhatsApp button
+  // can sit above it instead of covering the "Book My Seat" CTA. Measured
+  // rather than hardcoded so it stays correct if the bar's content changes.
+  // Height is 0 when the bar is display:none (>=768px), in which case the
+  // variable is removed and the button falls back to its normal position.
+  const mobileBarRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = mobileBarRef.current;
+    if (!el) return;
+    const root = document.documentElement;
+    const apply = () => {
+      const h = el.offsetHeight;
+      if (h > 0) {
+        root.style.setProperty(
+          '--pp-fab-bottom',
+          `calc(${h}px + 16px + env(safe-area-inset-bottom, 0px))`,
+        );
+      } else {
+        root.style.removeProperty('--pp-fab-bottom');
+      }
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty('--pp-fab-bottom');   // never leak to other pages
+    };
+  }, [page]);
+
   // Sticky header shadow on scroll
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -1392,12 +1422,11 @@ export default function ProgramPage() {
       {/* ── 15. Bottom CTA banner ────────────────────────────────────── */}
       <section style={{ background: 'var(--pp-orange)', padding: '64px 24px' }}>
         <div
-          className="pp-container"
+          className="pp-container pp-cta-banner-row"
           style={{
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
-            justifyContent: 'space-between',
             gap: 32,
             textAlign: 'center',
           }}
@@ -1529,7 +1558,7 @@ export default function ProgramPage() {
       </footer>
 
       {/* ── Mobile sticky bottom bar ──────────────────────────────────── */}
-      <div className="pp-mobile-bar">
+      <div className="pp-mobile-bar" ref={mobileBarRef}>
         <div>
           <p style={{ color: 'var(--pp-muted)', fontSize: 13, textDecoration: 'line-through' }}>
             {page.heroStrikePrice}
