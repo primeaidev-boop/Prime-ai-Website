@@ -235,7 +235,7 @@ const DEFAULTS: FormValues = {
   contact_hours: 'Mon – Sat: 9 AM – 6 PM IST',
   contact_form_title: 'Send an Enquiry',
   contact_show_whatsapp: 'true',
-  contact_whatsapp_number: '917573055191',
+  contact_whatsapp_number: '917573055577',
   contact_whatsapp_message: "Hi! I'm interested in PRIM AI Institute courses. Please share more details.",
   contact_show_map: 'true',
   contact_map_embed_url: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.5482349281685!2d72.54098!3d23.08501!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84c0b68a4e6f%3A0x4d1d5b2b36e2c92f!2sGanesh%20Glory%2C%20Gota%2C%20Ahmedabad%2C%20Gujarat%20382481!5e0!3m2!1sen!2sin!4v1720000000000!5m2!1sen!2sin',
@@ -276,7 +276,7 @@ const DEFAULTS: FormValues = {
   footer_social_show: 'true',
   footer_social_whatsapp: '',
   footer_wa_float_show: 'true',
-  footer_wa_float_number: '917573055191',
+  footer_wa_float_number: '917573055577',
   footer_privacy_url: '/privacy',
   footer_terms_url: '/terms',
   footer_refund_url: '/refund-policy',
@@ -471,7 +471,7 @@ const CONTACT_SECTIONS: SectionDef[] = [
     accentColor: '#25d366',
     fields: [
       { key: 'contact_show_whatsapp', label: 'Show WhatsApp Button', type: 'toggle' },
-      { key: 'contact_whatsapp_number', label: 'WhatsApp Number', hint: 'Digits only with country code. e.g. 917573055191' },
+      { key: 'contact_whatsapp_number', label: 'WhatsApp Number', hint: 'Digits only with country code. e.g. 917573055577' },
       { key: 'contact_whatsapp_message', label: 'Pre-filled WhatsApp Message', type: 'textarea' },
       { key: 'contact_show_map', label: 'Show Map Section', type: 'toggle' },
       { key: 'contact_map_embed_url', label: 'Google Maps Embed URL', hint: 'Google Maps ➞ Share ➞ Embed a map ➞ copy the src="" value from the iframe code', type: 'textarea' },
@@ -524,7 +524,7 @@ const FOOTER_SECTIONS: SectionDef[] = [
     accentColor: 'var(--electric)',
     fields: [
       { key: 'footer_social_show', label: 'Show Social Icons', type: 'toggle' },
-      { key: 'footer_social_whatsapp', label: 'WhatsApp URL', hint: 'Full URL e.g. https://wa.me/917573055191 -leave blank to hide' },
+      { key: 'footer_social_whatsapp', label: 'WhatsApp URL', hint: 'Full URL e.g. https://wa.me/917573055577 -leave blank to hide' },
       { key: 'footer_social_linkedin', label: 'LinkedIn URL', hint: 'Full URL e.g. https://linkedin.com/company/yourcompany' },
       { key: 'footer_social_instagram', label: 'Instagram URL', hint: 'Full URL e.g. https://instagram.com/yourhandle' },
       { key: 'footer_social_youtube', label: 'YouTube URL', hint: 'Full URL e.g. https://youtube.com/@yourchannel' },
@@ -537,7 +537,7 @@ const FOOTER_SECTIONS: SectionDef[] = [
     accentColor: '#25d366',
     fields: [
       { key: 'footer_wa_float_show', label: 'Show WhatsApp Float Button', type: 'toggle' },
-      { key: 'footer_wa_float_number', label: 'WhatsApp Number', hint: 'Digits only with country code -no +, no spaces. e.g. 917573055191. Used by both this button and the Footer CTA WhatsApp button.' },
+      { key: 'footer_wa_float_number', label: 'WhatsApp Number', hint: 'Digits only with country code -no +, no spaces. e.g. 917573055577. Used by both this button and the Footer CTA WhatsApp button.' },
     ],
   },
   {

@@ -207,7 +207,7 @@ const DEFAULTS: SiteSettings = {
   contactFormTitle: 'Send an Enquiry',
   // Contact WhatsApp & Map
   contactShowWhatsapp: true,
-  contactWhatsappNumber: '917573055191',
+  contactWhatsappNumber: '917573055577',
   contactWhatsappMessage:
     "Hi! I'm interested in PRIM AI Institute courses. Please share more details.",
   contactShowMap: true,

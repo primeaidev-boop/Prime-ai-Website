@@ -1322,8 +1322,8 @@ function ProgramEditor({
           </Field>
         </div>
         <div style={S.row}>
-          <Field label="WhatsApp Number (digits only, with country code, e.g. 917573055191)">
-            <Input value={p.whatsappNumber} onChange={(v) => set('whatsappNumber', v)} placeholder="917573055191" />
+          <Field label="WhatsApp Number (digits only, with country code, e.g. 917573055577)">
+            <Input value={p.whatsappNumber} onChange={(v) => set('whatsappNumber', v)} placeholder="917573055577" />
           </Field>
         </div>
         <Field label='WhatsApp Message Template (use {name}, {phone}, {batch} as placeholders)'>

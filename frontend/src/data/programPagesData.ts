@@ -267,7 +267,7 @@ export interface ProgramPage {
   formPhonePlaceholder: string;
   formBatchLabel: string;
   formSubmitText: string;
-  whatsappNumber: string;        // e.g. "917573055191" (no + or spaces)
+  whatsappNumber: string;        // e.g. "917573055577" (no + or spaces)
   whatsappMessageTemplate: string;
 
   // ── Thank You page (shown after a confirmed enrollment capture, before
@@ -527,7 +527,7 @@ const DEFAULT_10DAY: ProgramPage = {
   formPhonePlaceholder: 'Enter WhatsApp number',
   formBatchLabel: 'Select Batch',
   formSubmitText: 'Confirm on WhatsApp',
-  whatsappNumber: '917573055191',
+  whatsappNumber: '917573055577',
   whatsappMessageTemplate:
     'Hi! I want to enroll in the 10-Day AI Program (₹399). Name: {name}, Phone: {phone}, Batch: {batch}. Please share enrollment details.',
 

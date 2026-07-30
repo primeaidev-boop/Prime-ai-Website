@@ -47,7 +47,7 @@ async function main() {
     { key: 'new_batch_banner', value: 'true' },
     { key: 'new_batch_text', value: 'New Batch Starting Soon - Limited Seats!' },
     // Admin contact
-    { key: 'admin_whatsapp', value: '917573055191' },
+    { key: 'admin_whatsapp', value: '917573055577' },
     { key: 'admin_email', value: 'info@stadsolution.com' },
     // About hero
     { key: 'about_badge_text', value: 'OUR STORY' },
@@ -110,7 +110,7 @@ async function main() {
     { key: 'contact_form_title', value: 'Send an Enquiry' },
     // Contact WhatsApp & Map
     { key: 'contact_show_whatsapp', value: 'true' },
-    { key: 'contact_whatsapp_number', value: '917573055191' },
+    { key: 'contact_whatsapp_number', value: '917573055577' },
     { key: 'contact_whatsapp_message', value: "Hi! I'm interested in PRIM AI Institute courses. Please share more details." },
     { key: 'contact_show_map', value: 'true' },
     { key: 'contact_map_embed_url', value: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.5482349281685!2d72.54098!3d23.08501!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e84c0b68a4e6f%3A0x4d1d5b2b36e2c92f!2sGanesh%20Glory%2C%20Gota%2C%20Ahmedabad%2C%20Gujarat%20382481!5e0!3m2!1sen!2sin!4v1720000000000!5m2!1sen!2sin' },
@@ -244,7 +244,7 @@ async function main() {
     { key: 'footer_social_youtube', value: '' },
     // Footer -WhatsApp float
     { key: 'footer_wa_float_show', value: 'true' },
-    { key: 'footer_wa_float_number', value: '917573055191' },
+    { key: 'footer_wa_float_number', value: '917573055577' },
     // Footer -legal links
     { key: 'footer_privacy_url', value: '/privacy' },
     { key: 'footer_terms_url', value: '/terms' },
