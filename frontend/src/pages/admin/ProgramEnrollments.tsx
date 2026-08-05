@@ -50,6 +50,7 @@ export default function ProgramEnrollments() {
   const [programFilter, setProgramFilter] = useState('');
   const [batchFilter, setBatchFilter] = useState('');
   const [userTypeFilter, setUserTypeFilter] = useState('');
+  const [sourceFilter, setSourceFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<EnrollmentStatus | ''>('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -64,6 +65,7 @@ export default function ProgramEnrollments() {
         program: programFilter || undefined,
         batch: batchFilter || undefined,
         userType: userTypeFilter || undefined,
+        source: sourceFilter || undefined,
         status: statusFilter || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
@@ -77,7 +79,7 @@ export default function ProgramEnrollments() {
     } finally {
       setLoading(false);
     }
-  }, [search, programFilter, batchFilter, userTypeFilter, statusFilter, dateFrom, dateTo, page]);
+  }, [search, programFilter, batchFilter, userTypeFilter, sourceFilter, statusFilter, dateFrom, dateTo, page]);
 
   const fetchStats = useCallback(async () => {
     try {
@@ -102,6 +104,7 @@ export default function ProgramEnrollments() {
     setProgramFilter('');
     setBatchFilter('');
     setUserTypeFilter('');
+    setSourceFilter('');
     setStatusFilter('');
     setDateFrom('');
     setDateTo('');
@@ -209,8 +212,8 @@ export default function ProgramEnrollments() {
       )}
 
       {/* By Program + By Batch */}
-      {stats && (stats.byProgram.length > 0 || stats.byBatch.length > 0) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      {stats && (stats.byProgram.length > 0 || stats.byBatch.length > 0 || stats.bySource.length > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="glass-card rounded-xl p-5">
             <div className="text-sm font-semibold mb-3" style={{ color: 'var(--white)' }}>
               By Program
@@ -255,6 +258,31 @@ export default function ProgramEnrollments() {
                   </span>
                 </div>
               ))}
+            </div>
+          </div>
+
+          <div className="glass-card rounded-xl p-5">
+            <div className="text-sm font-semibold mb-3" style={{ color: 'var(--white)' }}>
+              By Source
+            </div>
+            <div className="flex flex-col gap-2">
+              {stats.bySource.map((s) => {
+                const pct = stats.total > 0 ? Math.round((s.count / stats.total) * 100) : 0;
+                return (
+                  <div key={s.source} className="flex flex-col gap-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="truncate" style={{ color: 'var(--white)' }}>{s.source}</span>
+                      <span className="shrink-0" style={{ color: 'var(--muted)' }}>{s.count} ({pct}%)</span>
+                    </div>
+                    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.07)' }}>
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${pct}%`, background: 'linear-gradient(90deg, var(--electric), var(--orange))' }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -308,6 +336,20 @@ export default function ProgramEnrollments() {
           </select>
         </div>
         <div className="min-w-40">
+          <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>Source</label>
+          <select
+            value={sourceFilter}
+            onChange={(e) => setSourceFilter(e.target.value)}
+            className="text-sm"
+            style={{ padding: '8px 12px' }}
+          >
+            <option value="">All sources</option>
+            {(stats?.bySource ?? []).map((s) => (
+              <option key={s.source} value={s.source}>{s.source}</option>
+            ))}
+          </select>
+        </div>
+        <div className="min-w-40">
           <label className="block text-xs mb-1" style={{ color: 'var(--muted)' }}>Status</label>
           <select
             value={statusFilter}
@@ -351,7 +393,7 @@ export default function ProgramEnrollments() {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)', background: 'rgba(255,255,255,0.02)' }}>
-                {['Name', 'WhatsApp', 'Email', 'City', 'User Type', 'Program', 'Batch', 'Date', 'Status', 'Notes', 'Action'].map((h) => (
+                {['Name', 'WhatsApp', 'Email', 'City', 'User Type', 'Source', 'Program', 'Batch', 'Date', 'Status', 'Notes', 'Action'].map((h) => (
                   <th
                     key={h}
                     className="text-left px-4 py-3 text-xs font-semibold uppercase tracking-wider whitespace-nowrap"
@@ -365,13 +407,13 @@ export default function ProgramEnrollments() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={11} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
+                  <td colSpan={12} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
                     Loading…
                   </td>
                 </tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={11} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
+                  <td colSpan={12} className="px-4 py-12 text-center text-sm" style={{ color: 'var(--muted)' }}>
                     No enrollments found.
                   </td>
                 </tr>
@@ -413,6 +455,18 @@ export default function ProgramEnrollments() {
                         </span>
                       ) : (
                         <span style={{ color: 'var(--muted)' }}>-</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      {row.source ? (
+                        <span
+                          className="text-xs px-2 py-0.5 rounded-full"
+                          style={{ background: 'rgba(255,149,0,0.10)', color: 'var(--orange)', border: '1px solid rgba(255,149,0,0.22)' }}
+                        >
+                          {row.source}
+                        </span>
+                      ) : (
+                        <span className="text-xs" style={{ color: 'var(--muted)' }}>Direct</span>
                       )}
                     </td>
                     <td className="px-4 py-3 whitespace-nowrap" style={{ color: 'var(--white)' }}>

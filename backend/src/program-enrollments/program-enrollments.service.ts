@@ -9,6 +9,7 @@ interface FindAllQuery {
   program?: string;
   batch?: string;
   userType?: string;
+  source?: string;
   status?: EnrollmentStatus;
   dateFrom?: string;
   dateTo?: string;
@@ -22,6 +23,10 @@ interface FindAllQuery {
 // signup. Past this window a new submission is a new enrollment - someone
 // coming back for a later batch cycle should show up as its own row.
 const DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000;
+
+// Label used for unattributed (NULL source) traffic, in both the stats
+// breakdown and the admin's Source filter.
+const DIRECT_LABEL = 'Direct';
 
 @Injectable()
 export class ProgramEnrollmentsService {
@@ -47,6 +52,9 @@ export class ProgramEnrollmentsService {
           userType: dto.userType,
           programTitle: dto.programTitle,
           batchName: dto.batchName,
+          // Only overwrite when this submission carries a ref - a later
+          // un-referred resubmit must not wipe the original attribution.
+          ...(dto.source ? { source: dto.source } : {}),
           submissionCount: { increment: 1 },
         },
       });
@@ -62,6 +70,7 @@ export class ProgramEnrollmentsService {
         programSlug: dto.programSlug,
         programTitle: dto.programTitle,
         batchName: dto.batchName,
+        source: dto.source ?? null,
       },
     });
   }
@@ -86,6 +95,9 @@ export class ProgramEnrollmentsService {
     if (query.program) where.programSlug = query.program;
     if (query.batch) where.batchName = query.batch;
     if (query.userType) where.userType = query.userType;
+    if (query.source) {
+      where.source = query.source === DIRECT_LABEL ? null : query.source;
+    }
     if (query.status) where.status = query.status;
     if (query.dateFrom || query.dateTo) {
       where.createdAt = {
@@ -119,7 +131,7 @@ export class ProgramEnrollmentsService {
     const sevenDaysAgo = new Date(todayStart);
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6); // today + 6 previous days = 7 buckets
 
-    const [total, todayCount, byProgramCounts, byBatchCounts, recentRows] =
+    const [total, todayCount, byProgramCounts, byBatchCounts, bySourceCounts, recentRows] =
       await Promise.all([
         this.prisma.programEnrollment.count(),
         this.prisma.programEnrollment.count({ where: { createdAt: { gte: todayStart } } }),
@@ -132,6 +144,11 @@ export class ProgramEnrollmentsService {
           by: ['programSlug', 'batchName'],
           _count: { batchName: true },
           orderBy: { _count: { batchName: 'desc' } },
+        }),
+        this.prisma.programEnrollment.groupBy({
+          by: ['source'],
+          _count: { _all: true },
+          orderBy: { _count: { source: 'desc' } },
         }),
         this.prisma.programEnrollment.findMany({
           where: { createdAt: { gte: sevenDaysAgo } },
@@ -176,6 +193,10 @@ export class ProgramEnrollmentsService {
         batchName: b.batchName,
         count: b._count.batchName,
       })),
+      bySource: bySourceCounts.map((s) => ({
+        source: s.source ?? DIRECT_LABEL,
+        count: s._count._all,
+      })),
       last7Days: trend,
     };
   }
@@ -186,7 +207,7 @@ export class ProgramEnrollmentsService {
     });
 
     const header =
-      'Name,WhatsApp Number,City,Email,User Type,Program,Batch,Status,Notes,Submissions,Date';
+      'Name,WhatsApp Number,City,Email,User Type,Source,Program,Batch,Status,Notes,Submissions,Date';
     const csvRows = rows.map((r) =>
       [
         `"${r.fullName}"`,
@@ -194,6 +215,7 @@ export class ProgramEnrollmentsService {
         `"${r.city ?? ''}"`,
         `"${r.email ?? ''}"`,
         `"${r.userType ?? ''}"`,
+        `"${r.source ?? DIRECT_LABEL}"`,
         `"${r.programTitle}"`,
         `"${r.batchName}"`,
         r.status,

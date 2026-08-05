@@ -376,6 +376,9 @@ model ProgramEnrollment {
   batchName      String
   status         EnrollmentStatus @default(NEW)
   notes          String?
+  // Referral ref captured from ?ref= on the landing page (see
+  // frontend/src/lib/refSource.ts). NULL = direct/unattributed traffic.
+  source         String?
   // Repeat interest within the dedup window (see service) increments this
   // instead of creating a duplicate row.
   submissionCount Int             @default(1)
@@ -385,5 +388,6 @@ model ProgramEnrollment {
   @@index([whatsappNumber, programSlug])
   @@index([programSlug])
   @@index([status])
+  @@index([source])
   @@map("program_enrollments")
 }

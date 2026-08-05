@@ -21,6 +21,7 @@ import type { PgMediaValue } from '@/data/programPagesData';
 import { getPageContent } from '@/api/content';
 import { submitProgramEnrollment } from '@/api/programEnrollments';
 import { queueFailedEnrollment, flushQueuedEnrollments } from '@/lib/enrollmentQueue';
+import { getStoredRef } from '@/lib/refSource';
 import type { ProgramPage as ProgramPageData } from '@/data/programPagesData';
 import type {
   PgBatch,
@@ -384,6 +385,9 @@ export default function ProgramPage() {
       programSlug: page.slug,
       programTitle: page.pageTitle,
       batchName: batchLabel,
+      // Analytics only - getStoredRef never throws, so a storage failure
+      // cannot block the submission.
+      source: getStoredRef(),
     };
 
     setSubmitting(true);

@@ -6,6 +6,7 @@ import {
   Matches,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -60,4 +61,17 @@ export class CreateProgramEnrollmentDto {
   @IsString()
   @MaxLength(100)
   batchName: string;
+
+  // Referral ref from ?ref= on the landing page. The client already
+  // sanitizes, but the whitelist is re-applied here - never trust the client.
+  // Nullable so the form can send an explicit null for direct traffic.
+  @ApiPropertyOptional({ example: 'it_jobs_gujarat' })
+  @IsOptional()
+  @ValidateIf((_o, v) => v !== null)
+  @IsString()
+  @MaxLength(100)
+  @Matches(/^[a-zA-Z0-9_-]+$/, {
+    message: 'source may only contain letters, numbers, hyphen and underscore',
+  })
+  source?: string | null;
 }

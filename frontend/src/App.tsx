@@ -7,6 +7,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Sidebar } from '@/components/admin/Sidebar';
 import { useAuthStore } from '@/store/authStore';
 import { ScrollToTop } from '@/components/shared/ScrollToTop';
+import { RefSourceCapture } from '@/components/shared/RefSourceCapture';
 import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
@@ -88,6 +89,7 @@ export default function App() {
   return (
     <ErrorBoundary>
     <ScrollToTop />
+    <RefSourceCapture />
     <WhatsAppFloat />
     <Routes>
       <Route element={<PublicLayout />}>

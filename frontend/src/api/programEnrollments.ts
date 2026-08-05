@@ -9,6 +9,8 @@ export interface CreateProgramEnrollmentPayload {
   programSlug: string;
   programTitle: string;
   batchName: string;
+  /** Referral ref captured from ?ref= (see lib/refSource). null = Direct. */
+  source?: string | null;
 }
 
 export type EnrollmentStatus = 'NEW' | 'CONTACTED' | 'CONFIRMED' | 'CANCELLED';
@@ -25,6 +27,7 @@ export interface ProgramEnrollment {
   batchName: string;
   status: EnrollmentStatus;
   notes: string | null;
+  source: string | null;
   submissionCount: number;
   createdAt: string;
   updatedAt: string;
@@ -35,6 +38,8 @@ export interface ProgramEnrollmentStats {
   todayCount: number;
   byProgram: Array<{ programSlug: string; programTitle: string; count: number }>;
   byBatch: Array<{ programSlug: string; programTitle: string; batchName: string; count: number }>;
+  /** NULL sources are grouped under the label "Direct". */
+  bySource: Array<{ source: string; count: number }>;
   last7Days: Array<{ date: string; count: number }>;
 }
 
