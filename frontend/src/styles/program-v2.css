@@ -1,0 +1,3322 @@
+/* ==========================================================================
+   Program landing page V2 (/program/10-day-ai-v2) - standalone A/B variant.
+
+   Generated from primai-landing-page-v2.html. Intentionally off-brand
+   (purple/pink) - do NOT harmonize to site tokens.
+
+   EVERY rule is prefixed with .v2-landing so nothing here can reach any
+   other page. The source file scoped most rules under .primai-landing, but
+   a large set of .primai-* utility rules were top-level and would have
+   leaked. Imported only by pages/program/TenDayAiV2.tsx - never globals.css.
+   ========================================================================== */
+
+/* ==================================================
+   PRIMAI-LANDING - SCOPED DESIGN SYSTEM
+   Everything in this file lives under .primai-landing
+   No global tag selectors are used anywhere below.
+   ================================================== */
+.v2-landing .primai-landing {
+/* ---------- Color tokens ---------- */
+  --primai-bg: #080611;
+--primai-bg-secondary: #110C1F;
+--primai-bg-elevated: #17112B;
+--primai-purple: #7C3AED;
+--primai-violet: #8B5CF6;
+--primai-pink: #EC4899;
+--primai-cyan: #22D3EE;
+--primai-text: #FFFFFF;
+--primai-muted: #A8A3B5;
+--primai-muted-dim: #6E6A80;
+--primai-border: rgba(255,255,255,0.10);
+--primai-border-strong: rgba(255,255,255,0.18);
+/* Gradient tokens (used sparingly, per one signature moment per section) */
+  --primai-gradient-primary: linear-gradient(135deg, var(--primai-purple), var(--primai-pink));
+--primai-gradient-accent: linear-gradient(135deg, var(--primai-violet), var(--primai-cyan));
+--primai-glow-purple: 0 0 40px rgba(124, 58, 237, 0.35);
+--primai-glow-pink: 0 0 40px rgba(236, 72, 153, 0.30);
+--primai-glow-cyan: 0 0 32px rgba(34, 211, 238, 0.25);
+/* ---------- Typography tokens ---------- */
+  --primai-font-display: 'Manrope', system-ui, -apple-system, sans-serif;
+--primai-font-body: 'Inter', system-ui, -apple-system, sans-serif;
+--primai-fs-xs: clamp(0.75rem, 0.71rem + 0.2vw, 0.8125rem);
+--primai-fs-sm: clamp(0.875rem, 0.83rem + 0.22vw, 0.9375rem);
+--primai-fs-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+--primai-fs-lg: clamp(1.125rem, 1.06rem + 0.32vw, 1.25rem);
+--primai-fs-xl: clamp(1.375rem, 1.27rem + 0.53vw, 1.625rem);
+--primai-fs-2xl: clamp(1.75rem, 1.55rem + 1vw, 2.25rem);
+--primai-fs-3xl: clamp(2.25rem, 1.9rem + 1.75vw, 3.25rem);
+--primai-fs-4xl: clamp(2.75rem, 2.2rem + 2.75vw, 4.25rem);
+/* ---------- Spacing tokens (fluid) ---------- */
+  --primai-space-2xs: clamp(0.25rem, 0.23rem + 0.1vw, 0.375rem);
+--primai-space-xs: clamp(0.5rem, 0.45rem + 0.25vw, 0.75rem);
+--primai-space-sm: clamp(0.75rem, 0.68rem + 0.35vw, 1rem);
+--primai-space-md: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+--primai-space-lg: clamp(2rem, 1.7rem + 1.5vw, 3rem);
+--primai-space-xl: clamp(3rem, 2.4rem + 3vw, 5rem);
+--primai-space-2xl: clamp(4rem, 3.2rem + 4vw, 7rem);
+/* ---------- Layout tokens ---------- */
+  --primai-container-max: 1200px;
+--primai-container-pad: clamp(1.25rem, 4vw, 2.5rem);
+--primai-radius-sm: 10px;
+--primai-radius-md: 16px;
+--primai-radius-lg: 24px;
+--primai-radius-pill: 999px;
+--primai-ease: cubic-bezier(0.16, 1, 0.3, 1);
+--primai-transition: 200ms var(--primai-ease);
+/* ---------- Base surface ---------- */
+  background: var(--primai-bg);
+color: var(--primai-text);
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-base);
+line-height: 1.6;
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
+overflow-x: hidden;
+width: 100%;
+}
+/* ==================================================
+   RESET - scoped only inside .primai-landing
+   (no bare element selectors outside this scope)
+   ================================================== */
+.v2-landing .primai-landing, .v2-landing .primai-landing *, .v2-landing .primai-landing *::before, .v2-landing .primai-landing *::after {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+/* The browser's default body margin (usually 8px) sits OUTSIDE
+   .primai-landing, so our scoped reset above can't remove it -
+   it shows up as a thin gap around the whole page, most visible
+   on mobile. :has() lets us zero it out ONLY on pages that
+   actually contain this widget, so other pages on the host site
+   are never touched. Supported in all current browsers; on the
+   rare unsupported browser this simply has no effect. */
+body:has(> .primai-landing) {
+margin: 0;
+}
+/* Smooth in-page scrolling for anchor links (Enroll Now, Book My
+   Seat, etc. jumping to the registration form). Scoped the same
+   way as the body margin fix above, and turned back off for
+   prefers-reduced-motion users a few lines down. */
+html:has(.primai-landing) {
+scroll-behavior: smooth;
+}
+.v2-landing .primai-landing img, .v2-landing .primai-landing picture, .v2-landing .primai-landing video {
+display: block;
+max-width: 100%;
+height: auto;
+}
+.v2-landing .primai-landing a {
+color: inherit;
+text-decoration: none;
+}
+.v2-landing .primai-landing ul, .v2-landing .primai-landing ol {
+list-style: none;
+}
+.v2-landing .primai-landing button {
+font: inherit;
+color: inherit;
+background: none;
+border: none;
+cursor: pointer;
+}
+.v2-landing .primai-landing input, .v2-landing .primai-landing textarea, .v2-landing .primai-landing select {
+font: inherit;
+color: inherit;
+}
+/* ==================================================
+   ACCESSIBILITY FOUNDATION
+   ================================================== */
+.v2-landing .primai-landing :focus-visible {
+outline: 2px solid var(--primai-cyan);
+outline-offset: 3px;
+border-radius: 4px;
+}
+.v2-landing .primai-sr-only {
+position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+white-space: nowrap;
+border: 0;
+}
+.v2-landing .primai-skip-link {
+position: absolute;
+top: -100px;
+left: var(--primai-space-sm);
+z-index: 999;
+background: var(--primai-bg-elevated);
+color: var(--primai-text);
+padding: var(--primai-space-xs) var(--primai-space-sm);
+border-radius: var(--primai-radius-sm);
+border: 1px solid var(--primai-border-strong);
+transition: top var(--primai-transition);
+}
+.v2-landing .primai-skip-link:focus {
+top: var(--primai-space-sm);
+}
+@media (prefers-reduced-motion: reduce) {
+html:has(.primai-landing) {
+scroll-behavior: auto;
+}
+.v2-landing .primai-landing *, .v2-landing .primai-landing *::before, .v2-landing .primai-landing *::after {
+animation-duration: 0.01ms !important;
+animation-iteration-count: 1 !important;
+transition-duration: 0.01ms !important;
+scroll-behavior: auto !important;
+}
+}
+/* ==================================================
+   TYPOGRAPHY SYSTEM
+   ================================================== */
+.v2-landing .primai-eyebrow {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-xs);
+font-weight: 600;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(--primai-cyan);
+}
+.v2-landing .primai-heading-xl {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-4xl);
+font-weight: 800;
+line-height: 1.08;
+letter-spacing: -0.02em;
+color: var(--primai-text);
+}
+.v2-landing .primai-heading-lg {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-3xl);
+font-weight: 800;
+line-height: 1.12;
+letter-spacing: -0.015em;
+color: var(--primai-text);
+}
+.v2-landing .primai-heading-md {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-2xl);
+font-weight: 700;
+line-height: 1.2;
+letter-spacing: -0.01em;
+color: var(--primai-text);
+}
+.v2-landing .primai-heading-sm {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-xl);
+font-weight: 700;
+line-height: 1.3;
+color: var(--primai-text);
+}
+.v2-landing .primai-body-lg {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-lg);
+font-weight: 400;
+line-height: 1.65;
+color: var(--primai-muted);
+}
+.v2-landing .primai-body {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-base);
+font-weight: 400;
+line-height: 1.65;
+color: var(--primai-muted);
+}
+.v2-landing .primai-body-sm {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-sm);
+font-weight: 400;
+line-height: 1.55;
+color: var(--primai-muted-dim);
+}
+.v2-landing .primai-gradient-text {
+background: var(--primai-gradient-primary);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+/* ==================================================
+   CONTAINER / LAYOUT SYSTEM
+   ================================================== */
+.v2-landing .primai-container {
+width: 100%;
+max-width: var(--primai-container-max);
+margin-inline: auto;
+padding-inline: var(--primai-container-pad);
+}
+.v2-landing .primai-container--narrow {
+max-width: 800px;
+}
+.v2-landing .primai-container--wide {
+max-width: 1400px;
+}
+.v2-landing .primai-section {
+position: relative;
+width: 100%;
+padding-block: var(--primai-space-2xl);
+overflow: hidden;
+}
+.v2-landing .primai-section--tight {
+padding-block: var(--primai-space-xl);
+}
+.v2-landing .primai-section-head {
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+max-width: 640px;
+margin-bottom: var(--primai-space-lg);
+}
+.v2-landing .primai-section-head--center {
+align-items: center;
+text-align: center;
+margin-inline: auto;
+}
+.v2-landing .primai-grid {
+display: grid;
+gap: var(--primai-space-md);
+grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+.v2-landing .primai-grid--2 {
+grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+.v2-landing .primai-grid--3 {
+grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+.v2-landing .primai-flex {
+display: flex;
+align-items: center;
+gap: var(--primai-space-sm);
+flex-wrap: wrap;
+}
+.v2-landing .primai-stack {
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+}
+/* ==================================================
+   BUTTON SYSTEM
+   ================================================== */
+.v2-landing .primai-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: var(--primai-space-2xs);
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-sm);
+font-weight: 600;
+line-height: 1;
+padding: 0.9em 1.6em;
+border-radius: var(--primai-radius-pill);
+border: 1px solid transparent;
+white-space: nowrap;
+transition: transform var(--primai-transition), box-shadow var(--primai-transition), background var(--primai-transition), border-color var(--primai-transition);
+min-height: 44px;
+}
+.v2-landing .primai-btn:active {
+transform: scale(0.98);
+}
+.v2-landing .primai-btn--primary.primai-btn--primary {
+position: relative;
+overflow: hidden;
+background: var(--primai-gradient-primary);
+color: var(--primai-text);
+box-shadow: var(--primai-glow-purple);
+}
+.v2-landing .primai-btn--primary::after {
+content: '';
+position: absolute;
+top: 0;
+left: -150%;
+width: 60%;
+height: 100%;
+background: linear-gradient(120deg, transparent, rgba(255,255,255,0.4), transparent);
+transform: skewX(-20deg);
+animation: primai-btn-shine 4.5s ease-in-out infinite;
+pointer-events: none;
+}
+@keyframes primai-btn-shine {
+0% {
+left: -150%;
+}
+18% {
+left: 150%;
+}
+100% {
+left: 150%;
+}
+}
+.v2-landing .primai-btn--primary:hover {
+box-shadow: var(--primai-glow-pink);
+transform: translateY(-1px);
+}
+.v2-landing .primai-btn--secondary {
+background: var(--primai-bg-elevated);
+color: var(--primai-text);
+border-color: var(--primai-border-strong);
+}
+.v2-landing .primai-btn--secondary:hover {
+border-color: var(--primai-cyan);
+}
+.v2-landing .primai-btn--ghost {
+background: transparent;
+color: var(--primai-text);
+border-color: var(--primai-border);
+}
+.v2-landing .primai-btn--ghost:hover {
+background: rgba(255,255,255,0.05);
+}
+.v2-landing .primai-btn--block {
+width: 100%;
+}
+.v2-landing .primai-btn--lg {
+padding: 1.05em 2em;
+font-size: var(--primai-fs-base);
+}
+/* ==================================================
+   CARD SYSTEM
+   ================================================== */
+.v2-landing .primai-card {
+position: relative;
+background: var(--primai-bg-secondary);
+border: 1px solid var(--primai-border);
+border-radius: var(--primai-radius-md);
+padding: var(--primai-space-md);
+backdrop-filter: blur(20px);
+transition: border-color var(--primai-transition), transform var(--primai-transition);
+}
+.v2-landing .primai-card--glass {
+background: rgba(255,255,255,0.04);
+border: 1px solid var(--primai-border);
+}
+.v2-landing .primai-card--hover:hover {
+border-color: var(--primai-border-strong);
+transform: translateY(-3px);
+}
+.v2-landing .primai-card--glow {
+box-shadow: var(--primai-glow-purple);
+}
+.v2-landing .primai-card__eyebrow {
+margin-bottom: var(--primai-space-2xs);
+}
+.v2-landing .primai-card__title {
+margin-bottom: var(--primai-space-2xs);
+}
+/* ==================================================
+   BADGE / PILL / DIVIDER UTILITIES
+   ================================================== */
+.v2-landing .primai-badge {
+display: inline-flex;
+align-items: center;
+gap: var(--primai-space-2xs);
+font-size: var(--primai-fs-xs);
+font-weight: 600;
+padding: 0.4em 0.9em;
+border-radius: var(--primai-radius-pill);
+background: rgba(124, 58, 237, 0.15);
+border: 1px solid rgba(139, 92, 246, 0.35);
+color: var(--primai-violet);
+}
+/* ---------- FAQ-style callout card ---------- */
+.v2-landing .primai-callout {
+display: flex;
+align-items: flex-start;
+gap: var(--primai-space-sm);
+width: 100%;
+padding: var(--primai-space-sm) var(--primai-space-md);
+background: rgba(255,255,255,0.04);
+border: 1px solid var(--primai-border);
+border-radius: var(--primai-radius-md);
+}
+.v2-landing .primai-callout__icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 34px;
+height: 34px;
+flex-shrink: 0;
+border-radius: var(--primai-radius-sm);
+background: rgba(139, 92, 246, 0.15);
+border: 1px solid rgba(139, 92, 246, 0.35);
+font-size: 1rem;
+line-height: 1;
+}
+.v2-landing .primai-callout__text {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-sm);
+line-height: 1.6;
+color: var(--primai-muted);
+}
+.v2-landing .primai-callout__question {
+display: block;
+color: var(--primai-text);
+font-weight: 700;
+margin-bottom: var(--primai-space-2xs);
+}
+.v2-landing .primai-divider {
+width: 100%;
+height: 1px;
+background: var(--primai-border);
+border: none;
+}
+/* ==================================================
+   BACKGROUND GLOW / DECORATIVE LAYER
+   Ambient, low-opacity, isolated to each section
+   ================================================== */
+.v2-landing .primai-glow-orb {
+position: absolute;
+border-radius: 50%;
+filter: blur(90px);
+opacity: 0.35;
+pointer-events: none;
+z-index: 0;
+}
+.v2-landing .primai-section > .primai-container {
+position: relative;
+z-index: 1;
+}
+/* ==================================================
+   HEADER / NAV (foundation shell)
+   ================================================== */
+.v2-landing .primai-header {
+position: sticky;
+top: 0;
+z-index: 100;
+width: 100%;
+background: rgba(8, 6, 17, 0.75);
+backdrop-filter: blur(16px);
+border-bottom: 1px solid var(--primai-border);
+}
+.v2-landing .primai-header__inner {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: var(--primai-space-sm);
+padding-block: var(--primai-space-xs);
+}
+.v2-landing .primai-logo {
+font-family: var(--primai-font-display);
+font-weight: 800;
+font-size: var(--primai-fs-lg);
+letter-spacing: -0.01em;
+}
+.v2-landing .primai-header__cta {
+padding: 0.65em 1.3em;
+font-size: var(--primai-fs-xs);
+min-height: 40px;
+}
+/* ==================================================
+   FOOTER (foundation shell)
+   ================================================== */
+.v2-landing .primai-footer {
+border-top: 1px solid var(--primai-border);
+padding-block: var(--primai-space-xl) var(--primai-space-lg);
+}
+/* ==================================================
+   MOBILE STICKY ENROLL BAR
+   Fixed to the bottom of the viewport on mobile/tablet
+   only; hidden entirely on desktop. Body gets matching
+   bottom padding on those breakpoints so real content
+   (especially the footer) is never hidden behind it.
+   ================================================== */
+.v2-landing .primai-sticky-cta {
+display: none;
+}
+@media (max-width: 1023px) {
+.v2-landing .primai-landing {
+padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+.v2-landing .primai-sticky-cta {
+display: flex;
+justify-content: center;
+position: fixed;
+left: 0;
+right: 0;
+bottom: 0;
+z-index: 90;
+padding: var(--primai-space-xs) var(--primai-space-sm);
+padding-bottom: calc(var(--primai-space-xs) + env(safe-area-inset-bottom, 0px));
+background: rgba(8, 6, 17, 0.85);
+backdrop-filter: blur(16px);
+border-top: 1px solid var(--primai-border);
+}
+}
+.v2-landing .primai-sticky-cta__btn {
+width: 100%;
+max-width: 480px;
+gap: var(--primai-space-2xs);
+}
+.v2-landing .primai-sticky-cta__strike {
+font-size: 0.8em;
+font-weight: 500;
+opacity: 0.75;
+text-decoration: line-through;
+}
+/* ==================================================
+   STICKY WHATSAPP BUTTON
+   Sits just above the mobile sticky enroll bar (which
+   occupies the very bottom edge), floats gently, always
+   on top. On desktop (no sticky bar) it sits lower,
+   closer to the corner.
+   ================================================== */
+.v2-landing .primai-whatsapp-float.primai-whatsapp-float {
+position: fixed;
+right: var(--primai-space-sm);
+bottom: calc(72px + env(safe-area-inset-bottom, 0px) + 14px);
+z-index: 95;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 56px;
+height: 56px;
+border-radius: 50%;
+background: linear-gradient(135deg, #25D366, #128C7E);
+color: #FFFFFF;
+box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+animation: primai-whatsapp-float-bob 3s ease-in-out infinite;
+}
+.v2-landing .primai-whatsapp-float:hover {
+box-shadow: 0 10px 30px rgba(37, 211, 102, 0.6);
+}
+.v2-landing .primai-whatsapp-float svg {
+width: 28px;
+height: 28px;
+}
+@keyframes primai-whatsapp-float-bob {
+0%, 100% {
+transform: translateY(0);
+}
+50% {
+transform: translateY(-8px);
+}
+}
+@media (min-width: 1024px) {
+.v2-landing .primai-whatsapp-float {
+bottom: var(--primai-space-lg);
+right: var(--primai-space-lg);
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-whatsapp-float {
+animation: none;
+}
+}
+/* ==================================================
+   RESPONSIVE BREAKPOINTS
+   Mobile-first; fluid tokens already scale most sizing.
+   Breakpoints below fine-tune layout/grid behavior at
+   key widths: 320–1920px.
+   ================================================== */
+/* ~360px and up: small phones */
+@media (min-width: 360px) {
+.v2-landing .primai-container {
+padding-inline: clamp(1.25rem, 5vw, 1.75rem);
+}
+}
+/* ~480px and up: large phones */
+@media (min-width: 480px) {
+.v2-landing .primai-grid--3 {
+grid-template-columns: repeat(2, 1fr);
+}
+}
+/* ~768px and up: tablets */
+@media (min-width: 768px) {
+.v2-landing .primai-header__inner {
+padding-block: var(--primai-space-sm);
+}
+.v2-landing .primai-grid--2 {
+grid-template-columns: repeat(2, 1fr);
+}
+}
+/* ~1024px and up: small laptops */
+@media (min-width: 1024px) {
+.v2-landing .primai-grid--3 {
+grid-template-columns: repeat(3, 1fr);
+}
+.v2-landing .primai-section {
+padding-block: var(--primai-space-2xl);
+}
+}
+/* ~1280px and up: desktops */
+@media (min-width: 1280px) {
+.v2-landing .primai-container {
+padding-inline: 2.5rem;
+}
+}
+/* ~1600px and up: large desktops */
+@media (min-width: 1600px) {
+.v2-landing .primai-container--wide {
+max-width: 1500px;
+}
+}
+/* ==================================================
+   SECTION-SPECIFIC HOOKS (empty - filled in later)
+   Each placeholder below is intentionally unstyled
+   beyond the shared .primai-section system, ready for
+   section-specific rules to be added as we build.
+   ================================================== */
+.v2-landing .primai-hero {
+padding-top: var(--primai-space-xl);
+}
+.v2-landing .primai-hero__inner {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+grid-template-areas:
+    "head"
+    "video"
+    "rest";
+gap: var(--primai-space-xl);
+align-items: start;
+}
+.v2-landing .primai-hero__head {
+grid-area: head;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--primai-space-md);
+text-align: center;
+min-width: 0;
+width: 100%;
+}
+.v2-landing .primai-hero__rest {
+grid-area: rest;
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: var(--primai-space-md);
+text-align: left;
+min-width: 0;
+width: 100%;
+}
+.v2-landing .primai-hero__badge {
+display: inline-flex;
+align-items: center;
+gap: var(--primai-space-2xs);
+}
+.v2-landing .primai-hero__badge-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: var(--primai-cyan);
+box-shadow: 0 0 8px var(--primai-cyan);
+flex-shrink: 0;
+}
+.v2-landing .primai-hero__heading {
+max-width: 100%;
+white-space: nowrap;
+font-size: clamp(1.625rem, 1.1rem + 4.2vw, 3.375rem);
+font-weight: 900;
+}
+.v2-landing .primai-hero__tagline {
+display: inline-flex;
+align-items: center;
+gap: 0.55em;
+padding: 0.55em 1.4em;
+background: rgba(255,255,255,0.04);
+border: 1px solid var(--primai-border-strong);
+border-radius: var(--primai-radius-pill);
+box-shadow: 0 0 26px rgba(124, 58, 237, 0.18);
+}
+.v2-landing .primai-hero__tagline-word {
+display: inline-block;
+font-family: var(--primai-font-display);
+font-size: clamp(1rem, 0.9rem + 0.6vw, 1.375rem);
+font-weight: 800;
+letter-spacing: 0.01em;
+background: var(--primai-gradient-primary);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+animation: primai-tagline-glow 3.9s ease-in-out infinite;
+}
+.v2-landing .primai-hero__tagline > .primai-hero__tagline-word:nth-child(1) {
+animation-delay: 0s;
+}
+.v2-landing .primai-hero__tagline > .primai-hero__tagline-word:nth-child(3) {
+animation-delay: 1.3s;
+}
+.v2-landing .primai-hero__tagline > .primai-hero__tagline-word:nth-child(5) {
+animation-delay: 2.6s;
+}
+@keyframes primai-tagline-glow {
+0% {
+opacity: 0.5;
+filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+transform: scale(1);
+}
+10% {
+opacity: 1;
+filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.65));
+transform: scale(1.06);
+}
+25% {
+opacity: 0.5;
+filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+transform: scale(1);
+}
+100% {
+opacity: 0.5;
+filter: drop-shadow(0 0 0 rgba(168, 85, 247, 0));
+transform: scale(1);
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-hero__tagline-word {
+animation: none;
+opacity: 1;
+}
+}
+.v2-landing .primai-hero__tagline-arrow {
+display: inline-flex;
+color: var(--primai-cyan);
+opacity: 0.85;
+}
+.v2-landing .primai-hero__tagline-arrow svg {
+width: 0.9em;
+height: 0.9em;
+}
+.v2-landing .primai-hero__price-row {
+display: flex;
+align-items: baseline;
+gap: var(--primai-space-xs);
+flex-wrap: wrap;
+}
+.v2-landing .primai-hero__price {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-2xl);
+font-weight: 800;
+color: var(--primai-text);
+}
+.v2-landing .primai-hero__price-original {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-base);
+color: var(--primai-muted-dim);
+text-decoration: line-through;
+}
+.v2-landing .primai-hero__actions {
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: var(--primai-space-xs);
+}
+.v2-landing .primai-hero__rating {
+font-size: var(--primai-fs-xs);
+color: var(--primai-muted-dim);
+}
+@media (max-width: 1023px) {
+.v2-landing .primai-hero__callout {
+margin-top: var(--primai-space-sm);
+}
+.v2-landing .primai-hero__price-row {
+width: 100%;
+justify-content: center;
+}
+.v2-landing .primai-hero__actions {
+width: 100%;
+align-items: center;
+}
+}
+/* ---------- Tool logo strip ---------- */
+.v2-landing .primai-hero__tools {
+width: 100%;
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-xs);
+}
+.v2-landing .primai-hero__tools-label {
+font-weight: 600;
+color: var(--primai-text);
+}
+.v2-landing .primai-tool-marquee {
+position: relative;
+width: 100%;
+overflow: hidden;
+-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+.v2-landing .primai-tool-track {
+display: flex;
+align-items: flex-start;
+gap: var(--primai-space-sm);
+width: max-content;
+animation: primai-tool-scroll 26s linear infinite;
+}
+.v2-landing .primai-tool-group {
+display: flex;
+align-items: flex-start;
+gap: var(--primai-space-sm);
+flex-shrink: 0;
+}
+.v2-landing .primai-tool-marquee:hover .primai-tool-track, .v2-landing .primai-tool-marquee:focus-within .primai-tool-track {
+animation-play-state: paused;
+}
+@keyframes primai-tool-scroll {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-tool-track {
+animation: none;
+}
+.v2-landing .primai-tool-marquee {
+overflow-x: auto;
+}
+}
+.v2-landing .primai-tool-item {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--primai-space-2xs);
+width: 68px;
+flex-shrink: 0;
+}
+.v2-landing .primai-tool-chip {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 60px;
+height: 60px;
+flex-shrink: 0;
+border-radius: var(--primai-radius-md);
+background: rgba(255,255,255,0.04);
+border: 1px solid var(--primai-border);
+transition: border-color var(--primai-transition), transform var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-tool-chip:hover {
+border-color: var(--primai-border-strong);
+box-shadow: var(--primai-glow-cyan);
+transform: translateY(-2px);
+}
+.v2-landing .primai-tool-chip img {
+width: 32px;
+height: 32px;
+object-fit: contain;
+}
+.v2-landing .primai-tool-name {
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-xs);
+color: var(--primai-muted);
+text-align: center;
+white-space: nowrap;
+}
+/* ---------- Hero visual (video) ---------- */
+.v2-landing .primai-hero__visual {
+grid-area: video;
+position: relative;
+width: 100%;
+min-width: 0;
+}
+.v2-landing .primai-hero__video-frame {
+position: relative;
+width: 100%;
+aspect-ratio: 16 / 9;
+max-width: 560px;
+margin-inline: auto;
+border-radius: var(--primai-radius-lg);
+padding: 2px;
+background: linear-gradient(160deg, rgba(124,58,237,0.6), rgba(34,211,238,0.25) 40%, rgba(236,72,153,0.5));
+box-shadow: var(--primai-glow-purple);
+}
+/* ---------- Floating badges over the hero video ---------- */
+.v2-landing .primai-hero__float-badge {
+position: absolute;
+z-index: 2;
+display: inline-flex;
+align-items: center;
+gap: var(--primai-space-2xs);
+max-width: min(200px, 62%);
+padding: 0.5em 0.85em;
+font-family: var(--primai-font-body);
+font-size: clamp(0.6875rem, 0.6rem + 0.35vw, 0.8125rem);
+font-weight: 700;
+line-height: 1.25;
+color: var(--primai-text);
+background: rgba(17, 12, 31, 0.75);
+border: 1px solid var(--primai-border-strong);
+border-radius: var(--primai-radius-md);
+backdrop-filter: blur(10px);
+-webkit-backdrop-filter: blur(10px);
+box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+animation: primai-float-bob 3.4s ease-in-out infinite;
+}
+.v2-landing .primai-hero__float-badge--guarantee {
+top: clamp(0.5rem, 2vw, 1rem);
+left: clamp(0.5rem, 2vw, 1rem);
+color: #4ADE80;
+border-color: rgba(74, 222, 128, 0.4);
+animation-delay: 0s;
+}
+.v2-landing .primai-hero__float-badge--nocoding {
+bottom: clamp(0.5rem, 2vw, 1rem);
+right: clamp(0.5rem, 2vw, 1rem);
+color: var(--primai-cyan);
+border-color: rgba(34, 211, 238, 0.4);
+animation-delay: 1.2s;
+}
+@keyframes primai-float-bob {
+0%, 100% {
+transform: translateY(0);
+}
+50% {
+transform: translateY(-8px);
+}
+}
+.v2-landing .primai-hero__video-inner {
+position: relative;
+width: 100%;
+height: 100%;
+border-radius: calc(var(--primai-radius-lg) - 2px);
+overflow: hidden;
+background: var(--primai-bg-secondary);
+border: 1px solid var(--primai-border);
+}
+.v2-landing .primai-hero__video-fallback {
+position: absolute;
+inset: 0;
+background:
+    radial-gradient(circle at 30% 20%, rgba(124,58,237,0.55), transparent 55%),
+    radial-gradient(circle at 75% 75%, rgba(236,72,153,0.45), transparent 55%),
+    var(--primai-bg-secondary);
+opacity: 1;
+transition: opacity 500ms var(--primai-ease);
+}
+.v2-landing .primai-hero__video-fallback.primai-is-hidden {
+opacity: 0;
+}
+.v2-landing .primai-hero-video.primai-hero-video {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+opacity: 0;
+transition: opacity 500ms var(--primai-ease);
+}
+.v2-landing .primai-hero-video.primai-is-visible {
+opacity: 1;
+}
+.v2-landing .primai-hero__glow-orb--a {
+top: -10%;
+left: -10%;
+width: 320px;
+height: 320px;
+background: var(--primai-purple);
+}
+.v2-landing .primai-hero__glow-orb--b {
+bottom: -15%;
+right: -10%;
+width: 380px;
+height: 380px;
+background: var(--primai-cyan);
+}
+@media (min-width: 1024px) {
+.v2-landing .primai-hero__inner {
+grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+grid-template-rows: auto 1fr;
+grid-template-areas:
+      "head video"
+      "rest video";
+gap: var(--primai-space-2xl);
+}
+.v2-landing .primai-hero__head {
+align-items: flex-start;
+text-align: left;
+}
+.v2-landing .primai-hero__video-frame {
+max-width: 100%;
+aspect-ratio: 16 / 9;
+}
+}
+/* TEMP: zeroed out because this section is still an empty
+   placeholder - the base .primai-section padding was showing
+   up as a visible blank gap in the page. Remove this override
+   (or just delete it) once real Program Overview content is
+   added, so the section gets its normal spacing back. */
+.v2-landing .primai-overview {
+padding-block: 0;
+}
+/* ==================================================
+   COMPANY NAME MARQUEE (Step 3B)
+   3 independent rows, different directions/speeds,
+   seamless loop via duplicated groups (same technique
+   as the hero tool marquee).
+   ================================================== */
+.v2-landing .primai-company-marquee {
+position: relative;
+overflow: hidden;
+padding-top: clamp(3.125rem, 2.8rem + 1vw, 4.375rem);
+padding-bottom: clamp(3.75rem, 3.3rem + 1.4vw, 5rem);
+}
+.v2-landing .primai-company-marquee__glow {
+top: -15%;
+left: 50%;
+transform: translateX(-50%);
+width: 640px;
+height: 320px;
+background: var(--primai-purple);
+opacity: 0.14;
+}
+.v2-landing .primai-company-marquee .primai-section-head {
+margin-bottom: var(--primai-space-lg);
+}
+.v2-landing .primai-company-rows {
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+width: 100%;
+}
+.v2-landing .primai-company-row {
+position: relative;
+width: 100%;
+overflow: hidden;
+-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.v2-landing .primai-company-track {
+display: flex;
+align-items: center;
+gap: var(--primai-space-sm);
+width: max-content;
+will-change: transform;
+}
+.v2-landing .primai-company-group {
+display: flex;
+align-items: center;
+gap: var(--primai-space-sm);
+flex-shrink: 0;
+}
+.v2-landing .primai-company-row:hover .primai-company-track, .v2-landing .primai-company-row:focus-within .primai-company-track {
+animation-play-state: paused;
+}
+.v2-landing .primai-company-row--1 .primai-company-track {
+animation: primai-company-ltr 20s linear infinite;
+}
+.v2-landing .primai-company-row--2 .primai-company-track {
+animation: primai-company-rtl 26s linear infinite;
+}
+.v2-landing .primai-company-row--3 .primai-company-track {
+animation: primai-company-ltr 32s linear infinite;
+}
+@keyframes primai-company-ltr {
+from {
+transform: translateX(-50%);
+}
+to {
+transform: translateX(0);
+}
+}
+@keyframes primai-company-rtl {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-company-track {
+animation: none !important;
+}
+.v2-landing .primai-company-row {
+overflow-x: auto;
+-webkit-mask-image: none;
+mask-image: none;
+}
+}
+.v2-landing .primai-company-chip {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+padding: 0.65em 1.5em;
+font-family: var(--primai-font-body);
+font-size: clamp(0.8125rem, 0.75rem + 0.3vw, 0.9375rem);
+font-weight: 700;
+letter-spacing: 0.01em;
+color: var(--primai-text);
+white-space: nowrap;
+background: rgba(255,255,255,0.04);
+border: 1px solid var(--primai-border);
+border-radius: var(--primai-radius-pill);
+backdrop-filter: blur(6px);
+}
+.v2-landing .primai-company-row--1 .primai-company-chip {
+border-color: rgba(139, 92, 246, 0.28);
+}
+.v2-landing .primai-company-row--2 .primai-company-chip {
+border-color: rgba(34, 211, 238, 0.24);
+}
+.v2-landing .primai-company-row--3 .primai-company-chip {
+border-color: rgba(236, 72, 153, 0.24);
+}
+@media (max-width: 479px) {
+.v2-landing .primai-company-chip {
+padding: 0.55em 1.15em;
+}
+.v2-landing .primai-company-track, .v2-landing .primai-company-group {
+gap: var(--primai-space-xs);
+}
+}
+/* ==================================================
+   "YOUR DAY-BY-DAY 10-DAY PLAN" (redesign)
+   Two-phase journey visual: Days 1-5 (purple/violet/
+   blue) learn phase, Days 6-10 (orange/pink) build
+   phase, with a connector between them.
+   ================================================== */
+.v2-landing .primai-plan {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-plan-glow {
+top: 10%;
+left: -10%;
+width: 480px;
+height: 480px;
+background: var(--primai-violet);
+opacity: 0.14;
+}
+.v2-landing .primai-plan-glow--2 {
+bottom: -5%;
+right: -8%;
+left: auto;
+top: auto;
+width: 460px;
+height: 460px;
+background: #F97316;
+opacity: 0.12;
+}
+.v2-landing .primai-plan-lead {
+max-width: 52ch;
+}
+/* ---------- Top overview: two-phase indicator ---------- */
+.v2-landing .primai-plan-overview {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--primai-space-sm);
+margin-bottom: var(--primai-space-xl);
+}
+.v2-landing .primai-plan-phase-pill {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--primai-space-2xs);
+width: min(320px, 100%);
+padding: var(--primai-space-sm) var(--primai-space-md);
+text-align: center;
+background: rgba(255,255,255,0.03);
+border: 1px solid var(--primai-border);
+border-radius: var(--primai-radius-lg);
+}
+.v2-landing .primai-plan-phase-pill--1 {
+border-color: rgba(139, 92, 246, 0.35);
+box-shadow: 0 0 24px rgba(124, 58, 237, 0.18);
+}
+.v2-landing .primai-plan-phase-pill--2 {
+border-color: rgba(249, 115, 22, 0.35);
+box-shadow: 0 0 24px rgba(236, 72, 153, 0.18);
+}
+.v2-landing .primai-plan-phase-eyebrow {
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+}
+.v2-landing .primai-plan-phase-pill--1 .primai-plan-phase-eyebrow {
+color: var(--primai-violet);
+}
+.v2-landing .primai-plan-phase-pill--2 .primai-plan-phase-eyebrow {
+color: #F97316;
+}
+.v2-landing .primai-plan-phase-days {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-xl);
+font-weight: 800;
+color: var(--primai-text);
+}
+.v2-landing .primai-plan-phase-desc {
+font-size: var(--primai-fs-sm);
+color: var(--primai-muted);
+}
+.v2-landing .primai-plan-overview-arrow {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 32px;
+height: 32px;
+flex-shrink: 0;
+color: var(--primai-muted-dim);
+transform: rotate(90deg);
+}
+@media (min-width: 640px) {
+.v2-landing .primai-plan-overview {
+flex-direction: row;
+justify-content: center;
+}
+.v2-landing .primai-plan-overview-arrow {
+transform: none;
+}
+}
+/* ---------- Phase blocks + day grids ---------- */
+.v2-landing .primai-plan-phase-block {
+margin-bottom: var(--primai-space-lg);
+}
+.v2-landing .primai-plan-phase-block:last-of-type {
+margin-bottom: 0;
+}
+.v2-landing .primai-plan-phase-header {
+display: flex;
+align-items: baseline;
+gap: var(--primai-space-xs);
+margin-bottom: var(--primai-space-md);
+}
+.v2-landing .primai-plan-phase-header-label {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 800;
+}
+.v2-landing .primai-plan-phase-block--1 .primai-plan-phase-header-label {
+color: var(--primai-violet);
+}
+.v2-landing .primai-plan-phase-block--2 .primai-plan-phase-header-label {
+color: #F97316;
+}
+.v2-landing .primai-plan-phase-header-sub {
+font-size: var(--primai-fs-sm);
+color: var(--primai-muted-dim);
+}
+.v2-landing .primai-plan-grid {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: var(--primai-space-sm);
+}
+@media (min-width: 768px) {
+.v2-landing .primai-plan-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+/* ---------- Connector between phases ---------- */
+.v2-landing .primai-plan-connector {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--primai-space-2xs);
+margin-bottom: var(--primai-space-lg);
+color: var(--primai-muted-dim);
+}
+.v2-landing .primai-plan-connector-line {
+width: 1px;
+height: 28px;
+background: linear-gradient(180deg, var(--primai-violet), #F97316);
+}
+.v2-landing .primai-plan-connector-label {
+display: inline-flex;
+align-items: center;
+gap: var(--primai-space-2xs);
+padding: 0.4em 1.1em;
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.08em;
+text-transform: uppercase;
+color: var(--primai-text);
+background: linear-gradient(90deg, rgba(139,92,246,0.18), rgba(249,115,22,0.18));
+border: 1px solid var(--primai-border-strong);
+border-radius: var(--primai-radius-pill);
+}
+/* ---------- Day card ---------- */
+.v2-landing .primai-plan-card {
+position: relative;
+background: var(--primai-bg-secondary);
+border: 1px solid var(--primai-border);
+border-radius: 20px;
+padding: var(--primai-space-md);
+transition: border-color var(--primai-transition), transform var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-plan-card:hover, .v2-landing .primai-plan-card:focus-within {
+transform: translateY(-3px);
+border-color: var(--primai-border-strong);
+}
+.v2-landing .primai-plan-card--phase1:hover, .v2-landing .primai-plan-card--phase1:focus-within {
+box-shadow: 0 0 28px rgba(124, 58, 237, 0.25);
+}
+.v2-landing .primai-plan-card--phase2:hover, .v2-landing .primai-plan-card--phase2:focus-within {
+box-shadow: 0 0 28px rgba(249, 115, 22, 0.22);
+}
+.v2-landing .primai-plan-card-top {
+display: flex;
+align-items: flex-start;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-plan-number {
+display: inline-flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 1px;
+width: 50px;
+height: 50px;
+flex-shrink: 0;
+border-radius: var(--primai-radius-sm);
+color: var(--primai-text);
+line-height: 1;
+}
+.v2-landing .primai-plan-number-label {
+font-family: var(--primai-font-body);
+font-size: 0.5625rem;
+font-weight: 700;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+opacity: 0.85;
+}
+.v2-landing .primai-plan-number-value {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-base);
+font-weight: 800;
+}
+.v2-landing .primai-plan-card--phase1 .primai-plan-number {
+background: linear-gradient(135deg, var(--primai-violet), #3B82F6);
+box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+}
+.v2-landing .primai-plan-card--phase2 .primai-plan-number {
+background: linear-gradient(135deg, #F97316, var(--primai-pink));
+box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+}
+.v2-landing .primai-plan-card-body {
+flex: 1;
+min-width: 0;
+}
+.v2-landing .primai-plan-card-heading-row {
+display: flex;
+align-items: center;
+gap: var(--primai-space-xs);
+flex-wrap: wrap;
+}
+.v2-landing .primai-plan-title {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-base);
+font-weight: 700;
+color: var(--primai-text);
+}
+.v2-landing .primai-plan-badge {
+display: inline-flex;
+align-items: center;
+padding: 0.2em 0.65em;
+font-size: 0.6875rem;
+font-weight: 700;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+color: var(--primai-text);
+background: linear-gradient(90deg, #F97316, var(--primai-pink));
+border-radius: var(--primai-radius-pill);
+}
+.v2-landing .primai-plan-desc {
+margin-top: var(--primai-space-2xs);
+font-size: var(--primai-fs-sm);
+line-height: 1.55;
+color: var(--primai-muted);
+}
+.v2-landing .primai-plan-expand-btn.primai-plan-expand-btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 28px;
+height: 28px;
+flex-shrink: 0;
+margin-left: auto;
+font-size: 1.1rem;
+line-height: 1;
+color: var(--primai-muted);
+background: rgba(255,255,255,0.05);
+border: 1px solid var(--primai-border);
+border-radius: 50%;
+transition: transform var(--primai-transition), background var(--primai-transition), color var(--primai-transition);
+}
+.v2-landing .primai-plan-expand-btn:hover {
+color: var(--primai-text);
+background: rgba(255,255,255,0.1);
+}
+.v2-landing .primai-plan-card[data-expanded="true"] .primai-plan-expand-btn {
+transform: rotate(45deg);
+}
+.v2-landing .primai-plan-details-wrapper {
+display: grid;
+grid-template-rows: 0fr;
+transition: grid-template-rows 320ms var(--primai-ease);
+}
+.v2-landing .primai-plan-card[data-expanded="true"] .primai-plan-details-wrapper {
+grid-template-rows: 1fr;
+}
+.v2-landing .primai-plan-details-inner {
+overflow: hidden;
+}
+.v2-landing .primai-plan-details {
+margin-top: var(--primai-space-sm);
+padding-top: var(--primai-space-sm);
+border-top: 1px solid var(--primai-border);
+font-size: var(--primai-fs-sm);
+line-height: 1.6;
+color: var(--primai-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-plan-card:hover, .v2-landing .primai-plan-card:focus-within {
+transform: none;
+}
+.v2-landing .primai-plan-details-wrapper {
+transition: none;
+}
+}
+/* TEMP: zeroed out because this section is still an empty
+   placeholder - the base .primai-section padding was
+   creating a large blank gap between Day-by-Day Plan and
+   Why Students Love Our Live Training. Remove this override
+   once real AI Tools / Technologies content is added. */
+.v2-landing .primai-tools {
+padding-block: 0;
+}
+/* ==================================================
+   "WHY STUDENTS LOVE OUR LIVE TRAINING"
+   Video left (desktop) / top (mobile) + 6 benefit
+   glass cards on the right (desktop) / below (mobile).
+   ================================================== */
+.v2-landing .primai-live-training {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-live-glow {
+top: 5%;
+left: -10%;
+width: 520px;
+height: 480px;
+background: var(--primai-purple);
+opacity: 0.15;
+}
+.v2-landing .primai-live-glow--cyan {
+bottom: -10%;
+right: -8%;
+left: auto;
+top: auto;
+width: 440px;
+height: 400px;
+background: var(--primai-cyan);
+opacity: 0.12;
+}
+.v2-landing .primai-live-eyebrow {
+display: block;
+margin-bottom: var(--primai-space-2xs);
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+background: linear-gradient(90deg, var(--primai-cyan), var(--primai-violet));
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-live-lead {
+max-width: 52ch;
+}
+.v2-landing .primai-live-layout {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: var(--primai-space-xl);
+align-items: center;
+}
+/* ---------- Video frame ---------- */
+.v2-landing .primai-live-media {
+position: relative;
+width: 100%;
+}
+.v2-landing .primai-live-video-frame {
+position: relative;
+width: 100%;
+aspect-ratio: 4 / 3;
+border-radius: 22px;
+padding: 2px;
+background: linear-gradient(150deg, rgba(124,58,237,0.55), rgba(34,211,238,0.3));
+box-shadow: var(--primai-glow-purple);
+animation: primai-live-glow-pulse 5s ease-in-out infinite;
+}
+.v2-landing .primai-live-video-inner {
+position: relative;
+width: 100%;
+height: 100%;
+border-radius: 20px;
+overflow: hidden;
+background: var(--primai-bg-secondary);
+border: 1px solid var(--primai-border);
+}
+.v2-landing .primai-live-video-fallback {
+position: absolute;
+inset: 0;
+background:
+    radial-gradient(circle at 30% 25%, rgba(124,58,237,0.5), transparent 55%),
+    radial-gradient(circle at 75% 70%, rgba(34,211,238,0.35), transparent 55%),
+    var(--primai-bg-secondary);
+opacity: 1;
+transition: opacity 450ms var(--primai-ease);
+}
+.v2-landing .primai-live-video-fallback.primai-is-hidden {
+opacity: 0;
+}
+.v2-landing .primai-live-video.primai-live-video {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+opacity: 0;
+transition: opacity 450ms var(--primai-ease);
+}
+.v2-landing .primai-live-video.primai-is-visible {
+opacity: 1;
+}
+@keyframes primai-live-glow-pulse {
+0%, 100% {
+box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+}
+50% {
+box-shadow: 0 0 44px rgba(34, 211, 238, 0.28);
+}
+}
+/* ---------- Benefits list ---------- */
+.v2-landing .primai-live-benefits {
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-live-benefit {
+display: flex;
+align-items: flex-start;
+gap: var(--primai-space-sm);
+padding: var(--primai-space-sm) var(--primai-space-md);
+background: rgba(255,255,255,0.03);
+border: 1px solid var(--primai-border);
+border-radius: var(--primai-radius-lg);
+opacity: 0;
+transform: translateY(14px);
+transition: opacity 500ms var(--primai-ease), transform 500ms var(--primai-ease), border-color var(--primai-transition), background var(--primai-transition);
+}
+.v2-landing .primai-live-benefit.primai-is-in-view {
+opacity: 1;
+transform: translateY(0);
+}
+.v2-landing .primai-live-benefit:hover, .v2-landing .primai-live-benefit:focus-within {
+border-color: var(--primai-border-strong);
+background: rgba(255,255,255,0.05);
+}
+.v2-landing .primai-live-benefit-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 42px;
+height: 42px;
+flex-shrink: 0;
+border-radius: var(--primai-radius-sm);
+background: rgba(139, 92, 246, 0.14);
+border: 1px solid rgba(139, 92, 246, 0.3);
+color: var(--primai-violet);
+}
+.v2-landing .primai-live-benefit-icon svg {
+width: 20px;
+height: 20px;
+}
+.v2-landing .primai-live-benefit-body {
+flex: 1;
+min-width: 0;
+}
+.v2-landing .primai-live-benefit-title-row {
+display: flex;
+align-items: center;
+gap: var(--primai-space-xs);
+}
+.v2-landing .primai-live-benefit-title {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-base);
+font-weight: 700;
+color: var(--primai-text);
+}
+.v2-landing .primai-live-benefit-desc {
+margin-top: 2px;
+font-size: var(--primai-fs-sm);
+line-height: 1.5;
+color: var(--primai-muted);
+}
+.v2-landing .primai-live-benefit-check {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 22px;
+height: 22px;
+flex-shrink: 0;
+margin-left: auto;
+border-radius: 50%;
+background: rgba(34, 211, 238, 0.14);
+color: var(--primai-cyan);
+box-shadow: 0 0 10px rgba(34, 211, 238, 0.35);
+}
+.v2-landing .primai-live-benefit-check svg {
+width: 12px;
+height: 12px;
+}
+@media (min-width: 1024px) {
+.v2-landing .primai-live-layout {
+grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+gap: var(--primai-space-2xl);
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-live-video-frame {
+animation: none;
+}
+.v2-landing .primai-live-benefit {
+opacity: 1;
+transform: none;
+transition: border-color var(--primai-transition), background var(--primai-transition);
+}
+}
+/* ==================================================
+   "EVERYTHING YOU'LL BUILD IN 10 DAYS" (Step 4)
+   6-card project grid: 5 lazy-loaded videos + 1 lazy
+   image, dark glass cards, numbered badges.
+   ================================================== */
+.v2-landing .primai-build-section {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-build-glow {
+top: -10%;
+left: 15%;
+width: 520px;
+height: 420px;
+background: var(--primai-purple);
+opacity: 0.16;
+}
+.v2-landing .primai-build-glow--pink {
+top: 30%;
+right: 5%;
+left: auto;
+width: 460px;
+height: 380px;
+background: var(--primai-pink);
+opacity: 0.12;
+}
+.v2-landing .primai-build-lead {
+max-width: 56ch;
+}
+.v2-landing .primai-build-grid {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: var(--primai-space-md);
+}
+.v2-landing .primai-build-card {
+position: relative;
+display: flex;
+flex-direction: column;
+background: var(--primai-bg-secondary);
+border: 1px solid rgba(139, 92, 246, 0.28);
+border-radius: var(--primai-radius-lg);
+overflow: hidden;
+box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+transition: border-color var(--primai-transition), transform var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-build-card:hover, .v2-landing .primai-build-card:focus-within {
+border-color: var(--primai-border-strong);
+transform: translateY(-4px);
+box-shadow: var(--primai-glow-purple);
+}
+@media (max-width: 767px) {
+.v2-landing .primai-build-card {
+border-color: rgba(139, 92, 246, 0.4);
+box-shadow: 0 12px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.03) inset;
+}
+}
+.v2-landing .primai-build-number {
+position: absolute;
+top: var(--primai-space-sm);
+left: var(--primai-space-sm);
+z-index: 2;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-width: 32px;
+height: 32px;
+padding-inline: 0.4em;
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-xs);
+font-weight: 800;
+color: var(--primai-text);
+background: var(--primai-gradient-primary);
+border-radius: var(--primai-radius-pill);
+box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+}
+.v2-landing .primai-build-media {
+position: relative;
+width: 100%;
+aspect-ratio: 16 / 9;
+overflow: hidden;
+background: var(--primai-bg-elevated);
+}
+.v2-landing .primai-build-media-fallback {
+position: absolute;
+inset: 0;
+background:
+    radial-gradient(circle at 25% 25%, rgba(124,58,237,0.5), transparent 55%),
+    radial-gradient(circle at 80% 70%, rgba(34,211,238,0.35), transparent 55%),
+    var(--primai-bg-elevated);
+opacity: 1;
+transition: opacity 450ms var(--primai-ease);
+}
+.v2-landing .primai-build-media-fallback.primai-is-hidden {
+opacity: 0;
+}
+.v2-landing .primai-build-video.primai-build-video {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+opacity: 0;
+transition: opacity 450ms var(--primai-ease);
+}
+.v2-landing .primai-build-video.primai-is-visible {
+opacity: 1;
+}
+.v2-landing .primai-build-image.primai-build-image {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+.v2-landing .primai-build-title {
+padding: var(--primai-space-sm) var(--primai-space-md) 0;
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 700;
+color: var(--primai-text);
+line-height: 1.3;
+}
+.v2-landing .primai-build-desc {
+padding: var(--primai-space-2xs) var(--primai-space-md) var(--primai-space-md);
+font-family: var(--primai-font-body);
+font-size: clamp(0.8125rem, 0.78rem + 0.15vw, 0.9375rem);
+font-weight: 400;
+line-height: 1.55;
+color: var(--primai-muted);
+}
+@media (min-width: 768px) {
+.v2-landing .primai-build-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+@media (min-width: 1024px) {
+.v2-landing .primai-build-grid {
+grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-build-card:hover, .v2-landing .primai-build-card:focus-within {
+transform: none;
+}
+}
+/* ==================================================
+   100% MONEY-BACK GUARANTEE SECTION
+   Own scoped green/teal palette, separate from the
+   rest of the (purple/violet/pink) page so it reads as
+   a distinct, trust-focused moment.
+   ================================================== */
+.v2-landing .primai-guarantee {
+--primai-guarantee-bg-start: #031812;
+--primai-guarantee-bg-end: #041F17;
+--primai-guarantee-accent: #00D99A;
+--primai-guarantee-accent-2: #00B87A;
+--primai-guarantee-accent-3: #00E6A8;
+--primai-guarantee-text-secondary: #A8C8BE;
+position: relative;
+overflow: hidden;
+background: linear-gradient(180deg, var(--primai-guarantee-bg-start), var(--primai-guarantee-bg-end));
+border-block: 1px solid rgba(0, 217, 154, 0.16);
+}
+.v2-landing .primai-guarantee-glow {
+top: -10%;
+left: 50%;
+transform: translateX(-50%);
+width: 640px;
+height: 640px;
+background: var(--primai-guarantee-accent);
+opacity: 0.16;
+animation: primai-guarantee-pulse 6s ease-in-out infinite;
+}
+.v2-landing .primai-guarantee-inner {
+position: relative;
+z-index: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-guarantee-badge-img {
+width: clamp(120px, 22vw, 180px);
+height: auto;
+margin-bottom: var(--primai-space-xs);
+animation: primai-guarantee-float 4.5s ease-in-out infinite;
+}
+.v2-landing .primai-guarantee-label {
+display: inline-flex;
+align-items: center;
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: var(--primai-guarantee-accent);
+}
+.v2-landing .primai-guarantee-title {
+font-family: var(--primai-font-display);
+font-size: clamp(1.75rem, 1.4rem + 3vw, 3rem);
+font-weight: 800;
+line-height: 1.15;
+color: var(--primai-text);
+}
+.v2-landing .primai-guarantee-highlight {
+background: linear-gradient(135deg, var(--primai-guarantee-accent-3), var(--primai-guarantee-accent-2));
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-guarantee-text {
+max-width: 42ch;
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-base);
+line-height: 1.6;
+color: var(--primai-guarantee-text-secondary);
+}
+.v2-landing .primai-guarantee-note {
+display: inline-flex;
+margin-top: var(--primai-space-2xs);
+padding: 0.55em 1.2em;
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-sm);
+font-weight: 600;
+color: var(--primai-text);
+background: rgba(0, 217, 154, 0.08);
+border: 1px solid rgba(0, 217, 154, 0.3);
+border-radius: var(--primai-radius-pill);
+}
+@keyframes primai-guarantee-float {
+0%, 100% {
+transform: translateY(0);
+}
+50% {
+transform: translateY(-10px);
+}
+}
+@keyframes primai-guarantee-pulse {
+0%, 100% {
+opacity: 0.12;
+}
+50% {
+opacity: 0.22;
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-guarantee-badge-img, .v2-landing .primai-guarantee-glow {
+animation: none;
+}
+}
+/* ==================================================
+   "DESIGNED FOR EVERY LEARNER"
+   4 persona cards with circular avatars, each with a
+   subtle per-persona accent while sharing one design
+   system.
+   ================================================== */
+.v2-landing .primai-learners {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-learners-glow {
+top: -10%;
+left: 60%;
+width: 560px;
+height: 480px;
+background: var(--primai-purple);
+opacity: 0.14;
+}
+.v2-landing .primai-learners-lead {
+max-width: 56ch;
+}
+.v2-landing .primai-learners-grid {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: var(--primai-space-md);
+}
+@media (min-width: 640px) {
+.v2-landing .primai-learners-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+@media (min-width: 1200px) {
+.v2-landing .primai-learners-grid {
+grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+}
+.v2-landing .primai-learner-card {
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+gap: var(--primai-space-xs);
+padding: var(--primai-space-lg) var(--primai-space-md);
+background: var(--primai-bg-secondary);
+border: 1px solid var(--primai-border);
+border-radius: var(--primai-radius-lg);
+transition: border-color var(--primai-transition), transform var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-learner-card:hover, .v2-landing .primai-learner-card:focus-within {
+transform: translateY(-5px);
+border-color: var(--primai-border-strong);
+}
+.v2-landing .primai-learner-avatar-frame {
+display: block;
+position: relative;
+width: 80px;
+height: 80px;
+padding: 2.5px;
+border-radius: 50%;
+flex-shrink: 0;
+}
+@media (min-width: 640px) {
+.v2-landing .primai-learner-avatar-frame {
+width: 100px;
+height: 100px;
+}
+}
+.v2-landing .primai-learner-avatar-inner {
+display: block;
+width: 100%;
+height: 100%;
+border-radius: 50%;
+overflow: hidden;
+background: var(--primai-bg-elevated);
+}
+.v2-landing .primai-learner-avatar.primai-learner-avatar {
+display: block;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+.v2-landing .primai-learner-title {
+margin-top: var(--primai-space-2xs);
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 700;
+color: var(--primai-text);
+}
+.v2-landing .primai-learner-desc {
+font-size: var(--primai-fs-sm);
+line-height: 1.55;
+color: var(--primai-muted);
+}
+/* ---------- Per-persona accents ---------- */
+.v2-landing .primai-learner-card--students .primai-learner-avatar-frame {
+background: linear-gradient(135deg, var(--primai-violet), var(--primai-purple));
+}
+.v2-landing .primai-learner-card--students:hover {
+box-shadow: 0 0 26px rgba(124, 58, 237, 0.25);
+}
+.v2-landing .primai-learner-card--professionals .primai-learner-avatar-frame {
+background: linear-gradient(135deg, #3B82F6, var(--primai-cyan));
+}
+.v2-landing .primai-learner-card--professionals:hover {
+box-shadow: 0 0 26px rgba(34, 211, 238, 0.25);
+}
+.v2-landing .primai-learner-card--homemakers .primai-learner-avatar-frame {
+background: linear-gradient(135deg, var(--primai-pink), #E879F9);
+}
+.v2-landing .primai-learner-card--homemakers:hover {
+box-shadow: 0 0 26px rgba(236, 72, 153, 0.25);
+}
+.v2-landing .primai-learner-card--business .primai-learner-avatar-frame {
+background: linear-gradient(135deg, #F97316, #FBBF24);
+}
+.v2-landing .primai-learner-card--business:hover {
+box-shadow: 0 0 26px rgba(249, 115, 22, 0.25);
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-learner-card:hover, .v2-landing .primai-learner-card:focus-within {
+transform: none;
+}
+}
+/* ==================================================
+   "BONUSES WORTH ₹20,000+"
+   4 lazy-loaded video bonus cards + a total value
+   banner. Own orange/gold accent layered onto the
+   purple/pink base palette.
+   ================================================== */
+.v2-landing .primai-bonus {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-bonus-glow {
+top: -12%;
+left: -8%;
+width: 520px;
+height: 480px;
+background: var(--primai-purple);
+opacity: 0.15;
+}
+.v2-landing .primai-bonus-glow--pink {
+top: 20%;
+right: -10%;
+left: auto;
+width: 460px;
+height: 420px;
+background: var(--primai-pink);
+opacity: 0.1;
+}
+.v2-landing .primai-bonus-eyebrow {
+display: block;
+margin-bottom: var(--primai-space-2xs);
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+color: #FBBF24;
+}
+.v2-landing .primai-bonus-lead {
+max-width: 52ch;
+}
+.v2-landing .primai-bonus-grid {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: var(--primai-space-md);
+}
+@media (min-width: 640px) {
+.v2-landing .primai-bonus-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+@media (min-width: 1200px) {
+.v2-landing .primai-bonus-grid {
+grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+}
+.v2-landing .primai-bonus-card {
+display: flex;
+flex-direction: column;
+background: var(--primai-bg-secondary);
+border: 1px solid rgba(249, 191, 36, 0.2);
+border-radius: var(--primai-radius-lg);
+overflow: hidden;
+box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+transition: border-color var(--primai-transition), transform var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-bonus-card:hover, .v2-landing .primai-bonus-card:focus-within {
+transform: translateY(-5px);
+border-color: rgba(249, 191, 36, 0.45);
+box-shadow: 0 0 28px rgba(249, 191, 36, 0.2);
+}
+.v2-landing .primai-bonus-media {
+position: relative;
+width: 100%;
+aspect-ratio: 16 / 9;
+overflow: hidden;
+background: var(--primai-bg-elevated);
+}
+.v2-landing .primai-bonus-media-fallback {
+position: absolute;
+inset: 0;
+background:
+    radial-gradient(circle at 25% 25%, rgba(124,58,237,0.5), transparent 55%),
+    radial-gradient(circle at 80% 70%, rgba(249,191,36,0.3), transparent 55%),
+    var(--primai-bg-elevated);
+opacity: 1;
+transition: opacity 450ms var(--primai-ease);
+}
+.v2-landing .primai-bonus-media-fallback.primai-is-hidden {
+opacity: 0;
+}
+.v2-landing .primai-bonus-video.primai-bonus-video {
+position: absolute;
+inset: 0;
+width: 100%;
+height: 100%;
+object-fit: cover;
+opacity: 0;
+transition: opacity 450ms var(--primai-ease);
+}
+.v2-landing .primai-bonus-video.primai-is-visible {
+opacity: 1;
+}
+.v2-landing .primai-bonus-label {
+position: absolute;
+top: var(--primai-space-xs);
+left: var(--primai-space-xs);
+z-index: 2;
+display: inline-flex;
+align-items: center;
+padding: 0.3em 0.85em;
+font-family: var(--primai-font-display);
+font-size: 0.6875rem;
+font-weight: 800;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+color: var(--primai-bg);
+background: linear-gradient(90deg, #FBBF24, #F97316);
+border-radius: var(--primai-radius-pill);
+}
+.v2-landing .primai-bonus-body {
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-2xs);
+padding: var(--primai-space-md);
+}
+.v2-landing .primai-bonus-title {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-base);
+font-weight: 700;
+color: var(--primai-text);
+}
+.v2-landing .primai-bonus-desc {
+font-size: var(--primai-fs-sm);
+line-height: 1.55;
+color: var(--primai-muted);
+}
+.v2-landing .primai-bonus-value {
+margin-top: var(--primai-space-xs);
+padding-top: var(--primai-space-xs);
+border-top: 1px solid var(--primai-border);
+}
+.v2-landing .primai-bonus-worth {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 800;
+color: #FBBF24;
+transition: color var(--primai-transition);
+}
+.v2-landing .primai-bonus-card:hover .primai-bonus-worth {
+color: #FDE68A;
+}
+.v2-landing .primai-bonus-free {
+display: flex;
+align-items: center;
+gap: var(--primai-space-2xs);
+margin-top: 2px;
+font-size: var(--primai-fs-xs);
+font-weight: 600;
+color: #4ADE80;
+}
+/* ---------- Total value banner ---------- */
+.v2-landing .primai-bonus-banner {
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: var(--primai-space-2xs);
+margin-top: var(--primai-space-lg);
+padding: var(--primai-space-lg);
+text-align: center;
+background: rgba(249, 191, 36, 0.05);
+border: 1px solid rgba(249, 191, 36, 0.3);
+border-radius: var(--primai-radius-lg);
+box-shadow: 0 0 40px rgba(249, 191, 36, 0.12);
+}
+.v2-landing .primai-bonus-banner-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 48px;
+height: 48px;
+margin-bottom: var(--primai-space-2xs);
+border-radius: 50%;
+background: linear-gradient(135deg, #FBBF24, #F97316);
+color: var(--primai-bg);
+box-shadow: 0 0 24px rgba(249, 191, 36, 0.4);
+}
+.v2-landing .primai-bonus-banner-icon svg {
+width: 24px;
+height: 24px;
+}
+.v2-landing .primai-bonus-banner-label {
+font-size: var(--primai-fs-sm);
+font-weight: 600;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+color: var(--primai-muted);
+}
+.v2-landing .primai-bonus-banner-value {
+font-family: var(--primai-font-display);
+font-size: clamp(2rem, 1.7rem + 1.5vw, 2.75rem);
+font-weight: 800;
+background: linear-gradient(90deg, #FBBF24, #F97316);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-bonus-banner-sub {
+font-size: var(--primai-fs-sm);
+color: var(--primai-muted);
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-bonus-card:hover, .v2-landing .primai-bonus-card:focus-within {
+transform: none;
+}
+}
+/* TEMP: zeroed out because this section is still an empty
+   placeholder - the base .primai-section padding was
+   creating a large blank gap between "Bonuses Worth
+   ₹20,000+" and "Real Stories from Real Beginners".
+   Remove this override once real Why PRIM AI Institute
+   content is added. */
+.v2-landing .primai-why-us {
+padding-block: 0;
+}
+/* ==================================================
+   "REAL STORIES FROM REAL BEGINNERS" TESTIMONIALS
+   Desktop: continuous CSS auto-marquee (hover-pause).
+   Mobile/tablet: native horizontal snap-scroll (real
+   swipe), auto-motion off - the two mechanisms would
+   otherwise fight each other on the same element.
+   ================================================== */
+.v2-landing .primai-testimonials {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-testimonials-glow {
+top: -10%;
+left: 55%;
+width: 600px;
+height: 480px;
+background: var(--primai-purple);
+opacity: 0.15;
+}
+.v2-landing .primai-testimonials-glow--pink {
+bottom: -15%;
+left: -10%;
+width: 460px;
+height: 420px;
+background: var(--primai-pink);
+opacity: 0.1;
+}
+.v2-landing .primai-testimonials-lead {
+max-width: 52ch;
+}
+/* ---------- Shared card look ---------- */
+.v2-landing .primai-testimonial-card {
+display: flex;
+flex-direction: column;
+flex-shrink: 0;
+width: min(360px, 85vw);
+padding: var(--primai-space-lg);
+background: var(--primai-bg-secondary);
+border: 1px solid var(--primai-border);
+border-radius: 22px;
+box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+transition: border-color var(--primai-transition), transform var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-testimonial-card:hover, .v2-landing .primai-testimonial-card:focus-within {
+transform: translateY(-4px);
+border-color: var(--primai-border-strong);
+box-shadow: var(--primai-glow-purple);
+}
+.v2-landing .primai-testimonial-quote-mark {
+font-family: var(--primai-font-display);
+font-size: 2.75rem;
+line-height: 1;
+margin-bottom: var(--primai-space-2xs);
+background: linear-gradient(135deg, var(--primai-violet), var(--primai-cyan));
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-testimonial-quote {
+flex: 1;
+font-size: var(--primai-fs-base);
+line-height: 1.6;
+color: var(--primai-text);
+}
+.v2-landing .primai-testimonial-footer {
+display: flex;
+align-items: center;
+gap: var(--primai-space-sm);
+margin-top: var(--primai-space-md);
+padding-top: var(--primai-space-md);
+border-top: 1px solid var(--primai-border);
+}
+.v2-landing .primai-testimonial-avatar {
+display: flex;
+align-items: center;
+justify-content: center;
+width: 48px;
+height: 48px;
+flex-shrink: 0;
+border-radius: 50%;
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-sm);
+font-weight: 800;
+color: var(--primai-text);
+background: linear-gradient(135deg, var(--primai-violet), var(--primai-pink));
+box-shadow: 0 0 16px rgba(139, 92, 246, 0.4);
+}
+.v2-landing .primai-testimonial-who {
+min-width: 0;
+}
+.v2-landing .primai-testimonial-name {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-sm);
+font-weight: 700;
+color: var(--primai-text);
+}
+.v2-landing .primai-testimonial-profile {
+font-size: var(--primai-fs-xs);
+color: var(--primai-cyan);
+}
+/* ---------- Desktop auto-marquee ---------- */
+.v2-landing .primai-testimonials-marquee {
+display: none;
+position: relative;
+width: 100%;
+overflow: hidden;
+-webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+}
+.v2-landing .primai-testimonials-track {
+display: flex;
+align-items: stretch;
+gap: var(--primai-space-md);
+width: max-content;
+will-change: transform;
+animation: primai-testimonials-scroll 36s linear infinite;
+}
+.v2-landing .primai-testimonial-group {
+display: contents;
+}
+.v2-landing .primai-testimonials-marquee:hover .primai-testimonials-track, .v2-landing .primai-testimonials-marquee:focus-within .primai-testimonials-track {
+animation-play-state: paused;
+}
+@keyframes primai-testimonials-scroll {
+from {
+transform: translateX(0);
+}
+to {
+transform: translateX(-50%);
+}
+}
+/* ---------- Mobile/tablet swipe row ---------- */
+.v2-landing .primai-testimonials-swipe {
+display: flex;
+gap: var(--primai-space-md);
+overflow-x: auto;
+scroll-snap-type: x mandatory;
+-webkit-overflow-scrolling: touch;
+padding-bottom: var(--primai-space-xs);
+scrollbar-width: none;
+}
+.v2-landing .primai-testimonials-swipe::-webkit-scrollbar {
+display: none;
+}
+.v2-landing .primai-testimonials-swipe .primai-testimonial-card {
+scroll-snap-align: center;
+}
+@media (min-width: 1024px) {
+.v2-landing .primai-testimonials-marquee {
+display: block;
+}
+.v2-landing .primai-testimonials-swipe {
+display: none;
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-testimonials-track {
+animation: none;
+}
+.v2-landing .primai-testimonial-card:hover, .v2-landing .primai-testimonial-card:focus-within {
+transform: none;
+}
+}
+.v2-landing .primai-testimonials {
+}
+/* TEMP: zeroed out because this section is still an empty
+   placeholder - it now sits between the built Testimonials
+   section and the built Registration section, which would
+   otherwise create the same blank-gap issue fixed earlier
+   for Program Overview / AI Tools / Why PRIM AI Institute.
+   Remove this override once real Pricing content is added. */
+.v2-landing .primai-pricing {
+padding-block: 0;
+}
+/* ==================================================
+   "BOOK YOUR ₹399 SEAT" REGISTRATION FORM
+   ================================================== */
+.v2-landing .primai-register {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-register-glow {
+top: -10%;
+left: 50%;
+transform: translateX(-50%);
+width: 640px;
+height: 520px;
+background: var(--primai-purple);
+opacity: 0.16;
+}
+.v2-landing .primai-register-glow--pink {
+bottom: -15%;
+right: -10%;
+left: auto;
+width: 460px;
+height: 420px;
+background: var(--primai-pink);
+opacity: 0.1;
+}
+.v2-landing .primai-register-watermark {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-family: var(--primai-font-display);
+font-size: clamp(6rem, 4rem + 12vw, 16rem);
+font-weight: 900;
+color: var(--primai-text);
+opacity: 0.03;
+white-space: nowrap;
+pointer-events: none;
+z-index: 0;
+user-select: none;
+}
+.v2-landing .primai-register .primai-section-head {
+margin-bottom: 0;
+}
+.v2-landing .primai-register-lead {
+max-width: 42ch;
+}
+@media (max-width: 767px) {
+.v2-landing .primai-register {
+padding-block: var(--primai-space-xl);
+}
+}
+.v2-landing .primai-register-price {
+display: inline-flex;
+margin-top: var(--primai-space-2xs);
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-2xl);
+font-weight: 800;
+background: var(--primai-gradient-primary);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-register-card {
+position: relative;
+z-index: 1;
+max-width: 560px;
+margin-inline: auto;
+margin-top: var(--primai-space-md);
+padding: var(--primai-space-md);
+background: var(--primai-bg-elevated);
+border: 1px solid rgba(139, 92, 246, 0.5);
+border-radius: 26px;
+box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 50px rgba(124, 58, 237, 0.25);
+}
+/* Brief attention pulse when a visitor lands here via an
+   Enroll Now / Book My Seat link elsewhere on the page. */
+.v2-landing #primai-registration:target .primai-register-card {
+animation: primai-register-arrive 1.8s ease-out 1;
+}
+@keyframes primai-register-arrive {
+0% {
+box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 0 rgba(124, 58, 237, 0);
+border-color: var(--primai-cyan);
+}
+30% {
+box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 70px rgba(34, 211, 238, 0.5);
+border-color: var(--primai-cyan);
+}
+100% {
+box-shadow: 0 20px 60px rgba(0,0,0,0.45), 0 0 50px rgba(124, 58, 237, 0.25);
+border-color: rgba(139, 92, 246, 0.5);
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing #primai-registration:target .primai-register-card {
+animation: none;
+}
+}
+.v2-landing .primai-register-form {
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-register-field {
+display: flex;
+flex-direction: column;
+gap: 4px;
+}
+.v2-landing .primai-register-label {
+font-size: var(--primai-fs-xs);
+font-weight: 600;
+color: var(--primai-text);
+}
+.v2-landing .primai-register-input-wrap {
+position: relative;
+}
+.v2-landing .primai-register-input-icon {
+position: absolute;
+top: 50%;
+left: 15px;
+transform: translateY(-50%);
+display: inline-flex;
+color: var(--primai-muted-dim);
+pointer-events: none;
+}
+.v2-landing .primai-register-input-icon svg {
+width: 17px;
+height: 17px;
+}
+.v2-landing .primai-register-input, .v2-landing .primai-register-select {
+width: 100%;
+height: 46px;
+padding: 0 var(--primai-space-sm);
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-sm);
+color: var(--primai-text);
+background: rgba(255,255,255,0.045);
+border: 1px solid rgba(255,255,255,0.28);
+border-radius: 12px;
+box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+transition: border-color var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-register-input-wrap .primai-register-input {
+padding-left: 42px;
+}
+.v2-landing .primai-register-select {
+appearance: none;
+-webkit-appearance: none;
+background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A8A3B5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6l6-6'/%3E%3C/svg%3E");
+background-repeat: no-repeat;
+background-position: right 16px center;
+background-size: 18px;
+padding-right: 44px;
+}
+.v2-landing .primai-register-select option {
+background: var(--primai-bg-secondary);
+color: var(--primai-text);
+}
+.v2-landing .primai-register-input::placeholder {
+color: var(--primai-muted-dim);
+}
+.v2-landing .primai-register-input:focus, .v2-landing .primai-register-select:focus {
+outline: none;
+border-color: var(--primai-violet);
+box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+}
+.v2-landing .primai-register-field[data-invalid="true"] .primai-register-input, .v2-landing .primai-register-field[data-invalid="true"] .primai-register-select {
+border-color: #F87171;
+}
+.v2-landing .primai-register-error {
+display: none;
+font-size: var(--primai-fs-xs);
+color: #F87171;
+}
+.v2-landing .primai-register-field[data-invalid="true"] .primai-register-error {
+display: block;
+}
+.v2-landing .primai-register-submit {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: var(--primai-space-2xs);
+margin-top: 2px;
+width: 100%;
+}
+.v2-landing .primai-register-submit svg {
+width: 18px;
+height: 18px;
+}
+.v2-landing .primai-register-trust {
+margin-top: var(--primai-space-xs);
+text-align: center;
+font-size: var(--primai-fs-xs);
+color: var(--primai-muted-dim);
+}
+@media (min-width: 640px) {
+.v2-landing .primai-register-card {
+padding: var(--primai-space-lg);
+}
+}
+/* ==================================================
+   "PAYMENT KE BAAD KYA HOGA?" - 4-step flow
+   Horizontal connected steps on desktop, vertical
+   timeline on mobile.
+   ================================================== */
+.v2-landing .primai-payment-flow {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-payment-flow-glow {
+top: -10%;
+left: -8%;
+width: 500px;
+height: 460px;
+background: var(--primai-purple);
+opacity: 0.14;
+}
+.v2-landing .primai-payment-flow-glow--cyan {
+bottom: -12%;
+right: -8%;
+left: auto;
+width: 460px;
+height: 420px;
+background: var(--primai-cyan);
+opacity: 0.1;
+}
+.v2-landing .primai-payment-flow-lead {
+max-width: 48ch;
+}
+.v2-landing .primai-payment-flow-track {
+position: relative;
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: var(--primai-space-lg);
+}
+.v2-landing .primai-payment-step {
+position: relative;
+z-index: 1;
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-xs);
+padding: var(--primai-space-md);
+background: rgba(255,255,255,0.04);
+border: 1px solid var(--primai-border);
+border-radius: 22px;
+box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+opacity: 0;
+transform: translateY(16px);
+transition: opacity 550ms var(--primai-ease), transform 550ms var(--primai-ease), border-color var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-payment-step.primai-is-in-view {
+opacity: 1;
+transform: translateY(0);
+}
+.v2-landing .primai-payment-step:hover, .v2-landing .primai-payment-step:focus-within {
+transform: translateY(-4px);
+border-color: var(--primai-border-strong);
+box-shadow: var(--primai-glow-purple);
+}
+.v2-landing .primai-payment-step.primai-is-in-view:hover, .v2-landing .primai-payment-step.primai-is-in-view:focus-within {
+transform: translateY(-4px);
+}
+.v2-landing .primai-payment-step-top {
+display: flex;
+align-items: center;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-payment-number {
+display: inline-flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 1px;
+width: 56px;
+height: 56px;
+flex-shrink: 0;
+border-radius: 16px;
+color: var(--primai-text);
+line-height: 1;
+}
+.v2-landing .primai-payment-number-label {
+font-family: var(--primai-font-body);
+font-size: 0.5625rem;
+font-weight: 700;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+opacity: 0.85;
+}
+.v2-landing .primai-payment-number-value {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 800;
+}
+.v2-landing .primai-payment-step--1 .primai-payment-number {
+background: linear-gradient(135deg, var(--primai-violet), var(--primai-pink));
+box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+}
+.v2-landing .primai-payment-step--2 .primai-payment-number {
+background: linear-gradient(135deg, var(--primai-violet), var(--primai-cyan));
+box-shadow: 0 4px 16px rgba(34, 211, 238, 0.35);
+}
+.v2-landing .primai-payment-step--3 .primai-payment-number {
+background: linear-gradient(135deg, var(--primai-pink), var(--primai-violet));
+box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
+}
+.v2-landing .primai-payment-step--4 .primai-payment-number {
+background: linear-gradient(135deg, var(--primai-cyan), var(--primai-violet));
+box-shadow: 0 4px 16px rgba(34, 211, 238, 0.35);
+}
+.v2-landing .primai-payment-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 32px;
+height: 32px;
+flex-shrink: 0;
+color: var(--primai-muted);
+}
+.v2-landing .primai-payment-icon svg {
+width: 20px;
+height: 20px;
+}
+.v2-landing .primai-payment-title {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 700;
+color: var(--primai-text);
+}
+.v2-landing .primai-payment-price {
+display: inline-flex;
+margin-right: var(--primai-space-2xs);
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-xl);
+font-weight: 800;
+background: var(--primai-gradient-primary);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-payment-desc {
+font-size: var(--primai-fs-sm);
+line-height: 1.55;
+color: var(--primai-muted);
+}
+@media (min-width: 1024px) {
+.v2-landing .primai-payment-flow-track {
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: var(--primai-space-md);
+}
+.v2-landing .primai-payment-step-top {
+flex-direction: column;
+align-items: flex-start;
+}
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+.v2-landing .primai-payment-flow-track {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-payment-step {
+opacity: 1;
+transform: none;
+transition: border-color var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-payment-step:hover, .v2-landing .primai-payment-step:focus-within {
+transform: none;
+}
+}
+/* ==================================================
+   FAQ SECTION
+   Accordion (one open at a time), first 8 visible,
+   9-15 behind a "See More" reveal.
+   LIGHT premium theme (this section only - everything
+   stays scoped under .primai-faq, no global colors
+   touched, so the rest of the dark page is unaffected).
+   ================================================== */
+.v2-landing .primai-faq {
+position: relative;
+overflow: hidden;
+background:
+    radial-gradient(ellipse 620px 480px at 12% 8%, rgba(139, 92, 246, 0.10), transparent 60%),
+    radial-gradient(ellipse 620px 480px at 88% 12%, rgba(236, 72, 153, 0.07), transparent 60%),
+    radial-gradient(ellipse 700px 460px at 50% 105%, rgba(6, 182, 212, 0.05), transparent 60%),
+    #F5F7FF;
+}
+.v2-landing .primai-faq-glow, .v2-landing .primai-faq-glow--pink {
+display: none;
+}
+.v2-landing .primai-faq-watermark {
+position: absolute;
+top: 0;
+left: 50%;
+transform: translateX(-50%);
+font-family: var(--primai-font-display);
+font-size: clamp(6rem, 4rem + 14vw, 18rem);
+font-weight: 900;
+color: #A855F7;
+opacity: 0.04;
+white-space: nowrap;
+pointer-events: none;
+z-index: 0;
+user-select: none;
+}
+.v2-landing .primai-faq-eyebrow {
+display: block;
+margin-bottom: var(--primai-space-2xs);
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+background: linear-gradient(90deg, #A855F7, #EC4899);
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-faq .primai-heading-lg {
+color: #0F172A;
+text-shadow: 0 0 60px rgba(168, 85, 247, 0.15);
+}
+.v2-landing .primai-faq .primai-heading-lg .primai-gradient-text {
+background: none;
+-webkit-text-fill-color: initial;
+color: #0F172A;
+}
+.v2-landing .primai-faq-lead {
+max-width: 52ch;
+color: #596273;
+}
+.v2-landing .primai-faq-list {
+position: relative;
+z-index: 1;
+max-width: 900px;
+margin-inline: auto;
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-faq-item {
+position: relative;
+background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(248,246,255,0.96));
+border-radius: 18px;
+box-shadow: 0 8px 30px rgba(30, 20, 80, 0.06);
+transition: border-color var(--primai-transition), box-shadow var(--primai-transition), transform var(--primai-transition);
+/* Subtle low-opacity purple -> pink -> cyan gradient border */
+  border: 1px solid transparent;
+background-image: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(248,246,255,0.96)), linear-gradient(120deg, rgba(168, 85, 247, 0.35), rgba(236, 72, 153, 0.3), rgba(6, 182, 212, 0.3));
+background-origin: border-box;
+background-clip: padding-box, border-box;
+}
+.v2-landing .primai-faq-item:hover {
+transform: translateY(-2px);
+box-shadow: 0 12px 34px rgba(30, 20, 80, 0.1);
+}
+.v2-landing .primai-faq-item[data-open="true"] {
+background-image: linear-gradient(135deg, #FFFFFF, #FAF5FF), linear-gradient(120deg, rgba(168, 85, 247, 0.55), rgba(236, 72, 153, 0.4), rgba(6, 182, 212, 0.35));
+}
+.v2-landing .primai-faq-question {
+display: flex;
+align-items: center;
+gap: var(--primai-space-sm);
+width: 100%;
+padding: var(--primai-space-sm) var(--primai-space-md);
+text-align: left;
+}
+.v2-landing .primai-faq-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 36px;
+height: 36px;
+flex-shrink: 0;
+border-radius: 50%;
+background: linear-gradient(135deg, #F3E8FF, #FCE7F3);
+color: #A855F7;
+box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.12), 0 4px 10px rgba(168, 85, 247, 0.15);
+transition: box-shadow var(--primai-transition);
+}
+.v2-landing .primai-faq-item:hover .primai-faq-icon {
+box-shadow: 0 0 0 1px rgba(168, 85, 247, 0.22), 0 4px 14px rgba(168, 85, 247, 0.25);
+}
+/* Gentle 3-color rotation so the list doesn't feel monotone,
+   while staying one visual system (icon tint only). */
+.v2-landing .primai-faq-item:nth-child(3n+2) .primai-faq-icon {
+background: linear-gradient(135deg, #FCE7F3, #FFE4E6);
+color: #EC4899;
+}
+.v2-landing .primai-faq-item:nth-child(3n) .primai-faq-icon {
+background: linear-gradient(135deg, #E0F7FA, #F3E8FF);
+color: #06B6D4;
+}
+.v2-landing .primai-faq-icon svg {
+width: 17px;
+height: 17px;
+}
+.v2-landing .primai-faq-question-text {
+flex: 1;
+font-family: var(--primai-font-display);
+font-size: clamp(0.9375rem, 0.88rem + 0.25vw, 1.125rem);
+font-weight: 600;
+color: #111827;
+line-height: 1.4;
+}
+.v2-landing .primai-faq-toggle-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 32px;
+height: 32px;
+flex-shrink: 0;
+border-radius: 50%;
+background: linear-gradient(135deg, #F3E8FF, #FCE7F3);
+border: 1px solid rgba(168, 85, 247, 0.20);
+color: #A855F7;
+transition: transform var(--primai-transition), background var(--primai-transition), color var(--primai-transition), box-shadow var(--primai-transition);
+}
+.v2-landing .primai-faq-question:hover .primai-faq-toggle-icon {
+background: linear-gradient(135deg, #A855F7, #EC4899);
+color: #FFFFFF;
+box-shadow: 0 4px 14px rgba(168, 85, 247, 0.35);
+}
+.v2-landing .primai-faq-item[data-open="true"] .primai-faq-toggle-icon {
+background: linear-gradient(135deg, #A855F7, #EC4899);
+color: #FFFFFF;
+}
+.v2-landing .primai-faq-toggle-icon svg {
+width: 14px;
+height: 14px;
+}
+.v2-landing .primai-faq-toggle-icon .primai-faq-icon-minus {
+display: none;
+}
+.v2-landing .primai-faq-item[data-open="true"] .primai-faq-icon-plus {
+display: none;
+}
+.v2-landing .primai-faq-item[data-open="true"] .primai-faq-icon-minus {
+display: block;
+}
+.v2-landing .primai-faq-answer-wrapper {
+display: grid;
+grid-template-rows: 0fr;
+transition: grid-template-rows 320ms var(--primai-ease);
+}
+.v2-landing .primai-faq-item[data-open="true"] .primai-faq-answer-wrapper {
+grid-template-rows: 1fr;
+}
+.v2-landing .primai-faq-answer-inner {
+position: relative;
+overflow: hidden;
+}
+/* Vertical accent line connecting the question to its answer */
+.v2-landing .primai-faq-answer-inner::before {
+content: '';
+position: absolute;
+top: 0;
+bottom: var(--primai-space-md);
+left: calc(var(--primai-space-md) + 18px);
+width: 2px;
+background: linear-gradient(180deg, #A855F7, #EC4899);
+opacity: 0.3;
+}
+.v2-landing .primai-faq-answer {
+padding: 0 var(--primai-space-md) var(--primai-space-md) calc(36px + var(--primai-space-sm) + var(--primai-space-md));
+font-size: var(--primai-fs-sm);
+line-height: 1.65;
+color: #596273;
+}
+.v2-landing .primai-faq-more-group {
+display: grid;
+grid-template-rows: 0fr;
+transition: grid-template-rows 400ms var(--primai-ease);
+}
+.v2-landing .primai-faq-more-group[data-open="true"] {
+grid-template-rows: 1fr;
+}
+.v2-landing .primai-faq-more-inner {
+overflow: hidden;
+display: flex;
+flex-direction: column;
+gap: var(--primai-space-sm);
+}
+.v2-landing .primai-faq-more-inner > .primai-faq-item:first-child {
+margin-top: var(--primai-space-sm);
+}
+.v2-landing .primai-faq-more-btn.primai-faq-more-btn {
+display: inline-flex;
+align-items: center;
+gap: var(--primai-space-2xs);
+margin: var(--primai-space-lg) auto 0;
+padding: 0.65em 1.6em;
+font-family: var(--primai-font-body);
+font-size: var(--primai-fs-sm);
+font-weight: 600;
+color: #FFFFFF;
+background: linear-gradient(90deg, #A855F7, #EC4899);
+border: none;
+border-radius: var(--primai-radius-pill);
+box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+transition: box-shadow var(--primai-transition), transform var(--primai-transition);
+}
+.v2-landing .primai-faq-more-btn:hover {
+box-shadow: 0 8px 26px rgba(168, 85, 247, 0.45);
+transform: translateY(-1px);
+}
+.v2-landing .primai-faq-more-btn svg {
+width: 14px;
+height: 14px;
+transition: transform var(--primai-transition);
+}
+.v2-landing .primai-faq-more-btn[aria-expanded="true"] svg {
+transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-faq-answer-wrapper, .v2-landing .primai-faq-more-group {
+transition: none;
+}
+.v2-landing .primai-faq-item:hover {
+transform: none;
+box-shadow: 0 8px 30px rgba(30, 20, 80, 0.06);
+}
+}
+/* ==================================================
+   FINAL CTA
+   ================================================== */
+.v2-landing .primai-final-cta {
+position: relative;
+overflow: hidden;
+}
+.v2-landing .primai-final-cta-glow {
+top: -15%;
+left: 50%;
+transform: translateX(-50%);
+width: 720px;
+height: 600px;
+background: var(--primai-purple);
+opacity: 0.2;
+animation: primai-final-cta-pulse 6s ease-in-out infinite;
+}
+.v2-landing .primai-final-cta-glow--pink {
+bottom: -20%;
+right: -10%;
+left: auto;
+width: 480px;
+height: 440px;
+background: var(--primai-pink);
+opacity: 0.12;
+}
+.v2-landing .primai-final-cta-glow--cyan {
+bottom: -15%;
+left: -10%;
+width: 420px;
+height: 400px;
+background: var(--primai-cyan);
+opacity: 0.1;
+}
+.v2-landing .primai-final-cta-orb {
+position: absolute;
+z-index: 0;
+border-radius: 50%;
+filter: blur(2px);
+pointer-events: none;
+animation: primai-final-cta-float 7s ease-in-out infinite;
+}
+.v2-landing .primai-final-cta-orb--1 {
+top: 12%;
+left: 8%;
+width: 10px;
+height: 10px;
+background: var(--primai-cyan);
+box-shadow: 0 0 16px var(--primai-cyan);
+}
+.v2-landing .primai-final-cta-orb--2 {
+top: 22%;
+right: 10%;
+width: 14px;
+height: 14px;
+background: var(--primai-pink);
+box-shadow: 0 0 20px var(--primai-pink);
+animation-delay: 1.5s;
+}
+.v2-landing .primai-final-cta-orb--3 {
+bottom: 15%;
+left: 14%;
+width: 8px;
+height: 8px;
+background: var(--primai-violet);
+box-shadow: 0 0 14px var(--primai-violet);
+animation-delay: 3s;
+}
+@keyframes primai-final-cta-pulse {
+0%, 100% {
+opacity: 0.16;
+}
+50% {
+opacity: 0.24;
+}
+}
+@keyframes primai-final-cta-float {
+0%, 100% {
+transform: translateY(0);
+}
+50% {
+transform: translateY(-14px);
+}
+}
+.v2-landing .primai-final-cta-watermark {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-family: var(--primai-font-display);
+font-size: clamp(6rem, 4rem + 16vw, 20rem);
+font-weight: 900;
+color: var(--primai-text);
+opacity: 0.05;
+white-space: nowrap;
+pointer-events: none;
+z-index: 0;
+user-select: none;
+}
+.v2-landing .primai-final-cta-card {
+position: relative;
+z-index: 1;
+max-width: 720px;
+margin-inline: auto;
+padding: var(--primai-space-xl) var(--primai-space-lg);
+text-align: center;
+background: rgba(255,255,255,0.035);
+border: 1px solid rgba(139, 92, 246, 0.28);
+border-radius: 30px;
+box-shadow: 0 24px 70px rgba(0,0,0,0.5), var(--primai-glow-purple);
+backdrop-filter: blur(12px);
+}
+.v2-landing .primai-final-cta-eyebrow {
+display: block;
+margin-bottom: var(--primai-space-xs);
+font-size: var(--primai-fs-xs);
+font-weight: 700;
+letter-spacing: 0.1em;
+text-transform: uppercase;
+background: linear-gradient(90deg, var(--primai-violet), var(--primai-pink));
+-webkit-background-clip: text;
+background-clip: text;
+color: transparent;
+}
+.v2-landing .primai-final-cta-title {
+font-family: var(--primai-font-display);
+font-size: clamp(1.5rem, 1.2rem + 2.4vw, 2.5rem);
+font-weight: 800;
+line-height: 1.25;
+color: var(--primai-text);
+}
+.v2-landing .primai-final-cta-title-line2 {
+display: block;
+margin-top: var(--primai-space-2xs);
+font-size: clamp(1.125rem, 1rem + 1vw, 1.5rem);
+color: var(--primai-muted);
+}
+.v2-landing .primai-final-cta-text {
+max-width: 42ch;
+margin: var(--primai-space-sm) auto 0;
+font-size: var(--primai-fs-base);
+color: var(--primai-muted);
+}
+.v2-landing .primai-final-cta-button {
+margin-top: var(--primai-space-lg);
+}
+.v2-landing .primai-final-cta-trust {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: var(--primai-space-sm) var(--primai-space-md);
+margin-top: var(--primai-space-md);
+}
+.v2-landing .primai-final-cta-trust-item {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: var(--primai-fs-xs);
+color: var(--primai-muted);
+}
+.v2-landing .primai-final-cta-trust-item svg {
+width: 14px;
+height: 14px;
+color: #4ADE80;
+flex-shrink: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+.v2-landing .primai-final-cta-glow, .v2-landing .primai-final-cta-orb {
+animation: none;
+}
+}
+/* ==================================================
+   FOOTER
+   ================================================== */
+.v2-landing .primai-footer {
+background: #030712;
+}
+.v2-landing .primai-footer-inner {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+justify-content: center;
+gap: var(--primai-space-lg);
+text-align: center;
+}
+.v2-landing .primai-footer-brand {
+width: 100%;
+}
+.v2-landing .primai-footer-brand-name {
+font-family: var(--primai-font-display);
+font-size: var(--primai-fs-lg);
+font-weight: 800;
+color: var(--primai-text);
+}
+.v2-landing .primai-footer-description {
+max-width: 36ch;
+margin: var(--primai-space-2xs) auto 0;
+font-size: var(--primai-fs-sm);
+color: var(--primai-muted);
+}
+.v2-landing .primai-footer-contact {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+gap: var(--primai-space-sm) var(--primai-space-lg);
+width: 100%;
+}
+.v2-landing .primai-footer-link.primai-footer-link {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+font-size: var(--primai-fs-sm);
+color: var(--primai-muted);
+transition: color var(--primai-transition);
+}
+.v2-landing .primai-footer-link svg {
+width: 15px;
+height: 15px;
+flex-shrink: 0;
+}
+.v2-landing .primai-footer-link:hover {
+color: var(--primai-violet);
+}
+.v2-landing .primai-footer-bottom {
+width: 100%;
+padding-top: var(--primai-space-md);
+border-top: 1px solid rgba(255,255,255,0.08);
+font-size: var(--primai-fs-xs);
+color: var(--primai-muted-dim);
+}
+@media (min-width: 768px) {
+.v2-landing .primai-footer-inner {
+justify-content: space-between;
+text-align: left;
+}
+.v2-landing .primai-footer-brand {
+width: auto;
+}
+.v2-landing .primai-footer-description {
+margin-inline: 0;
+}
+.v2-landing .primai-footer-contact {
+width: auto;
+justify-content: flex-end;
+}
+.v2-landing .primai-footer-bottom {
+text-align: center;
+}
+}

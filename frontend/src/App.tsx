@@ -42,6 +42,7 @@ const ProjectsAdmin = lazyWithRetry(() => import('@/pages/admin/ProjectsAdmin'))
 const AiLaunchpad = lazyWithRetry(() => import('@/pages/AiLaunchpad'));
 const ProgramPage = lazyWithRetry(() => import('@/pages/ProgramPage'));
 const ThankYouPage = lazyWithRetry(() => import('@/pages/ThankYouPage'));
+const TenDayAiV2 = lazyWithRetry(() => import('@/pages/program/TenDayAiV2'));
 const ProgramPagesAdmin = lazyWithRetry(() => import('@/pages/admin/ProgramPagesAdmin'));
 
 function PublicLayout() {
@@ -113,6 +114,13 @@ export default function App() {
         <Route path="/refund-policy" element={<RefundPolicy />} />
         <Route path="/programs/10-day-ai-launchpad" element={<AiLaunchpad />} />
       </Route>
+
+      {/* Standalone A/B variant - must be declared BEFORE /program/:slug */}
+      <Route path="/program/10-day-ai-v2" element={
+        <Suspense fallback={<PageLoader />}>
+          <TenDayAiV2 />
+        </Suspense>
+      } />
 
       {/* Standalone light-theme program landing pages - no site Navbar/Footer */}
       <Route path="/program/:slug" element={
