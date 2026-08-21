@@ -3326,9 +3326,22 @@ text-align: center;
    so it reads correctly on this page's near-black background. Sized to sit
    optically level with the old text mark; intentionally not a link, since
    this is a conversion page and the header should not route people away. */
-.v2-landing .primai-logo-img {
-  height: clamp(26px, 5vw, 32px);
+/* Three classes (0,3,0) on purpose: the reset above uses
+   `.v2-landing .primai-landing img` (0,2,1), which outranks a two-class
+   selector and would re-apply `height: auto` + `max-width: 100%` - that is
+   what stretched the logo across the full page width. Sizing mirrors the
+   10-day-ai header logo so both program pages read identically. */
+.v2-landing .primai-landing .primai-logo-img {
+  height: clamp(26px, 6vw, 36px);
   width: auto;
+  max-width: 55vw;
   display: block;
+  flex-shrink: 0;
+}
+
+/* The header CTA is a flex sibling of the logo and defaults to flex-shrink: 1,
+   so anything oversized next to it squeezed the button until "Enroll Now"
+   clipped to "roll N". Pin it at its natural width. */
+.v2-landing .primai-landing .primai-header__cta {
   flex-shrink: 0;
 }
