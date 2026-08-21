@@ -3320,3 +3320,15 @@ justify-content: flex-end;
 text-align: center;
 }
 }
+
+/* Real PRIM AI Institute logo in the header, replacing the text wordmark.
+   Asset 16.svg is the white + orange variant (the one the site footer uses),
+   so it reads correctly on this page's near-black background. Sized to sit
+   optically level with the old text mark; intentionally not a link, since
+   this is a conversion page and the header should not route people away. */
+.v2-landing .primai-logo-img {
+  height: clamp(26px, 5vw, 32px);
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}

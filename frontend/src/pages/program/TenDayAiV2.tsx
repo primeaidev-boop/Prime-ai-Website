@@ -153,7 +153,13 @@ export default function TenDayAiV2() {
   
   <header className="primai-header">
     <div className="primai-container primai-header__inner">
-      <span className="primai-logo">PRIM<span className="primai-gradient-text">AI</span></span>
+      <img
+        className="primai-logo-img"
+        src="/Asset%2016.svg"
+        alt="PRIM AI Institute"
+        width={234}
+        height={49}
+      />
       <a className="primai-btn primai-btn--primary primai-header__cta" href="#primai-registration">Enroll Now</a>
     </div>
   </header>
