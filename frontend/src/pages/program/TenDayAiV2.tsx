@@ -15,7 +15,7 @@
 // model or service. Rows are distinguishable by programTitle/programSlug.
 
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { submitProgramEnrollment } from '@/api/programEnrollments';
 import { getPageContent } from '@/api/content';
 import { getStoredRef, sanitizeRef } from '@/lib/refSource';
@@ -39,6 +39,7 @@ const BATCH_FALLBACK = 'Not Specified';
 
 export default function TenDayAiV2() {
   const { search } = useLocation();
+  const navigate = useNavigate();
 
   // --- form state ---
   const [name, setName] = useState('');
@@ -49,7 +50,6 @@ export default function TenDayAiV2() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [done, setDone] = useState(false);
   const inFlight = useRef(false);          // hard guard against double-submit
   const [batchName, setBatchName] = useState(BATCH_FALLBACK);
 
@@ -129,7 +129,14 @@ export default function TenDayAiV2() {
         batchName,
         source,
       });
-      setDone(true);
+      // Reuses the exact 10-day-ai thank-you page/route as-is - same design,
+      // same admin-managed heading/subtext/countdown/WhatsApp template. There
+      // is no separate v2 entry in the CMS, so routing here (rather than to
+      // /program/10-day-ai-v2/thank-you, which has no matching content and
+      // would 404 into "Program not found") is the correct reuse.
+      navigate('/program/10-day-ai/thank-you', {
+        state: { fullName: name.trim(), batchName, programTitle: PROGRAM_LABEL },
+      });
     } catch {
       // Keep every entered value - the visitor should only have to retry.
       setSubmitError('Could not submit right now. Please check your connection and try again.');
@@ -1498,19 +1505,13 @@ export default function TenDayAiV2() {
               <span className="primai-register-error">{errors.role || 'Please tell us who you are.'}</span>
             </div>
 
-            <button type="submit" className="primai-btn primai-btn--primary primai-btn--lg primai-register-submit" disabled={submitting || done}>
-              {done ? 'Seat Booked ✓' : submitting ? 'Booking…' : 'Book My Seat - ₹399'}
+            <button type="submit" className="primai-btn primai-btn--primary primai-btn--lg primai-register-submit" disabled={submitting}>
+              {submitting ? 'Booking…' : 'Book My Seat - ₹399'}
             </button>
 
-            {submitError && (
+            {submitError ? (
               <p className="primai-register-trust" role="alert" style={{ color: '#ff8098' }}>{submitError}</p>
-            )}
-            {done && (
-              <p className="primai-register-trust" role="status">
-                Thank you! Our team will contact you on WhatsApp shortly.
-              </p>
-            )}
-            {!submitError && !done && (
+            ) : (
               <p className="primai-register-trust">Secure registration &bull; No spam</p>
             )}
 
