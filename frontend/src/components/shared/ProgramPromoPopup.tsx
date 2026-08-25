@@ -12,7 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
-import { Calendar, GraduationCap, Users, Award, Gift, Clock, X, Check } from 'lucide-react';
+import { Calendar, GraduationCap, Users, Award, Gift, X, Check } from 'lucide-react';
 
 const PROGRAM_URL = '/program/10-day-ai-v2?source=popup';
 const STORAGE_KEY = 'primai_promo_10day_seen';
@@ -301,26 +301,33 @@ export function ProgramPromoPopup() {
             </div>
           </div>
 
-          {/* Footer CTA bar */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mt-8 md:mt-10">
-            <Link
-              to={PROGRAM_URL}
-              onClick={markSeen}
-              className="w-full md:w-auto text-center rounded-full font-bold px-8 py-4"
+          {/* Footer CTA bar - price matches the real V2 page (Book My Seat -
+              ₹399, struck ₹2999), not a made-up number. */}
+          <Link
+            to={PROGRAM_URL}
+            onClick={markSeen}
+            className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl px-6 py-5 sm:px-8"
+            style={{ border: '1px solid rgba(0,212,255,0.35)', background: 'rgba(0,212,255,0.06)' }}
+          >
+            <span
+              className="flex items-center gap-2 text-lg sm:text-xl font-black"
+              style={{ color: 'var(--white)', fontFamily: 'var(--font-head)' }}
+            >
+              CLAIM THIS OFFER <span style={{ color: 'var(--electric)' }}>&raquo;</span>
+            </span>
+            <span
+              className="flex items-center gap-3 rounded-xl px-5 py-2.5 font-black text-2xl sm:text-3xl"
               style={{ background: 'var(--gold)', color: 'var(--navy)' }}
             >
-              ENROLL NOW →
-            </Link>
-            <div className="flex flex-col md:items-end gap-1">
-              <p className="text-sm font-bold" style={{ color: 'var(--gold)' }}>
-                LIMITED SEATS – ENROLL TODAY!
-              </p>
-              <p className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--muted)' }}>
-                <Clock size={14} />
-                BATCH STARTS SOON!
-              </p>
-            </div>
-          </div>
+              ₹399
+              <span
+                className="text-base sm:text-lg font-bold"
+                style={{ color: 'rgba(2,8,24,0.5)', textDecoration: 'line-through', textDecorationColor: '#ef4444' }}
+              >
+                ₹2999
+              </span>
+            </span>
+          </Link>
         </div>
       </div>
     </div>,
