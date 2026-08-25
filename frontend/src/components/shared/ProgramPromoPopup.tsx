@@ -313,7 +313,10 @@ export function ProgramPromoPopup() {
               ₹399, struck ₹2999), not a made-up number. */}
           <Link
             to={PROGRAM_URL}
-            onClick={markSeen}
+            // dismiss() (not just markSeen) - this is a client-side SPA
+            // navigation, so without actually closing it the popup would
+            // stay mounted and visible on top of the V2 page after redirect.
+            onClick={dismiss}
             className="mt-4 md:mt-10 flex flex-row items-center justify-between gap-3 md:gap-4 rounded-2xl px-4 py-3 md:px-8 md:py-5"
             style={{ border: '1px solid rgba(0,212,255,0.35)', background: 'rgba(0,212,255,0.06)' }}
           >
