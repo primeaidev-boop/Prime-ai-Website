@@ -14,7 +14,7 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { Calendar, GraduationCap, Users, Award, Gift, Clock, X, Check } from 'lucide-react';
 
-const PROGRAM_URL = '/program/10-day-ai?source=popup';
+const PROGRAM_URL = '/program/10-day-ai-v2?source=popup';
 const STORAGE_KEY = 'primai_promo_10day_seen';
 const SHOW_AFTER_MS = 4000;
 const REPEAT_AFTER_DAYS = 7;
