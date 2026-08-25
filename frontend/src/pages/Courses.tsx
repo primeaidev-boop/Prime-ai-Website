@@ -48,7 +48,7 @@ export default function Courses() {
             style={{ color: 'var(--white)', fontFamily: 'var(--font-head)' }}
           >
             {page?.heroHeadingMain ?? 'One Path.'}{' '}
-            <span className="gradient-text">{page?.heroHeadingAccent ?? 'Three Levels.'}</span>
+            <span className="gradient-text">{page?.heroHeadingAccent ?? 'Four Levels.'}</span>
           </h1>
           <p className="text-base md:text-lg leading-relaxed" style={{ color: 'var(--muted)' }}>
             {page?.heroSubtitle ?? 'From absolute beginner to professional AI practitioner - our structured pathway takes you from zero knowledge to job-ready skills at the pace that suits you.'}

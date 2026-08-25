@@ -12,18 +12,21 @@ const LEVEL_SLUG: Record<string, string> = {
   L1_FOUNDATION: 'l1',
   L2A_GENERALIST: 'l2a',
   L2B_DEVELOPER: 'l2b',
+  L3_AIML: 'aiml',
 };
 
 const LEVEL_COLOR: Record<string, string> = {
   L1_FOUNDATION: 'var(--electric)',
   L2A_GENERALIST: 'var(--orange)',
   L2B_DEVELOPER: '#a78bfa',
+  L3_AIML: '#10b981',
 };
 
 const LEVEL_BTN_RGB: Record<string, string> = {
   L1_FOUNDATION: '0,212,255',
   L2A_GENERALIST: '255,107,43',
   L2B_DEVELOPER: '167,139,250',
+  L3_AIML: '16,185,129',
 };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -209,6 +212,7 @@ export function LearningPathway() {
   const l1  = courses.find((c) => c.level === 'L1_FOUNDATION');
   const l2a = courses.find((c) => c.level === 'L2A_GENERALIST');
   const l2b = courses.find((c) => c.level === 'L2B_DEVELOPER');
+  const aiml = courses.find((c) => c.level === 'L3_AIML');
 
   const l2Tracks = [
     { level: 'L2A_GENERALIST' as const, label: 'L2A – Non-Tech', course: l2a, idx: 0 },
@@ -344,6 +348,29 @@ export function LearningPathway() {
         {l2a && <PathwayCard course={l2a} />}
         {l2b && <PathwayCard course={l2b} />}
       </div>
+
+      {/* ── Advanced tier: AI & Machine Learning ──────────────── */}
+      {aiml && (
+        <>
+          <div className="flex flex-col items-center mt-8 mb-5">
+            <div
+              className="w-px h-7"
+              style={{ background: 'linear-gradient(to bottom, rgba(16,185,129,0.15), rgba(16,185,129,0.9))' }}
+            />
+            <div
+              className="w-3 h-3 rounded-full my-2"
+              style={{ background: '#10b981', boxShadow: '0 0 12px rgba(16,185,129,0.7), 0 0 24px rgba(16,185,129,0.3)' }}
+            />
+            <div
+              className="text-[10px] font-bold uppercase tracking-[2.5px] px-4 py-1.5 rounded-full"
+              style={{ color: 'var(--muted)', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              Go Advanced
+            </div>
+          </div>
+          <PathwayCard course={aiml} isWide />
+        </>
+      )}
 
     </div>
   );

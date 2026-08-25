@@ -14,6 +14,13 @@ const LEVEL_COLOR: Record<string, string> = {
   L1_FOUNDATION: 'var(--electric)',
   L2A_GENERALIST: 'var(--orange)',
   L2B_DEVELOPER: '#a78bfa',
+  L3_AIML: '#10b981',
+};
+
+const AIML_RELATED = {
+  label: 'AI & Machine Learning', slug: 'aiml',
+  levelLabel: 'AI/ML -Advanced Track',
+  desc: 'Build, train, and deploy real ML, Deep Learning, and GenAI systems. From Python and data fundamentals to LLMs, RAG, and production deployment.',
 };
 
 const RELATED: Record<string, { label: string; slug: string; levelLabel: string; desc: string }[]> = {
@@ -28,6 +35,7 @@ const RELATED: Record<string, { label: string; slug: string; levelLabel: string;
       levelLabel: 'Level 2B -Tech Track',
       desc: 'For IT and engineering students. Learn AI-assisted coding, LLM APIs, GitHub Copilot, and build your own AI-powered applications.',
     },
+    AIML_RELATED,
   ],
   l2a: [
     {
@@ -40,6 +48,7 @@ const RELATED: Record<string, { label: string; slug: string; levelLabel: string;
       levelLabel: 'Level 2B -Tech Track',
       desc: 'For IT and engineering students. Learn AI-assisted coding, LLM APIs, GitHub Copilot, and build your own AI-powered applications.',
     },
+    AIML_RELATED,
   ],
   l2b: [
     {
@@ -52,6 +61,19 @@ const RELATED: Record<string, { label: string; slug: string; levelLabel: string;
       levelLabel: 'Level 2A -Non-Tech Track',
       desc: 'For freshers, professionals, and entrepreneurs. Master 15+ AI tools for content, design, video, and automation.',
     },
+    AIML_RELATED,
+  ],
+  aiml: [
+    {
+      label: 'AI Foundation Program', slug: 'l1',
+      levelLabel: 'Level 1 -Foundation',
+      desc: 'The entry point for everyone. Learn AI fundamentals, 8+ tools, and get certified -no coding required.',
+    },
+    {
+      label: 'AI Developer Program', slug: 'l2b',
+      levelLabel: 'Level 2B -Tech Track',
+      desc: 'For IT and engineering students. Learn AI-assisted coding, LLM APIs, GitHub Copilot, and build your own AI-powered applications.',
+    },
   ],
 };
 
@@ -59,6 +81,7 @@ const RELATED_COLOR: Record<string, string> = {
   l1: 'var(--electric)',
   l2a: 'var(--orange)',
   l2b: '#a78bfa',
+  aiml: '#10b981',
 };
 
 // Fires IntersectionObserver only after async data is loaded and sections are mounted

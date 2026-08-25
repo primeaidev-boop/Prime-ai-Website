@@ -282,6 +282,7 @@ export default function Contact() {
                         <option value="LEVEL_1_FOUNDATION">Level 1 – Introduction</option>
                         <option value="LEVEL_2A_GENERALIST">Level 2A – AI Generalist</option>
                         <option value="LEVEL_2B_DEVELOPER">Level 2B – AI Developer</option>
+                        <option value="AI_ML">AI &amp; Machine Learning</option>
                         <option value="NOT_SURE">Not Sure Yet</option>
                       </select>
                       {errors.courseInterest && (

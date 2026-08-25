@@ -36,6 +36,7 @@ const TABS: { slug: TabId; label: string; color: string }[] = [
   { slug: 'l1', label: 'L1 · Foundation', color: 'var(--electric)' },
   { slug: 'l2a', label: 'L2A · Generalist', color: 'var(--orange)' },
   { slug: 'l2b', label: 'L2B · Developer', color: '#a78bfa' },
+  { slug: 'aiml', label: 'AI/ML · Machine Learning', color: '#10b981' },
 ];
 
 type SaveState = 'idle' | 'saving' | 'saved' | 'error';

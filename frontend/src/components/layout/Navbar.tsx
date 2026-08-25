@@ -9,6 +9,7 @@ const COURSE_LINKS = [
   { to: '/courses/l1', label: 'AI Foundation (L1)', sub: 'Entry point for everyone', icon: '🎯' },
   { to: '/courses/l2a', label: 'AI Generalist (L2A)', sub: 'Non-tech track · L2A', icon: '⚡' },
   { to: '/courses/l2b', label: 'AI Developer (L2B)', sub: 'Tech track · L2B', icon: '💻' },
+  { to: '/courses/aiml', label: 'AI & Machine Learning', sub: 'Build real ML, Deep Learning & GenAI systems', icon: '🤖' },
 ];
 
 export function Navbar() {

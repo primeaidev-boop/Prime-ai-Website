@@ -208,6 +208,7 @@ export function Footer() {
                   { label: 'AI Foundation Program',  badge: 'L1',  color: 'var(--electric)' },
                   { label: 'AI Generalist Program',  badge: 'L2A', color: 'var(--orange)' },
                   { label: 'AI Developer Program',   badge: 'L2B', color: '#a78bfa' },
+                  { label: 'AI & Machine Learning',  badge: 'AI/ML', color: '#10b981' },
                 ].map((c) => (
                   <li key={c.badge}>
                     <Link

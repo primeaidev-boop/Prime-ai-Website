@@ -102,6 +102,7 @@ export default function App() {
         <Route path="/courses/l1" element={<CoursePage />} />
         <Route path="/courses/l2a" element={<CoursePage />} />
         <Route path="/courses/l2b" element={<CoursePage />} />
+        <Route path="/courses/aiml" element={<CoursePage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/tutorials" element={<TutorialListing />} />
         <Route path="/tutorials/:slug" element={<TutorialPage />} />

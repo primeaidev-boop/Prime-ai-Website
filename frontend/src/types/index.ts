@@ -11,6 +11,7 @@ export type Course =
   | 'LEVEL_1_FOUNDATION'
   | 'LEVEL_2A_GENERALIST'
   | 'LEVEL_2B_DEVELOPER'
+  | 'AI_ML'
   | 'NOT_SURE';
 
 export type LeadStatus = 'NEW' | 'CONTACTED' | 'CONVERTED' | 'LOST';
@@ -95,8 +96,8 @@ export interface PaginatedResponse<T> {
 
 // ─── Courses Module ────────────────────────────────────────────────────────────
 
-export type CourseLevel = 'L1_FOUNDATION' | 'L2A_GENERALIST' | 'L2B_DEVELOPER';
-export type CourseSlug = 'l1' | 'l2a' | 'l2b';
+export type CourseLevel = 'L1_FOUNDATION' | 'L2A_GENERALIST' | 'L2B_DEVELOPER' | 'L3_AIML';
+export type CourseSlug = 'l1' | 'l2a' | 'l2b' | 'aiml';
 
 export interface CourseWhoItem {
   id: string;

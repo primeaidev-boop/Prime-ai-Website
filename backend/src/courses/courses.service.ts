@@ -19,6 +19,7 @@ const LEVEL_SLUG_MAP: Record<string, CourseLevel> = {
   l1: CourseLevel.L1_FOUNDATION,
   l2a: CourseLevel.L2A_GENERALIST,
   l2b: CourseLevel.L2B_DEVELOPER,
+  aiml: CourseLevel.L3_AIML,
 };
 
 const COURSE_INCLUDE = {

@@ -30,6 +30,7 @@ const courseLabels: Record<string, string> = {
   LEVEL_1_FOUNDATION: 'L1 Introduction',
   LEVEL_2A_GENERALIST: 'L2A Generalist',
   LEVEL_2B_DEVELOPER: 'L2B Developer',
+  AI_ML: 'AI & Machine Learning',
   NOT_SURE: 'Not Sure',
 };
 
