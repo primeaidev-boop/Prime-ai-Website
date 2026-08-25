@@ -168,7 +168,7 @@ export function ProgramPromoPopup() {
         aria-modal="true"
         aria-labelledby="promo-popup-heading"
         onClick={(e) => e.stopPropagation()}
-        className={`glass-card relative w-full max-w-4xl max-h-[92vh] md:max-h-[90vh] overflow-y-auto rounded-2xl mx-4 md:mx-0 ${transitionClass}`}
+        className={`glass-card relative w-full max-w-4xl max-h-[95vh] overflow-y-auto rounded-2xl mx-4 md:mx-0 ${transitionClass}`}
         style={{
           background: 'var(--navy)',
           border: '1px solid var(--border)',
@@ -181,7 +181,7 @@ export function ProgramPromoPopup() {
           ref={closeBtnRef}
           onClick={dismiss}
           aria-label="Close"
-          className="absolute top-3 right-3 md:top-4 md:right-4 z-10 flex items-center justify-center rounded-full"
+          className="absolute top-2 right-2 md:top-4 md:right-4 z-10 flex items-center justify-center rounded-full"
           style={{
             width: 44,
             height: 44,
@@ -193,37 +193,40 @@ export function ProgramPromoPopup() {
           <X size={20} />
         </button>
 
-        <div className="p-6 pt-16 md:p-10 md:pt-10">
+        <div className="p-4 pt-12 md:p-10 md:pt-10">
           {/* Header row: logo left */}
-          <div className="mb-6 md:mb-8">
-            <img src="/Asset%2025.svg" alt="PRIM AI Institute" className="h-8 w-auto" style={{ maxHeight: 32 }} />
+          <div className="mb-3 md:mb-8">
+            <img src="/Asset%2025.svg" alt="PRIM AI Institute" className="h-6 md:h-8 w-auto" style={{ maxHeight: 32 }} />
           </div>
 
           {/* Hero + text / artwork */}
-          <div className="grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="grid gap-4 md:gap-8 md:grid-cols-2 md:items-center">
             <div>
               <h2
                 id="promo-popup-heading"
-                className="font-black leading-[0.95] mb-4"
-                style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(2.25rem, 6vw, 3.25rem)' }}
+                className="font-black leading-[0.95] mb-2 md:mb-4"
+                style={{ fontFamily: 'var(--font-head)', fontSize: 'clamp(1.75rem, 8vw, 3.25rem)' }}
               >
                 <span className="block" style={{ color: 'var(--white)' }}>10-DAY</span>
                 <span className="block" style={{ color: 'var(--electric)' }}>AI MASTERY</span>
               </h2>
 
-              <p className="text-base md:text-lg font-semibold mb-4" style={{ color: 'var(--white)' }}>
+              <p className="text-sm md:text-lg font-semibold mb-2 md:mb-4" style={{ color: 'var(--white)' }}>
                 Learn AI. Build Real Projects.{' '}
                 <span style={{ color: 'var(--gold)' }}>Transform Your Future.</span>
               </p>
 
-              <p className="text-sm mb-6" style={{ color: 'var(--muted)' }}>
+              {/* Supplementary copy - dropped on mobile so the whole popup
+                  fits one screen without scrolling; kept on desktop where
+                  there's room. */}
+              <p className="hidden md:block text-sm mb-6" style={{ color: 'var(--muted)' }}>
                 A practical, hands-on program designed to take you from AI beginner to confident
                 creator in just 10 days - no coding, no prior experience required.
               </p>
 
               {/* Bonus strip */}
               <div
-                className="flex items-start gap-3 rounded-xl p-4"
+                className="flex items-start gap-2 md:gap-3 rounded-xl p-2.5 md:p-4"
                 style={{
                   background: 'linear-gradient(135deg, rgba(124,58,237,0.35), rgba(0,212,255,0.12))',
                   border: '1px solid rgba(124,58,237,0.4)',
@@ -231,15 +234,15 @@ export function ProgramPromoPopup() {
               >
                 <div
                   className="flex items-center justify-center rounded-lg shrink-0"
-                  style={{ width: 40, height: 40, background: 'rgba(255,255,255,0.12)' }}
+                  style={{ width: 32, height: 32, background: 'rgba(255,255,255,0.12)' }}
                 >
-                  <Gift size={20} color="var(--white)" />
+                  <Gift size={16} color="var(--white)" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold" style={{ color: 'var(--gold)' }}>
+                  <p className="text-xs md:text-sm font-bold" style={{ color: 'var(--gold)' }}>
                     BONUS: CERTIFICATE OF COMPLETION
                   </p>
-                  <p className="text-xs" style={{ color: 'var(--muted)' }}>For all participants</p>
+                  <p className="text-[11px] md:text-xs" style={{ color: 'var(--muted)' }}>For all participants</p>
                 </div>
               </div>
             </div>
@@ -259,22 +262,27 @@ export function ProgramPromoPopup() {
           </div>
 
           {/* Feature strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 mt-8 md:mt-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-3 md:gap-y-6 mt-4 md:mt-10">
             {FEATURES.map(({ Icon, title, subtitle }, i) => (
               <div
                 key={title}
-                className="flex flex-col items-center text-center gap-2 px-3"
+                className="flex flex-col items-center text-center gap-1 md:gap-2 px-2 md:px-3"
                 style={i < FEATURES.length - 1 ? { borderRight: '1px solid var(--border)' } : undefined}
               >
-                <Icon size={26} color="var(--electric)" />
-                <p className="text-xs font-bold" style={{ color: 'var(--white)' }}>{title}</p>
-                <p className="text-xs" style={{ color: 'var(--muted)' }}>{subtitle}</p>
+                <Icon size={20} className="md:hidden" color="var(--electric)" />
+                <Icon size={26} className="hidden md:block" color="var(--electric)" />
+                <p className="text-[11px] md:text-xs font-bold" style={{ color: 'var(--white)' }}>{title}</p>
+                <p className="hidden md:block text-xs" style={{ color: 'var(--muted)' }}>{subtitle}</p>
               </div>
             ))}
           </div>
 
-          {/* What you'll learn */}
-          <div className="glass-card rounded-xl p-5 md:p-6 mt-8 md:mt-10">
+          {/* What you'll learn - hidden on mobile (see the popup's compact-
+              layout note above the paragraph field): the checklist is the
+              single largest block, and skipping it on phones is what makes
+              "no scroll to see everything" achievable without cutting price
+              or the CTA. Still shown in full from md: up. */}
+          <div className="hidden md:block glass-card rounded-xl p-5 md:p-6 mt-8 md:mt-10">
             <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--electric)' }}>
               What You'll Learn &amp; Build
             </p>
@@ -306,22 +314,22 @@ export function ProgramPromoPopup() {
           <Link
             to={PROGRAM_URL}
             onClick={markSeen}
-            className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl px-6 py-5 sm:px-8"
+            className="mt-4 md:mt-10 flex flex-row items-center justify-between gap-3 md:gap-4 rounded-2xl px-4 py-3 md:px-8 md:py-5"
             style={{ border: '1px solid rgba(0,212,255,0.35)', background: 'rgba(0,212,255,0.06)' }}
           >
             <span
-              className="flex items-center gap-2 text-lg sm:text-xl font-black"
+              className="flex items-center gap-1.5 md:gap-2 text-sm sm:text-xl font-black"
               style={{ color: 'var(--white)', fontFamily: 'var(--font-head)' }}
             >
               CLAIM THIS OFFER <span style={{ color: 'var(--electric)' }}>&raquo;</span>
             </span>
             <span
-              className="flex items-center gap-3 rounded-xl px-5 py-2.5 font-black text-2xl sm:text-3xl"
+              className="flex items-center gap-2 md:gap-3 rounded-xl px-3 py-1.5 md:px-5 md:py-2.5 font-black text-lg sm:text-3xl"
               style={{ background: 'var(--gold)', color: 'var(--navy)' }}
             >
               ₹399
               <span
-                className="text-base sm:text-lg font-bold"
+                className="text-xs sm:text-lg font-bold"
                 style={{ color: 'rgba(2,8,24,0.5)', textDecoration: 'line-through', textDecorationColor: '#ef4444' }}
               >
                 ₹2999
