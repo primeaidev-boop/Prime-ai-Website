@@ -2,7 +2,7 @@
 
 import { createPortal } from 'react-dom';
 import { useForm } from 'react-hook-form';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createBooking } from '@/api/bookings';
 import type { CreateBookingDto, Profile, Course } from '@/types';
 
@@ -21,6 +21,16 @@ export function DemoModal({ isOpen, onClose }: DemoModalProps) {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<CreateBookingDto>();
+
+  // Matches the lock TutorialGateModal/LaunchpadLeadModal already use - this
+  // modal never had one, which is also what ProgramPromoPopup's anti-stack
+  // check relies on (document.body.style.overflow === 'hidden' means some
+  // modal is already up, so the promo popup skips itself rather than stack).
+  useEffect(() => {
+    if (!isOpen) return;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

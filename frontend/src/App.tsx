@@ -9,6 +9,7 @@ import { useAuthStore } from '@/store/authStore';
 import { ScrollToTop } from '@/components/shared/ScrollToTop';
 import { RefSourceCapture } from '@/components/shared/RefSourceCapture';
 import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
+import { ProgramPromoPopup } from '@/components/shared/ProgramPromoPopup';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
@@ -92,6 +93,7 @@ export default function App() {
     <ScrollToTop />
     <RefSourceCapture />
     <WhatsAppFloat />
+    <ProgramPromoPopup />
     <Routes>
       <Route element={<PublicLayout />}>
         <Route path="/" element={<Home />} />
