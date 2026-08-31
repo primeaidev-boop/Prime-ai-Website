@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, Eye, Save } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Clock, Eye, Save } from 'lucide-react';
+import axios from 'axios';
 import { RichTextEditor } from '@/components/shared/RichTextEditor';
 import { ImageUploadDropzone } from '@/components/admin/ImageUploadDropzone';
 import ToggleSwitch from '@/components/admin/ToggleSwitch';
@@ -90,6 +91,7 @@ export default function BlogPostEditor() {
 
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [loadingRef, setLoadingRef] = useState(false);
   const [addingCategory, setAddingCategory] = useState(false);
   const [addingTag, setAddingTag] = useState(false);
@@ -187,6 +189,7 @@ export default function BlogPostEditor() {
     const effectiveStatus = publishNow ? 'PUBLISHED' : status;
 
     setSaving(true);
+    setSaveError(null);
     try {
       const payload = {
         title: title.trim(),
@@ -201,21 +204,42 @@ export default function BlogPostEditor() {
         tagIds: selectedTagIds,
       };
 
-      const saved = isNew
+      const savedPost = isNew
         ? await adminCreatePost(payload)
         : await adminUpdatePost(id!, payload);
 
       if (publishNow) setStatus('PUBLISHED');
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
-      if (isNew) navigate(`/admin/blog/${saved.id}/edit`, { replace: true });
+      if (isNew) navigate(`/admin/blog/${savedPost.id}/edit`, { replace: true });
+    } catch (err) {
+      // NestJS's ValidationPipe returns { message: string[] } for a rejected
+      // DTO - surfacing it directly is what turns "save silently does
+      // nothing" into "the excerpt needs at least 10 characters", instead of
+      // a blank screen and an error only visible in devtools.
+      if (axios.isAxiosError(err)) {
+        const data = err.response?.data as { message?: string | string[] } | undefined;
+        const detail = Array.isArray(data?.message) ? data.message.join('; ') : data?.message;
+        setSaveError(detail ?? `Save failed (${err.response?.status ?? 'network error'}). Please try again.`);
+      } else {
+        setSaveError('Save failed. Please try again.');
+      }
     } finally {
       setSaving(false);
     }
   }
 
   const readTimeEst = Math.max(1, Math.ceil(wordCount / 200));
-  const isValid = title.trim().length >= 5 && slug.trim().length >= 3 && categoryId && authorId;
+  // Mirrors backend/src/blog/dto/create-blog-post.dto.ts exactly - a post that
+  // fails one of these fails silently server-side otherwise (a 400 with no
+  // on-screen explanation beyond a devtools console entry), because nothing
+  // here previously checked excerpt's 10-character minimum at all.
+  const isValid =
+    title.trim().length >= 5 &&
+    slug.trim().length >= 3 &&
+    excerpt.trim().length >= 10 &&
+    categoryId &&
+    authorId;
 
   return (
     <div className="flex h-full" style={{ color: 'var(--white)' }}>
@@ -283,6 +307,11 @@ export default function BlogPostEditor() {
               onChange={(e) => setExcerpt(e.target.value.slice(0, EXCERPT_MAX))}
               className="resize-none"
             />
+            {excerpt.trim().length > 0 && excerpt.trim().length < 10 && (
+              <p className="text-xs mt-1" style={{ color: 'var(--orange)' }}>
+                Needs at least 10 characters ({excerpt.trim().length}/10) - too short to save.
+              </p>
+            )}
           </div>
 
           {/* TipTap editor - shared RichTextEditor component */}
@@ -387,6 +416,16 @@ export default function BlogPostEditor() {
               {saving ? 'Saving…' : 'Save Draft'}
             </button>
           </div>
+
+          {saveError && (
+            <div
+              className="flex items-start gap-2 mt-3 px-3 py-2 rounded-lg text-xs"
+              style={{ background: 'rgba(255,107,43,0.08)', color: 'var(--orange)', border: '1px solid rgba(255,107,43,0.25)' }}
+            >
+              <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+              <span>{saveError}</span>
+            </div>
+          )}
 
           {saved && (
             <p className="text-xs mt-3 text-center" style={{ color: 'var(--electric)' }}>
