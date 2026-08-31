@@ -135,6 +135,14 @@ export default function BlogPostEditor() {
         setSelectedTagIds(post.tags.map((t) => t.id));
         setShowAuthor(post.showAuthor);
         setBodyContent(post.content ?? '');
+        // bodyHtml (not bodyContent) is what handleSave actually sends - it
+        // only otherwise updates via the editor's onChange, which TipTap
+        // never fires for content set programmatically through the `content`
+        // prop. Without this, editing ONLY the cover image (or any field
+        // other than the body) on an existing post saved `content: ''` -
+        // passing "must be longer than 1 character" on an empty editor is
+        // exactly backwards, since the editor visibly shows the real text.
+        setBodyHtml(post.content ?? '');
       }).catch(() => navigate('/admin/blog'));
     });
   }, [id, isNew, navigate, loadRefs]);
