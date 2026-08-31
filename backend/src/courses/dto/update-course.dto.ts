@@ -5,6 +5,7 @@ import {
   ValidateNested,
   IsInt,
   Min,
+  MaxLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -24,6 +25,8 @@ export class UpdateCourseHeroDto {
   @IsOptional() @IsString() ctaDemoText?: string;
   @IsOptional() @IsString() ctaWaText?: string;
   @IsOptional() @IsString() ctaDownloadText?: string;
+  /** Shown when a visitor clicks any WhatsApp link on this course's page. Empty/null falls back to the site default (contact_whatsapp_message). */
+  @IsOptional() @IsString() @MaxLength(500) whatsappMessage?: string;
 }
 
 export class WhoItemDto {

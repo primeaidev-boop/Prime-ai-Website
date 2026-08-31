@@ -3,6 +3,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useWhatsApp } from '@/context/WhatsAppContext';
 
 // ── Inline SVG social icons (lucide-react doesn't export these) ──────────────
 
@@ -104,8 +105,8 @@ export function Footer() {
   const s = (key: string, fallback = '') => footerSettings[key] ?? fallback;
   const show = (key: string) => s(key) !== 'false';
 
-  const waNumber = s('footer_wa_float_number');
-  const waUrl = waNumber ? `https://wa.me/${waNumber}` : '#';
+  const whatsApp = useWhatsApp();
+  const waUrl = whatsApp.number ? whatsApp.url : '#';
 
   const socialLinks = [
     { href: s('footer_social_whatsapp'), label: 'WhatsApp', color: '#25d366', Icon: IconWhatsApp },

@@ -291,6 +291,8 @@ interface FieldDef {
   label: string;
   type?: 'text' | 'textarea' | 'toggle';
   hint?: string;
+  /** Textarea only - enforces the limit client-side and shows a X / N counter. */
+  maxLength?: number;
 }
 
 interface SectionDef {
@@ -472,7 +474,13 @@ const CONTACT_SECTIONS: SectionDef[] = [
     fields: [
       { key: 'contact_show_whatsapp', label: 'Show WhatsApp Button', type: 'toggle' },
       { key: 'contact_whatsapp_number', label: 'WhatsApp Number', hint: 'Digits only with country code. e.g. 917573055577' },
-      { key: 'contact_whatsapp_message', label: 'Pre-filled WhatsApp Message', type: 'textarea' },
+      {
+        key: 'contact_whatsapp_message',
+        label: 'Default WhatsApp Message',
+        type: 'textarea',
+        maxLength: 500,
+        hint: 'Used on this Contact button AND as the site-wide default for every other page that has no message of its own (Home, About, Blog, legal pages, and any course/program page left blank below).',
+      },
       { key: 'contact_show_map', label: 'Show Map Section', type: 'toggle' },
       { key: 'contact_map_embed_url', label: 'Google Maps Embed URL', hint: 'Google Maps ➞ Share ➞ Embed a map ➞ copy the src="" value from the iframe code', type: 'textarea' },
       { key: 'contact_map_link_url', label: 'Map Direct Link', hint: 'Opens in Google Maps when user clicks the map' },
@@ -710,12 +718,20 @@ export default function Settings() {
                 {form[field.key] === 'true' ? 'Enabled' : 'Disabled'}
               </button>
             ) : field.type === 'textarea' ? (
-              <textarea
-                rows={3}
-                value={form[field.key]}
-                onChange={(e) => set(field.key, e.target.value)}
-                style={{ resize: 'vertical' }}
-              />
+              <>
+                <textarea
+                  rows={3}
+                  value={form[field.key]}
+                  onChange={(e) => set(field.key, e.target.value)}
+                  maxLength={field.maxLength}
+                  style={{ resize: 'vertical' }}
+                />
+                {field.maxLength !== undefined && (
+                  <p className="text-xs text-right mt-1" style={{ color: 'var(--muted)' }}>
+                    {form[field.key].length} / {field.maxLength}
+                  </p>
+                )}
+              </>
             ) : (
               <input
                 type="text"

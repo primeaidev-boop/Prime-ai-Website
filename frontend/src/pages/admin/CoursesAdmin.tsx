@@ -132,6 +132,7 @@ function HeroSection({ course, slug, onSaved }: { course: AiCourse; slug: Course
     ctaDemoText: course.ctaDemoText,
     ctaWaText: course.ctaWaText,
     ctaDownloadText: course.ctaDownloadText,
+    whatsappMessage: course.whatsappMessage ?? '',
   });
   const f = (key: keyof typeof form) => (v: string) => setForm((p) => ({ ...p, [key]: v }));
 
@@ -152,6 +153,23 @@ function HeroSection({ course, slug, onSaved }: { course: AiCourse; slug: Course
         <Field label="CTA: Demo Button" value={form.ctaDemoText} onChange={f('ctaDemoText')} />
         <Field label="CTA: WhatsApp Button" value={form.ctaWaText} onChange={f('ctaWaText')} />
         <Field label="CTA: Download Button" value={form.ctaDownloadText} onChange={f('ctaDownloadText')} />
+      </div>
+      <div className="mb-3">
+        <label className="text-xs font-semibold" style={{ color: 'var(--muted)' }}>WhatsApp Message</label>
+        <textarea
+          className="w-full mt-1 px-3 py-2 rounded-lg text-sm"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid var(--border)', color: 'var(--white)', minHeight: 72 }}
+          rows={3}
+          maxLength={500}
+          value={form.whatsappMessage}
+          onChange={(e) => f('whatsappMessage')(e.target.value)}
+        />
+        <div className="flex items-center justify-between mt-1">
+          <p className="text-xs" style={{ color: 'var(--muted)' }}>
+            Shown when a visitor clicks any WhatsApp button on this course page. Leave empty to use the site default.
+          </p>
+          <span className="text-xs shrink-0 ml-2" style={{ color: 'var(--muted)' }}>{form.whatsappMessage.length} / 500</span>
+        </div>
       </div>
       <SaveBtn state={state} onClick={() => save(async () => {
         const res = await adminUpdateCourseHero(slug, form);

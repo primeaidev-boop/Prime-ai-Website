@@ -516,6 +516,8 @@ export interface AiCourse {
   ctaDemoText: string;
   ctaWaText: string;
   ctaDownloadText: string;
+  /** Shown when a visitor clicks any WhatsApp link on this course's page. Null falls back to the site default. */
+  whatsappMessage: string | null;
   displayOrder: number;
   whoItems: CourseWhoItem[];
   modules: CourseModule[];

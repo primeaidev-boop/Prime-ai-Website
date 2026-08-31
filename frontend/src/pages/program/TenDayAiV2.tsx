@@ -19,6 +19,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { submitProgramEnrollment } from '@/api/programEnrollments';
 import { getPageContent } from '@/api/content';
 import { getStoredRef, sanitizeRef } from '@/lib/refSource';
+import { useWhatsApp } from '@/context/WhatsAppContext';
 import { PROGRAM_ENROLLMENT_PROFILE_OPTIONS } from '@/data/programPagesData';
 import type { ProgramPage as ProgramPageData } from '@/data/programPagesData';
 import { initV2Effects } from './tenDayAiV2Effects';
@@ -40,6 +41,7 @@ const BATCH_FALLBACK = 'Not Specified';
 export default function TenDayAiV2() {
   const { search } = useLocation();
   const navigate = useNavigate();
+  const { url: waUrl } = useWhatsApp();
 
   // --- form state ---
   const [name, setName] = useState('');
@@ -2068,7 +2070,7 @@ export default function TenDayAiV2() {
           </svg>
           75730 55577
         </a>
-        <a className="primai-footer-link" href="https://wa.me/917573055577?text=Hi%2C%20I%27m%20interested%20in%20the%2010-Day%20AI%20Mastery%20Course.%20Please%20share%20more%20details." target="_blank" rel="noopener noreferrer">
+        <a className="primai-footer-link" href={waUrl} target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2l-3 .8l.8-2.9l-.2-.3A8 8 0 1 1 12 20Z"/>
             <path d="M16.6 13.4c-.3-.1-1.6-.8-1.8-.9c-.2-.1-.4-.1-.6.1c-.2.2-.6.9-.8 1.1c-.1.2-.3.2-.5.1c-.7-.3-1.4-.7-2-1.3c-.5-.5-1-1.1-1.4-1.8c-.1-.2 0-.4.1-.5c.1-.1.3-.3.4-.5c.1-.1.2-.3.2-.4c.1-.2 0-.4 0-.5c-.1-.1-.6-1.4-.8-1.9c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3c-.7.7-1 1.5-1 2.4c.1 1.1.5 2.2 1.3 3.2c1.4 2 3.3 3.5 5.5 4.2c.6.2 1.1.4 1.7.5c.6.1 1.2.1 1.8 0c.7-.1 1.5-.6 1.8-1.3c.2-.4.2-.8.1-1.2c0-.1-.2-.2-.4-.3Z"/>

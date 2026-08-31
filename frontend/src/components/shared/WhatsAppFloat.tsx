@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { useSettingsStore } from '@/store/settingsStore';
+import { useWhatsApp } from '@/context/WhatsAppContext';
 
 export function WhatsAppFloat() {
   const footerSettings = useSettingsStore((state) => state.s.footerSettings);
+  const { number, url } = useWhatsApp();
   const [visible, setVisible] = useState(false);
 
   const show = footerSettings['footer_wa_float_show'] !== 'false';
-  const number = footerSettings['footer_wa_float_number'] ?? '';
 
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 300);
@@ -55,7 +56,7 @@ export function WhatsAppFloat() {
           }}
         />
         <a
-          href={`https://wa.me/${number}`}
+          href={url}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"

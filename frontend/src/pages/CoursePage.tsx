@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { getCourseBySlug } from '@/api/courses';
 import { useModal } from '@/hooks/useModal';
 import { DemoModal } from '@/components/shared/DemoModal';
+import { useWhatsApp } from '@/context/WhatsAppContext';
 import type { AiCourse, CourseFAQ, CourseTool } from '@/types';
 
 function useSlug(): string {
@@ -174,6 +175,7 @@ export default function CoursePage() {
   const slug = useSlug();
   const navigate = useNavigate();
   const modal = useModal();
+  const { url: waUrl, setPageMessage } = useWhatsApp();
   const [course, setCourse] = useState<AiCourse | null>(null);
   const [loading, setLoading] = useState(true);
   const [stickyVisible, setStickyVisible] = useState(false);
@@ -187,6 +189,12 @@ export default function CoursePage() {
       .catch(() => navigate('/courses', { replace: true }))
       .finally(() => setLoading(false));
   }, [slug, navigate]);
+
+  useEffect(() => {
+    if (course?.whatsappMessage) {
+      setPageMessage(course.whatsappMessage);
+    }
+  }, [course?.whatsappMessage, setPageMessage]);
 
   // Sticky bottom bar: appear after hero scrolls out of view
   useEffect(() => {
@@ -241,12 +249,14 @@ export default function CoursePage() {
           </div>
         </div>
         <div className="flex items-center gap-2.5 w-full md:w-auto">
-          <Link
-            to="/contact"
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="btn-outline text-xs px-4 py-2.5 flex-1 md:flex-none text-center"
           >
             💬 WhatsApp
-          </Link>
+          </a>
           <button onClick={modal.open} className="btn-primary text-xs px-5 py-2.5 flex-1 md:flex-none">
             {course.ctaDemoText}
           </button>
@@ -865,9 +875,9 @@ export default function CoursePage() {
             <button onClick={modal.open} className="btn-primary px-8 py-3 text-base">
               {course.ctaDemoText}
             </button>
-            <Link to="/contact" className="btn-outline px-8 py-3 text-base">
+            <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn-outline px-8 py-3 text-base">
               💬 WhatsApp Us
-            </Link>
+            </a>
           </div>
           <div className="mt-4 text-xs" style={{ color: 'var(--muted)' }}>
             Limited seats · {course.trainingDays} · {course.language} · {course.mentorship}

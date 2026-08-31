@@ -431,6 +431,7 @@ async function seedCourses() {
       ctaDemoText: 'Book Free Demo ➞',
       ctaWaText: '💬 Chat on WhatsApp',
       ctaDownloadText: 'Download Syllabus',
+      whatsappMessage: "Hi PRIM AI! I'm interested in the AI Foundation Program (Level 1). Please share the details.",
       whoItems: [
         { emoji: '🎓', title: 'School Students', desc: 'Class 6–12 students who want to stand out in school projects, assignments, and competitions using AI tools.', order: 0 },
         { emoji: '🎓', title: 'College Students', desc: 'Freshers and graduates looking to add practical AI skills to their resume before entering the job market.', order: 1 },
@@ -511,6 +512,7 @@ async function seedCourses() {
       ctaDemoText: 'Book Free Demo ➞',
       ctaWaText: '💬 Chat on WhatsApp',
       ctaDownloadText: 'Download Syllabus',
+      whatsappMessage: "Hi PRIM AI! I'm interested in the AI Generalist Program (Level 2A). Please share the details.",
       whoItems: [
         { emoji: '💼', title: 'Working Professionals', desc: 'HR, marketing, sales, and operations professionals who want to use AI to dramatically increase their output and value.', order: 0 },
         { emoji: '🎓', title: 'Fresh Graduates', desc: 'Job seekers who want to stand out in interviews by demonstrating real AI skills with a portfolio of projects.', order: 1 },
@@ -600,6 +602,7 @@ async function seedCourses() {
       ctaDemoText: 'Book Free Demo ➞',
       ctaWaText: '💬 Chat on WhatsApp',
       ctaDownloadText: 'Download Syllabus',
+      whatsappMessage: "Hi PRIM AI! I'm interested in the AI Developer Program (Level 2B). Please share the details.",
       whoItems: [
         { emoji: '💻', title: 'IT & CS Students', desc: 'Computer science students who want to build AI-powered projects that stand out in campus placements and internships.', order: 0 },
         { emoji: '⚙️', title: 'Engineering Students', desc: 'Engineering graduates who want to add AI development skills to their technical profile and access better opportunities.', order: 1 },
@@ -684,6 +687,7 @@ async function seedCourses() {
       ctaDemoText: 'Book Free Demo ➞',
       ctaWaText: '💬 Chat on WhatsApp',
       ctaDownloadText: 'Download Syllabus',
+      whatsappMessage: "Hi PRIM AI! I'm interested in the AI & Machine Learning Program. Please share the details.",
       whoItems: [
         { emoji: '💻', title: 'IT & CS Students', desc: 'Computer science students who want to build real ML and AI projects that stand out in campus placements and internships.', order: 0 },
         { emoji: '⚙️', title: 'Engineering Students', desc: 'Engineering graduates from any branch who want to add AI/ML skills to their technical profile and access better job opportunities.', order: 1 },
@@ -780,6 +784,18 @@ async function seedCourses() {
       update: {},
       create: coreData,
     });
+
+    // One-time backfill for a course that already existed before this field
+    // was added (e.g. production). `update: {}` above deliberately never
+    // touches whatsappMessage on an existing row - re-running seed must not
+    // clobber an admin's later edit - so this only ever fires once, the
+    // first time seed runs after the migration, and never again.
+    if (course.whatsappMessage === null && coreData.whatsappMessage) {
+      await prisma.aiCourse.update({
+        where: { id: course.id },
+        data: { whatsappMessage: coreData.whatsappMessage },
+      });
+    }
 
     // Only seed related items if they don't exist yet
     const existingWho = await prisma.courseWhoItem.count({ where: { courseId: course.id } });

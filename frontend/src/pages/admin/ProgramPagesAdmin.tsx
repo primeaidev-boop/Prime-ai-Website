@@ -308,17 +308,20 @@ function Textarea({
   onChange,
   placeholder,
   rows = 3,
+  maxLength,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
   rows?: number;
+  maxLength?: number;
 }) {
   return (
     <textarea
       style={{ ...S.textarea, minHeight: rows * 28 }}
       value={value}
       placeholder={placeholder}
+      maxLength={maxLength}
       onChange={(e) => onChange(e.target.value)}
     />
   );
@@ -454,6 +457,8 @@ function ProgramEditor({
   // fill them from the seeded defaults so the CRUD lists are never blank.
   const [p, setP] = useState<ProgramPage>(() => ({
     ...page,
+    // Older saved content predates this field.
+    whatsappMessage: page.whatsappMessage ?? '',
     heroToolsLabel: page.heroToolsLabel ?? "Tools You'll Master",
     heroTools: page.heroTools ?? DEFAULT_HERO_TOOLS,
     showTrustBar: page.showTrustBar ?? true,
@@ -1329,6 +1334,16 @@ function ProgramEditor({
         <Field label='WhatsApp Message Template (use {name}, {phone}, {batch} as placeholders)'>
           <Textarea value={p.whatsappMessageTemplate} onChange={(v) => set('whatsappMessageTemplate', v)} rows={3} />
         </Field>
+
+        <Field label="WhatsApp Message">
+          <Textarea value={p.whatsappMessage} onChange={(v) => set('whatsappMessage', v)} rows={3} maxLength={500} />
+        </Field>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: -12, marginBottom: 16 }}>
+          <p style={{ color: 'var(--muted)', fontSize: 12 }}>
+            Shown when a visitor clicks any WhatsApp button on this page. Leave empty to use the site default.
+          </p>
+          <span style={{ color: 'var(--muted)', fontSize: 12, flexShrink: 0, marginLeft: 8 }}>{p.whatsappMessage.length} / 500</span>
+        </div>
 
         <p style={{ color: 'var(--electric)', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '32px 0 4px' }}>Thank You Page</p>
         <p style={{ color: 'var(--muted)', fontSize: 12, marginBottom: 16 }}>

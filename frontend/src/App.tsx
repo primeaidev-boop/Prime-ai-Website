@@ -11,6 +11,7 @@ import { RefSourceCapture } from '@/components/shared/RefSourceCapture';
 import { WhatsAppFloat } from '@/components/shared/WhatsAppFloat';
 import { ProgramPromoPopup } from '@/components/shared/ProgramPromoPopup';
 import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
+import { WhatsAppProvider } from '@/context/WhatsAppContext';
 import { lazyWithRetry } from '@/lib/lazyWithRetry';
 
 const Home = lazyWithRetry(() => import('@/pages/Home'));
@@ -90,6 +91,7 @@ function PageLoader() {
 export default function App() {
   return (
     <ErrorBoundary>
+    <WhatsAppProvider>
     <ScrollToTop />
     <RefSourceCapture />
     <WhatsAppFloat />
@@ -164,6 +166,7 @@ export default function App() {
         <Route path="program-pages" element={<ProgramPagesAdmin />} />
       </Route>
     </Routes>
+    </WhatsAppProvider>
     </ErrorBoundary>
   );
 }

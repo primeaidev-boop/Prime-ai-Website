@@ -269,6 +269,11 @@ export interface ProgramPage {
   formSubmitText: string;
   whatsappNumber: string;        // e.g. "917573055577" (no + or spaces)
   whatsappMessageTemplate: string;
+  /** Shown when a visitor clicks the global floating WhatsApp button (or any
+   * other generic WhatsApp link) while on this page - distinct from
+   * whatsappMessageTemplate above, which is the {name}/{phone}/{batch}
+   * enrollment-confirmation template used only on submit. */
+  whatsappMessage: string;
 
   // ── Thank You page (shown after a confirmed enrollment capture, before
   // the WhatsApp redirect) - see pages/ThankYouPage.tsx
@@ -530,6 +535,8 @@ const DEFAULT_10DAY: ProgramPage = {
   whatsappNumber: '917573055577',
   whatsappMessageTemplate:
     'Hi! I want to enroll in the 10-Day AI Program (₹399). Name: {name}, Phone: {phone}, Batch: {batch}. Please share enrollment details.',
+  whatsappMessage:
+    "Hi PRIM AI! I want to enroll in the 10-Day Hands-On AI Program. Please share the details.",
 
   thankYouHeading: 'Thank You! Your Seat Request is Received 🎉',
   thankYouSubtext: 'Our team will confirm your enrollment on WhatsApp shortly.',

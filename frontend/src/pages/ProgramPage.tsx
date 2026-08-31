@@ -22,6 +22,7 @@ import { getPageContent } from '@/api/content';
 import { submitProgramEnrollment } from '@/api/programEnrollments';
 import { queueFailedEnrollment, flushQueuedEnrollments } from '@/lib/enrollmentQueue';
 import { getStoredRef } from '@/lib/refSource';
+import { useWhatsApp } from '@/context/WhatsAppContext';
 import type { ProgramPage as ProgramPageData } from '@/data/programPagesData';
 import type {
   PgBatch,
@@ -242,6 +243,17 @@ export default function ProgramPage() {
     () => (slug ? (pages.find((p) => p.slug === slug && p.visible) ?? null) : null),
     [pages, slug],
   );
+
+  // So the global floating WhatsApp button (rendered outside this page, in
+  // App.tsx) shows this program's message rather than the site default -
+  // same pattern as CoursePage.
+  const { setPageMessage } = useWhatsApp();
+  useEffect(() => {
+    if (page?.whatsappMessage) {
+      setPageMessage(page.whatsappMessage);
+    }
+  }, [page?.whatsappMessage, setPageMessage]);
+
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [formName, setFormName] = useState('');

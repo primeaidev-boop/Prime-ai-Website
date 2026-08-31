@@ -191,6 +191,9 @@ model AiCourse {
   ctaDemoText      String                  @default("Book Free Demo ➞")
   ctaWaText        String                  @default("💬 Chat on WhatsApp")
   ctaDownloadText  String                  @default("Download Syllabus")
+  /// Shown when a visitor clicks any WhatsApp link on this course's page.
+  /// Null falls back to the site default (SiteSetting contact_whatsapp_message).
+  whatsappMessage  String?
   displayOrder     Int                     @default(0)
   whoItems         CourseWhoItem[]
   modules          CourseModule[]
